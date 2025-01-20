@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\Employee\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('admin.dashboard-index');
+
+    Route::get('/admin/employee', [EmployeeController::class, 'index'])->name('admin.employee-index');
+    Route::post('/admin/syncEmployee', [EmployeeController::class, 'APIgetAllEmployee'])->name('api-sync');
 });
 
 // Grup User

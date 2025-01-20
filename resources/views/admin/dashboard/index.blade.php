@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard | Sistem Purchase Order General Affair')
 
 @section('content')
     <div class="row">
