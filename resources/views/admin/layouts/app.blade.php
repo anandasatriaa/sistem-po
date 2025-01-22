@@ -293,6 +293,7 @@
                                             data-key="t-supplier"> Supplier </a>
                                     </li>
                                     <li class="nav-item">
+<<<<<<< HEAD
                                         <a href="{{ route('admin.category-index') }}"
                                             class="nav-link menu-link {{ request()->routeIs('admin.category-index') ? 'active' : '' }}"
                                             data-key="t-category"> Category </a>
@@ -301,6 +302,11 @@
                                         <a href="#"
                                             class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
                                             data-key="t-unit"> Unit </a>
+=======
+                                        <a href="#"
+                                            class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
+                                            data-key="t-category"> Category </a>
+>>>>>>> a08204b5b75a196f196263c9d8eeddac3798bfc5
                                     </li>
                                 </ul>
                             </div>
