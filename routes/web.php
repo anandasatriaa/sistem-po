@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\Employee\EmployeeController;
 use App\Http\Controllers\Admin\Input\CabangController;
 use App\Http\Controllers\Admin\Input\CategoryController;
+use App\Http\Controllers\Admin\Input\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('admin.category-update');
     Route::delete('/admin/category/destroy/{id}', [CategoryController::class, 'destroy'])->name('admin.category-destroy');
     Route::get('/admin/category/last-id', [CategoryController::class, 'lastCategoryId']);
+
+    Route::get('/admin/unit', [UnitController::class, 'index'])->name('admin.unit-index');
+    Route::post('/admin/unit/store', [UnitController::class, 'store']);
+    Route::post('/admin/unit/update/{id}', [UnitController::class, 'update'])->name('admin.unit-update');
+    Route::delete('/admin/unit/destroy/{id}', [UnitController::class, 'destroy'])->name('admin.unit-destroy');
+    Route::get('/admin/unit/last-id', [UnitController::class, 'lastUnitId']);
 });
 
 // Grup User
