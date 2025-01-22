@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Employee\EmployeeController;
 use App\Http\Controllers\Admin\Input\CabangController;
 use App\Http\Controllers\Admin\Input\CategoryController;
 use App\Http\Controllers\Admin\Input\UnitController;
+use App\Http\Controllers\Admin\Input\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,15 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/unit/update/{id}', [UnitController::class, 'update'])->name('admin.unit-update');
     Route::delete('/admin/unit/destroy/{id}', [UnitController::class, 'destroy'])->name('admin.unit-destroy');
     Route::get('/admin/unit/last-id', [UnitController::class, 'lastUnitId']);
+    Route::post('/admin/unit/import', [UnitController::class, 'importCsv'])->name('admin.unit-import');
+
+    Route::get('/admin/supplier', [SupplierController::class, 'index'])->name('admin.supplier-index');
+    Route::post('/admin/supplier/store', [SupplierController::class, 'store']);
+    Route::post('/admin/supplier/update/{id}', [SupplierController::class, 'update'])->name('admin.supplier-update');
+    Route::delete('/admin/supplier/destroy/{id}', [SupplierController::class, 'destroy'])->name('admin.supplier-destroy');
+    Route::get('/admin/supplier/last-id', [SupplierController::class, 'lastSupplierId']);
+    Route::post('/admin/supplier/import', [SupplierController::class, 'importCsv'])->name('admin.supplier-import');
+
 });
 
 // Grup User

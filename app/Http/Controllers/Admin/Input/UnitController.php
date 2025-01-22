@@ -90,4 +90,43 @@ class UnitController extends Controller
 
         return response()->json(['kode' => $newCode]);
     }
+
+    public function importCsv(Request $request)
+    {
+        // Validasi file
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:2048',
+        ]);
+
+        // Baca file CSV
+        $file = $request->file('file');
+        $data = array_map('str_getcsv', file($file->getRealPath()));
+
+        // Ambil header dan hapus baris pertama (header)
+        $headers = array_shift($data);
+
+        // Inisialisasi kode unit
+        $latestUnit = Unit::orderBy('id', 'desc')->first();
+        $nextId = $latestUnit ? $latestUnit->id + 1 : 1;
+
+        $units = [];
+        foreach ($data as $index => $row) {
+            // Lewati baris kosong
+            if (empty($row[0])) {
+                continue;
+            }
+
+            $units[] = [
+                'kode' => 'UNIT' . ($nextId + $index),
+                'satuan' => $row[0] ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Simpan ke database
+        Unit::insert($units);
+
+        return back()->with('success', 'Data berhasil diimport!');
+    }
 }
