@@ -51,7 +51,7 @@ class AuthController extends Controller
             if ($user->lvl == 1) {
                 return redirect()->route('admin.dashboard-index');
             } else {
-                return redirect()->route('user.dashboard-index');
+                return redirect()->route('user.pr-index');
             }
         } else {
             // Log jika login gagal

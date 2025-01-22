@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\Employee\EmployeeController;
+use App\Http\Controllers\Admin\Input\CabangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,24 +37,21 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     Route::get('/admin/employee', [EmployeeController::class, 'index'])->name('admin.employee-index');
     Route::post('/admin/syncEmployee', [EmployeeController::class, 'APIgetAllEmployee'])->name('api-sync');
+
+    Route::get('/admin/cabang', [CabangController::class, 'index'])->name('admin.cabang-index');
+    Route::post('/admin/cabang/store', [CabangController::class, 'store']);
+    Route::post('/admin/cabang/update/{id}', [CabangController::class, 'update'])->name('admin.cabang-update');
+    Route::delete('/admin/cabang/destroy/{id}', [CabangController::class, 'destroy'])->name('admin.cabang-destroy');
+    Route::get('/admin/cabang/last-id', [CabangController::class, 'lastCabangId']);
 });
 
 // Grup User
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('user.dashboard.index');
-    })->name('user.dashboard-index');
+    Route::get('/purchase-request', function () {
+        return view('user.pr.index');
+    })->name('user.pr-index');
+
+    Route::get('/status-purchase-request', function () {
+        return view('user.pr.status');
+    })->name('user.pr-status');
 });
-
-
-
-
-
-
-// Route::get('/login', function () {
-//     return view('auth.login');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('admin.dashboard.index');
-// });

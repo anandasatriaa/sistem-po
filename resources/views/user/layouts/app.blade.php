@@ -12,9 +12,6 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
-    <!-- Sweet Alert css-->
-    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
@@ -167,11 +164,17 @@
                             <button type="button" class="btn" id="page-header-user-dropdown"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="" alt="">
+                                    @php
+                                        $formattedFoto = str_pad(Auth::user()->ID, 5, '0', STR_PAD_LEFT);
+                                        $fotoUrl = "http://192.168.0.8/hrd-milenia/foto/{$formattedFoto}.JPG";
+                                    @endphp
+                                    <img class="rounded-circle header-profile-user" src="{{ $fotoUrl }}"
+                                        alt="">
                                     <span class="text-start ms-xl-2">
                                         <span
                                             class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->Nama }}</span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Role Admin</span>
+                                        <span
+                                            class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ Auth::user()->Jabatan }}</span>
                                     </span>
                                 </span>
                             </button>
@@ -256,49 +259,20 @@
                     <div id="two-column-menu">
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
-                        <li class="menu-title"><span data-key="t-dashboard">Dashboard</span></li>
+                        <li class="menu-title"><span data-key="t-pr">Purchase Request</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('admin.dashboard-index') ? 'active' : '' }}"
-                                href="{{ route('admin.dashboard-index') }}">
-                                <i data-feather="home" class="icon-dual"></i> <span
-                                    data-key="t-dashboards">Dashboard</span>
+                            <a class="nav-link menu-link {{ request()->routeIs('user.pr-index') ? 'active' : '' }}"
+                                href="{{ route('user.pr-index') }}">
+                                <i data-feather="file-text" class="icon-dual"></i> <span data-key="t-prs">Purchase
+                                    Request</span>
                             </a>
                         </li>
-
-                        <li class="menu-title"><span data-key="t-employee">Employee</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
-                                href="{{ route('admin.employee-index') }}">
-                                <i data-feather="users" class="icon-dual"></i> <span data-key="t-employees">Employee
-                                    Data</span>
+                            <a class="nav-link menu-link {{ request()->routeIs('user.pr-status') ? 'active' : '' }}"
+                                href="{{ route('user.pr-status') }}">
+                                <i data-feather="check-circle" class="icon-dual"></i> <span data-key="t-prs">Status
+                                    Approved</span>
                             </a>
-                        </li>
-                        <li class="menu-title"><span data-key="t-inputdata">Input Data</span></li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#inputData" data-bs-toggle="collapse" role="button"
-                                aria-expanded="false" aria-controls="inputData">
-                                <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-inputdatas">Input
-                                    data</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="inputData">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ route('admin.cabang-index') }}"
-                                            class="nav-link menu-link {{ request()->routeIs('admin.cabang-index') ? 'active' : '' }}"
-                                            data-key="t-cabang"> Cabang </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#"
-                                            class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
-                                            data-key="t-supplier"> Supplier </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#"
-                                            class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
-                                            data-key="t-category"> Category </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </li>
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span
@@ -423,7 +397,7 @@
     <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
     <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/plugins.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/plugins.js') }}"></script>
 
     <!-- ApexCharts -->
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
@@ -457,12 +431,6 @@
 
     <!-- prismjs plugin -->
     <script src="{{ asset('assets/libs/prismjs/prism.js') }}"></script>
-
-    <!-- Sweet Alerts js -->
-    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-
-    <!-- Sweet alert init js-->
-    <script src="{{ asset('assets/js/pages/sweetalerts.init.js') }}"></script>
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
