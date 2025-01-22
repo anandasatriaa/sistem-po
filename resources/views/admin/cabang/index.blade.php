@@ -615,7 +615,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("Response from server:", data); // Debugging response
-<<<<<<< HEAD
                         if (data.success) {
                             // SweetAlert for success
                             Swal.fire({
@@ -654,59 +653,6 @@
                             text: 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
                             showConfirmButton: true
                         });
-=======
-                        let alertMessage = '';
-                        if (data.success) {
-                            // Tampilkan alert sukses
-                            alertMessage = `<div class="alert alert-success alert-dismissible alert-label-icon rounded-label fade show" role="alert">
-                            <i class="ri-notification-off-line label-icon"></i><strong>Success!</strong> Cabang berhasil diupdate.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>`;
-
-                            $('#modalUpdateCabang').modal('hide');
-                        } else {
-                            // Tampilkan alert error jika gagal
-                            alertMessage = `<div class="alert alert-danger alert-dismissible alert-label-icon rounded-label fade show" role="alert">
-                            <i class="ri-error-warning-line label-icon"></i><strong>Failed!</strong> Gagal mengupdate cabang: ${data.message}.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>`;
-                        }
-
-                        // Menyisipkan alert ke atas row
-                        document.querySelector('.row').insertAdjacentHTML('beforebegin', alertMessage);
-
-                        // Hapus alert setelah 2 detik
-                        setTimeout(function() {
-                            const alert = document.querySelector('.alert');
-                            if (alert) {
-                                alert.remove();
-                            }
-                        }, 1000);
-
-                        // Reset form setelah berhasil
-                        // if (data.success) form.reset();
-
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 1000);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        let errorAlert = `<div class="alert alert-danger alert-dismissible alert-label-icon rounded-label fade show" role="alert">
-                        <i class="ri-error-warning-line label-icon"></i><strong>Failed!</strong> Terjadi kesalahan saat mengubah data.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                        // Menyisipkan alert error ke atas row
-                        document.querySelector('.row').insertAdjacentHTML('beforebegin', errorAlert);
-
-                        // Hapus alert setelah 2 detik
-                        setTimeout(function() {
-                            const alert = document.querySelector('.alert');
-                            if (alert) {
-                                alert.remove();
-                            }
-                        }, 1000);
->>>>>>> a08204b5b75a196f196263c9d8eeddac3798bfc5
                     });
             });
 
