@@ -61,11 +61,19 @@ class PRStatusController extends Controller
     {
         $purchaseRequest = PurchaseRequest::with('barang', 'user')->findOrFail($id);
 
+        $userName = $purchaseRequest->user->Nama; // Sesuaikan jika field nama user berbeda
+
+        // Ambil tanggal hari ini
+        $today = \Carbon\Carbon::now()->format('Y-m-d'); // Format: YYYY-MM-DD
+
+        // Format nama file PDF
+        $fileName = 'PR_' . strtolower(str_replace(' ', '_', $userName)) . '_' . $today . '.pdf';
+
         // Load view untuk PDF
         $pdf = PDF::loadView('pdf.pr', compact('purchaseRequest'));
 
         // Return file PDF
-        return $pdf->stream('purchase_request.pdf');
+        return $pdf->stream($fileName);
     }
 
 }

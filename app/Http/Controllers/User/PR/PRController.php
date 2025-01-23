@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PR\PurchaseRequest;
 use App\Models\PR\PurchaseRequestBarang;
+use App\Models\Barang\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +49,20 @@ class PRController extends Controller
 
             // Simpan data barang di tabel purchase_request_barang
             foreach ($request->barang_data as $barang) {
+                $existingBarang = Barang::where('nama', $barang['nama_barang'])->first();
+                if (!$existingBarang) {
+                    // Jika barang tidak ada, tambahkan barang baru ke tabel barang
+                    $lastBarang = Barang::orderBy('id', 'desc')->first();
+                    $newCode = $lastBarang
+                        ? 'ITEM' . ((int) substr($lastBarang->kode, 4) + 1)
+                        : 'ITEM1';
+
+                    $existingBarang = Barang::create([
+                        'kode' => $newCode,
+                        'nama' => $barang['nama_barang'],
+                    ]);
+                }
+
                 $purchaseRequestBarang = new PurchaseRequestBarang();
                 $purchaseRequestBarang->purchase_request_id = $purchaseRequest->id;
                 $purchaseRequestBarang->no_pr = $request->no_pr;

@@ -68,7 +68,7 @@
             <tr>
                 <td style="width: 100px"><strong>Nama:</strong></td>
                 <td>{{ $purchaseRequest->user->Nama }}</td>
-                <td style="width: 203px">[{{ $purchaseRequest->important == 'Rutin, Tidak Segera' ? 'x' : ' ' }}] Rutin,
+                <td style="width: 208px">[{{ $purchaseRequest->important == 'Rutin, Tidak Segera' ? 'x' : ' ' }}] Rutin,
                     Tidak Segera</td>
             </tr>
             <tr>
