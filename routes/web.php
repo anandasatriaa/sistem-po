@@ -81,6 +81,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 // Grup User
 Route::middleware(['auth'])->group(function () {
     Route::get('/purchase-request', [PRController::class, 'index'])->name('user.pr-index');
+    Route::post('/purchase-request/store', [PRController::class, 'store']);
+    Route::get('/purchase-request/last-nopr', [PRController::class, 'generateNoPr']);
 
     Route::get('/status-purchase-request', function () {
         return view('user.pr.status');
