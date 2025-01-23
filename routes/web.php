@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Input\UnitController;
 use App\Http\Controllers\Admin\Input\SupplierController;
 use App\Http\Controllers\Admin\Input\BarangController;
 use App\Http\Controllers\User\PR\PRController;
+use App\Http\Controllers\User\PR\PRStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/purchase-request/store', [PRController::class, 'store']);
     Route::get('/purchase-request/last-nopr', [PRController::class, 'generateNoPr']);
 
-    Route::get('/status-purchase-request', function () {
-        return view('user.pr.status');
-    })->name('user.pr-status');
+    Route::get('/status-purchase-request', [PRStatusController::class, 'status'])->name('user.pr-status');
+    Route::get('/status-purchase-request/pdf/{id}', [PRStatusController::class, 'generatePDF'])->name('user.pr-generatePDF');
+
 });

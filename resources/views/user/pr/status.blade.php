@@ -7,72 +7,95 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Purchase Request Status</h5>
+                    <h5 class="card-title">Table Status Approved (Purchase Request)</h5>
+                    <div class="mt-3">
+                        <div>Tahapan Status:</div>
+                        <span class="badge bg-danger">Rejected</span>
+                        <span class="badge bg-warning">Waiting Approved by Supervisor</span>
+                        <span class="badge bg-primary">Waiting Purchase Order by Admin</span>
+                        <span class="badge bg-info">Waiting Approved by GA / Director</span>
+                        <span class="badge bg-success">Done</span>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <table id="table-pr-approved" class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                        style="width:100%">
+                    <table id="table-unit" class="table table-bordered table-striped align-middle" style="width:100%">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 10px;">
-                                    <div class="form-check">
-                                        <input class="form-check-input fs-15" type="checkbox" id="checkAll" value="option">
-                                    </div>
-                                </th>
-                                <th data-ordering="false">SR No.</th>
-                                <th data-ordering="false">ID</th>
-                                <th data-ordering="false">Purchase ID</th>
-                                <th data-ordering="false">Title</th>
-                                <th data-ordering="false">User</th>
-                                <th>Assigned To</th>
-                                <th>Created By</th>
-                                <th>Create Date</th>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Barang</th>
+                                <th>Divisi</th>
+                                <th>No PR</th>
+                                <th>PT</th>
+                                <th>Kebutuhan</th>
                                 <th>Status</th>
-                                <th>Priority</th>
-                                <th>Action</th>
+                                <th>Detail</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <div class="form-check">
-                                        <input class="form-check-input fs-15" type="checkbox" name="checkAll"
-                                            value="option1">
-                                    </div>
-                                </th>
-                                <td>01</td>
-                                <td>VLZ-452</td>
-                                <td>VLZ1400087402</td>
-                                <td><a href="#!">Post launch reminder/ post list</a></td>
-                                <td>Joseph Parker</td>
-                                <td>Alexis Clarke</td>
-                                <td>Joseph Parker</td>
-                                <td>03 Oct, 2021</td>
-                                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
-                                <td><span class="badge bg-danger">High</span></td>
-                                <td>
-                                    <div class="dropdown d-inline-block">
-                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ri-more-fill align-middle"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i
-                                                        class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
-                                            <li><a class="dropdown-item edit-item-btn"><i
-                                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item remove-item-btn">
-                                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
+                            @foreach ($purchaseRequests as $key => $pr)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $pr->user_name }}</td>
+                                    <td>{{ $pr->date_request }}</td>
+                                    <td>
+                                        @if (!empty($pr->barang_list))
+                                            <ul>
+                                                @foreach ($pr->barang_list as $barang)
+                                                    <li>{!! $barang !!}</li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <span>Tidak ada barang</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $pr->divisi }}</td>
+                                    <td>{{ $pr->no_pr }}</td>
+                                    <td>{{ $pr->pt }}</td>
+                                    <td>{{ $pr->important }}</td>
+                                    <td>
+                                        <span
+                                            class="badge 
+                                            {{ $pr->status == 0 ? 'bg-danger' : '' }}
+                                            {{ $pr->status == 1 ? 'bg-warning' : '' }}
+                                            {{ $pr->status == 2 ? 'bg-primary' : '' }}
+                                            {{ $pr->status == 3 ? 'bg-info' : '' }}
+                                            {{ $pr->status == 4 ? 'bg-success' : '' }}">
+                                            {{ $pr->status_label }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
+                                                data-bs-target="#modalDetailPR" data-pdf-url="{{ route('user.pr-generatePDF', $pr->id) }}">
+                                                <i class="ri-printer-line"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail -->
+    <div id="modalDetailPR" class="modal fade" tabindex="-1" aria-labelledby="modalDetailPRLabel" aria-hidden="true"
+        style="display: none;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailPRLabel">Detail Purchase Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="pdfFrame" src="" style="width: 100%; height: 600px; border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    
                 </div>
             </div>
         </div>
@@ -80,10 +103,12 @@
 @endsection
 
 @section('script')
+    {{-- DataTable --}}
     <script>
         $(document).ready(function() {
-            $('#table-pr-approved').DataTable({
-                responsive: true,
+            $('#table-unit').DataTable({
+                scrollX: true,
+                responsive: false,
                 lengthChange: false,
                 paging: true,
                 searching: true,
@@ -91,4 +116,24 @@
             });
         });
     </script>
+
+    {{-- Frame PDF --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Temukan semua tombol "Print"
+            const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
+
+            printButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Ambil URL file PDF dari atribut data-url
+                    const pdfUrl = this.getAttribute('data-pdf-url');
+
+                    // Setel URL ke iframe dalam modal
+                    const pdfFrame = document.getElementById('pdfFrame');
+                    pdfFrame.src = pdfUrl;
+                });
+            });
+        });
+    </script>
+
 @endsection
