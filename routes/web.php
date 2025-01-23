@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\Input\CabangController;
 use App\Http\Controllers\Admin\Input\CategoryController;
 use App\Http\Controllers\Admin\Input\UnitController;
 use App\Http\Controllers\Admin\Input\SupplierController;
+use App\Http\Controllers\Admin\Input\BarangController;
+use App\Http\Controllers\User\PR\PRController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,13 +69,18 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/supplier/last-id', [SupplierController::class, 'lastSupplierId']);
     Route::post('/admin/supplier/import', [SupplierController::class, 'importCsv'])->name('admin.supplier-import');
 
+    Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang-index');
+    Route::post('/admin/barang/store', [BarangController::class, 'store']);
+    Route::post('/admin/barang/update/{id}', [BarangController::class, 'update'])->name('admin.barang-update');
+    Route::delete('/admin/barang/destroy/{id}', [BarangController::class, 'destroy'])->name('admin.barang-destroy');
+    Route::get('/admin/barang/last-id', [BarangController::class, 'lastBarangId']);
+    Route::post('/admin/barang/import', [BarangController::class, 'importCsv'])->name('admin.barang-import');
+
 });
 
 // Grup User
 Route::middleware(['auth'])->group(function () {
-    Route::get('/purchase-request', function () {
-        return view('user.pr.index');
-    })->name('user.pr-index');
+    Route::get('/purchase-request', [PRController::class, 'index'])->name('user.pr-index');
 
     Route::get('/status-purchase-request', function () {
         return view('user.pr.status');

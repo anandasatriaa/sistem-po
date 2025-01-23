@@ -276,11 +276,11 @@
                         <li class="menu-title"><span data-key="t-inputdata">Input Data</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#inputData" data-bs-toggle="collapse" role="button"
-                                aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index') ? 'true' : 'false' }}" aria-controls="inputData">
+                                aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'true' : 'false' }}" aria-controls="inputData">
                                 <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-inputdatas">Input
                                     data</span>
                             </a>
-                            <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index') ? 'show' : '' }}" id="inputData">
+                            <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'show' : '' }}" id="inputData">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ route('admin.cabang-index') }}"
@@ -301,6 +301,11 @@
                                         <a href="{{ route('admin.unit-index') }}"
                                             class="nav-link menu-link {{ request()->routeIs('admin.unit-index') ? 'active' : '' }}"
                                             data-key="t-unit"> Unit </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.barang-index') }}"
+                                            class="nav-link menu-link {{ request()->routeIs('admin.barang-index') ? 'active' : '' }}"
+                                            data-key="t-barang"> Barang </a>
                                     </li>
                                 </ul>
                             </div>
