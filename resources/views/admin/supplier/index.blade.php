@@ -111,7 +111,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="phonesupplier" class="form-label">Phone</label>
-                                    <input type="number" class="form-control" id="phonesupplier" name="phonesupplier">
+                                    <input type="text" class="form-control" id="phonesupplier" name="phonesupplier">
                                 </div>
                             </div>
                             <div class="col-xxl-6">
@@ -177,7 +177,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="phonesupplierupdate" class="form-label">Phone</label>
-                                    <input type="number" class="form-control" id="phonesupplierupdate"
+                                    <input type="text" class="form-control" id="phonesupplierupdate"
                                         name="phonesupplierupdate">
                                 </div>
                             </div>
