@@ -19,7 +19,9 @@ class PurchaseRequest extends Model
         'no_pr',
         'pt',
         'important',
-        'status'
+        'status',
+        'acc_sign',
+        'acc_by'
     ];
 
     public function barang()

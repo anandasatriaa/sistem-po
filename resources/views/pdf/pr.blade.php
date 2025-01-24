@@ -150,7 +150,7 @@
         @else
             <div style="height: 70px;"></div> <!-- Memberikan ruang jika tidak ada tanda tangan -->
         @endif
-        <div class="name">{{ $purchaseRequest->acc_by ?? 'Waiting for Approval' }}</div>
+        <div class="name">{{ $purchaseRequest->acc_by ?? ' ' }}</div>
         <div class="line"></div>
     </div>
 

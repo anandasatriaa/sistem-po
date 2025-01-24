@@ -1,4 +1,4 @@
-@extends('user.layouts.app')
+@extends('spv.layouts.app')
 
 @section('title', 'Purchase Request | Sistem Purchase Order General Affair')
 
@@ -193,6 +193,7 @@
                         </label>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -346,7 +347,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Panggil endpoint untuk mendapatkan no_pr terbaru
-            fetch('{{ url('purchase-request/last-nopr') }}')
+            fetch('{{ url('/spv/purchase-request/last-nopr') }}')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('nopr').value = data.no_pr;
@@ -405,7 +406,7 @@
             console.log("barang data: ", barangData);
 
             // Kirim data ke backend dengan POST menggunakan fetch
-            fetch('{{ url('/purchase-request/store') }}', {
+            fetch('{{ url('/spv/purchase-request/store') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -434,7 +435,7 @@
                             showConfirmButton: true
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "{{ route('user.pr-status') }}";
+                                window.location.href = "{{ route('spv.pr-status') }}";
                             }
                         });
                     } else {

@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\Input\SupplierController;
 use App\Http\Controllers\Admin\Input\BarangController;
 use App\Http\Controllers\User\PR\PRController;
 use App\Http\Controllers\User\PR\PRStatusController;
+use App\Http\Controllers\SPV\PR\SPVPRController;
+use App\Http\Controllers\SPV\PR\SPVPRStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +78,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::delete('/admin/barang/destroy/{id}', [BarangController::class, 'destroy'])->name('admin.barang-destroy');
     Route::get('/admin/barang/last-id', [BarangController::class, 'lastBarangId']);
     Route::post('/admin/barang/import', [BarangController::class, 'importCsv'])->name('admin.barang-import');
-
 });
 
 // Grup User
@@ -87,5 +88,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/status-purchase-request', [PRStatusController::class, 'status'])->name('user.pr-status');
     Route::get('/status-purchase-request/pdf/{id}', [PRStatusController::class, 'generatePDF'])->name('user.pr-generatePDF');
+});
+
+// Grup SPV
+Route::middleware(['auth', 'isSpv'])->group(function () {
+    Route::get('/spv/purchase-request', [SPVPRController::class, 'index'])->name('spv.pr-index');
+    Route::post('/spv/purchase-request/store', [SPVPRController::class, 'store']);
+    Route::get('/spv/purchase-request/last-nopr', [SPVPRController::class, 'generateNoPr']);
+
+    Route::get('/spv/status-purchase-request', [SPVPRStatusController::class, 'status'])->name('spv.pr-status');
+    Route::get('/spv/status-purchase-request/pdf/{id}', [SPVPRStatusController::class, 'generatePDF'])->name('spv.pr-generatePDF');
+    Route::post('/spv/status-purchase-request/save-signature', [SPVPRStatusController::class, 'saveSignature'])->name('spv.pr-saveSignature');
+    Route::post('/spv/status-purchase-request/reject', [SPVPRStatusController::class, 'rejectPR'])->name('spv.pr-rejectPR');
 
 });

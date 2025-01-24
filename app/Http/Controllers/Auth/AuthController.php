@@ -50,6 +50,8 @@ class AuthController extends Controller
             // Redirect berdasarkan level user
             if ($user->lvl == 1) {
                 return redirect()->route('admin.dashboard-index');
+            } elseif ($user->lvl == 2 || $user->lvl == 3 || $user->lvl == 4) {
+                return redirect()->route('spv.pr-index');
             } else {
                 return redirect()->route('user.pr-index');
             }
