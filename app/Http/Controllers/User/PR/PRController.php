@@ -10,6 +10,7 @@ use App\Models\Barang\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class PRController extends Controller
@@ -33,9 +34,24 @@ class PRController extends Controller
             'pt' => 'required|string',
             'important' => 'required|array',
             'barang_data' => 'required|array',
+            'signature' => 'required|string',
         ]);
 
         try {
+            // Simpan data tanda tangan sebagai file
+            $signatureData = $request->input('signature');
+            $signaturePath = null;
+
+            if ($signatureData) {
+                // Decode base64 ke file gambar
+                $signatureFile = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $signatureData));
+                $signatureFileName = 'signature_' . time() . '.png';
+                $signaturePath = 'signatures/' . $signatureFileName;
+
+                // Simpan file ke storage
+                Storage::put('public/' . $signaturePath, $signatureFile);
+            }
+
             // Simpan data di tabel purchase_request
             $purchaseRequest = new PurchaseRequest();
             $purchaseRequest->user_id = $request->user_id;
@@ -45,6 +61,7 @@ class PRController extends Controller
             $purchaseRequest->pt = $request->pt;
             $purchaseRequest->important = implode(", ", $request->important); // Menggabungkan status menjadi string
             $purchaseRequest->status = 1; // Set status ke 1 saat membuat purchase request
+            $purchaseRequest->signature = $signaturePath;
             $purchaseRequest->save();
 
             // Simpan data barang di tabel purchase_request_barang

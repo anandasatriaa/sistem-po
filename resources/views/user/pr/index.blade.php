@@ -19,6 +19,10 @@
             padding: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
         }
 
         .header,
@@ -68,6 +72,18 @@
 
         .container-custom {
             width: 21cm;
+        }
+
+        .signature-container {
+            margin-top: auto;
+            /* Dorong elemen ini ke bagian bawah kontainer */
+            text-align: left;
+            padding-top: 20px;
+        }
+
+        canvas {
+            cursor: crosshair;
+            border: 1px solid #000;
         }
     </style>
 @endsection
@@ -219,6 +235,14 @@
             </table>
             <button type="button" id="addRowBtn" class="btn btn-primary mt-2"><i class="ri-add-line"></i></button>
         </div>
+        <div class="signature-container">
+            <p class="fw-bold">TTD:</p>
+            <div class="d-flex align-content-center justify-content-start">
+                <canvas id="signatureCanvas" width="200" height="100"></canvas>
+                <button id="clearSignature" class="btn btn-outline-danger ms-2"><i
+                        class="ri-delete-bin-2-line"></i></button>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -329,6 +353,9 @@
     {{-- POST Data Purchase Request --}}
     <script>
         document.querySelector(".btnAjukan").addEventListener("click", function() {
+            const signatureCanvas = document.getElementById("signatureCanvas");
+            const signatureData = signatureCanvas.toDataURL("image/png");
+
             // Ambil data dari form
             const dateRequest = document.getElementById("dateInput").value;
             const divisi = document.getElementById("divisi").value;
@@ -387,7 +414,8 @@
                         no_pr: noPr,
                         pt: pt,
                         important: important,
-                        barang_data: barangData
+                        barang_data: barangData,
+                        signature: signatureData,
                     })
                 })
                 .then(response => response.json())
@@ -428,5 +456,41 @@
                 });
         });
     </script>
+
+    {{-- Signature --}}
+    <script>
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        canvas.addEventListener('mousedown', () => {
+            isDrawing = true;
+            ctx.beginPath();
+        });
+
+        canvas.addEventListener('mousemove', (event) => {
+            if (isDrawing) {
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            ctx.closePath();
+        });
+
+        canvas.addEventListener('mouseout', () => {
+            isDrawing = false;
+        });
+
+        document.getElementById('clearSignature').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+
 
 @endsection

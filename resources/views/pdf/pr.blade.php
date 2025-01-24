@@ -6,6 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            position: relative;
         }
 
         .paper {
@@ -42,9 +43,23 @@
             border: none;
         }
 
-        .checkbox-table td {
-            padding: 5px;
-            border: none;
+        .signature {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+        }
+
+        .signature-spv {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        .line {
+            width: 200px;
+            border-top: 1px solid #000;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -118,6 +133,27 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Signature Section -->
+    <div class="signature">
+        <div class="title">Diminta oleh,</div>
+        <img src="{{ asset('storage/' . $purchaseRequest->signature) }}" alt="Signature" width="150">
+        <div class="name">{{ $purchaseRequest->user->Nama }}</div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Signature SPV Section -->
+    <div class="signature-spv @if (empty($purchaseRequest->acc_sign)) empty-signature @endif">
+        <div class="title">Disetujui oleh,</div>
+        @if ($purchaseRequest->acc_sign)
+            <img src="{{ asset('storage/' . $purchaseRequest->acc_sign) }}" alt="Signature-SPV" width="150">
+        @else
+            <div style="height: 70px;"></div> <!-- Memberikan ruang jika tidak ada tanda tangan -->
+        @endif
+        <div class="name">{{ $purchaseRequest->acc_by ?? 'Waiting for Approval' }}</div>
+        <div class="line"></div>
+    </div>
+
 </body>
 
 </html>
