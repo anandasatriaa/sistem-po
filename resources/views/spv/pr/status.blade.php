@@ -47,7 +47,7 @@
                                                 @endforeach
                                             </ul>
                                         @else
-                                            <span>Tidak ada barang</span>
+                                            <span>-</span>
                                         @endif
                                     </td>
                                     <td>{{ $pr->divisi }}</td>
@@ -153,24 +153,24 @@
 
     {{-- Frame PDF --}}
     <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
-    const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
+        document.addEventListener("DOMContentLoaded", () => {
+            const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
+            const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
 
-    printButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const prId = this.getAttribute('data-id'); // Ambil ID dari tombol
-            
-            // Update data-id pada tombol Reject
-            rejectButton.setAttribute('data-id', prId);
+            printButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prId = this.getAttribute('data-id'); // Ambil ID dari tombol
 
-            // Update URL PDF jika diperlukan
-            const pdfUrl = this.getAttribute('data-pdf-url');
-            const pdfFrame = document.getElementById('pdfFrame');
-            pdfFrame.src = pdfUrl;
+                    // Update data-id pada tombol Reject
+                    rejectButton.setAttribute('data-id', prId);
+
+                    // Update URL PDF jika diperlukan
+                    const pdfUrl = this.getAttribute('data-pdf-url');
+                    const pdfFrame = document.getElementById('pdfFrame');
+                    pdfFrame.src = pdfUrl;
+                });
+            });
         });
-    });
-});
     </script>
 
     {{-- Signature --}}

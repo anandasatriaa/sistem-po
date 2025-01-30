@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Input\CategoryController;
 use App\Http\Controllers\Admin\Input\UnitController;
 use App\Http\Controllers\Admin\Input\SupplierController;
 use App\Http\Controllers\Admin\Input\BarangController;
+use App\Http\Controllers\Admin\PR\AdminPRStatusController;
 use App\Http\Controllers\User\PR\PRController;
 use App\Http\Controllers\User\PR\PRStatusController;
 use App\Http\Controllers\SPV\PR\SPVPRController;
@@ -78,6 +79,13 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::delete('/admin/barang/destroy/{id}', [BarangController::class, 'destroy'])->name('admin.barang-destroy');
     Route::get('/admin/barang/last-id', [BarangController::class, 'lastBarangId']);
     Route::post('/admin/barang/import', [BarangController::class, 'importCsv'])->name('admin.barang-import');
+
+    Route::get('/admin/status-purchase-request-milenia', [AdminPRStatusController::class, 'milenia'])->name('admin.pr-milenia');
+    Route::get('/admin/status-purchase-request-map', [AdminPRStatusController::class, 'map'])->name('admin.pr-map');
+    Route::get('/admin/status-purchase-request-milenia/pdf/{id}', [AdminPRStatusController::class, 'generatePDFMilenia'])->name('admin.pr-generatePDFMilenia');
+    Route::get('/admin/status-purchase-request-map/pdf/{id}', [AdminPRStatusController::class, 'generatePDFMAP'])->name('admin.pr-generatePDFMAP');
+    Route::post('/admin/status-purchase-request-milenia/update', [AdminPRStatusController::class, 'updateStatusMilenia'])->name('admin.pr-updateStatusMilenia');
+    Route::post('/admin/status-purchase-request-map/update', [AdminPRStatusController::class, 'updateStatusMAP'])->name('admin.pr-updateStatusMAP');
 });
 
 // Grup User
@@ -100,5 +108,4 @@ Route::middleware(['auth', 'isSpv'])->group(function () {
     Route::get('/spv/status-purchase-request/pdf/{id}', [SPVPRStatusController::class, 'generatePDF'])->name('spv.pr-generatePDF');
     Route::post('/spv/status-purchase-request/save-signature', [SPVPRStatusController::class, 'saveSignature'])->name('spv.pr-saveSignature');
     Route::post('/spv/status-purchase-request/reject', [SPVPRStatusController::class, 'rejectPR'])->name('spv.pr-rejectPR');
-
 });

@@ -47,7 +47,7 @@
                                                 @endforeach
                                             </ul>
                                         @else
-                                            <span>Tidak ada barang</span>
+                                            <span>-</span>
                                         @endif
                                     </td>
                                     <td>{{ $pr->divisi }}</td>

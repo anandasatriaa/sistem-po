@@ -89,6 +89,17 @@
                 transform: rotate(360deg);
             }
         }
+
+        .nav-link img {
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover img, .nav-link.active img {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
     </style>
 
     @yield('css')
@@ -264,7 +275,6 @@
                                     data-key="t-dashboards">Dashboard</span>
                             </a>
                         </li>
-
                         <li class="menu-title"><span data-key="t-employee">Employee</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('admin.employee-index') ? 'active' : '' }}"
@@ -276,11 +286,13 @@
                         <li class="menu-title"><span data-key="t-inputdata">Input Data</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#inputData" data-bs-toggle="collapse" role="button"
-                                aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'true' : 'false' }}" aria-controls="inputData">
+                                aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'true' : 'false' }}"
+                                aria-controls="inputData">
                                 <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-inputdatas">Input
                                     data</span>
                             </a>
-                            <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'show' : '' }}" id="inputData">
+                            <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'show' : '' }}"
+                                id="inputData">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ route('admin.cabang-index') }}"
@@ -309,6 +321,42 @@
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+
+                        <li class="menu-title"><span data-key="t-milenia">PT. Milenia Mega mandiri</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.pr-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.pr-milenia') }}">
+                                <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-pr">Purchase Request</span>
+                            </a>
+                        </li>
+                        {{-- <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.inputpo-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.inputpo-milenia') }}">
+                                <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-inputpo">Input Purchase Order</span>
+                            </a>
+                        </li> --}}
+                        {{-- <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.previewpo-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.previewpo-milenia') }}">
+                                <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-previewpo">Preview Purchase Order</span>
+                            </a>
+                        </li> --}}
+
+                        <li class="menu-title"><span data-key="t-map">PT. Mega Auto Prima</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.pr-map') ? 'active' : '' }}"
+                                href="{{ route('admin.pr-map') }}">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2" width="20px"
+                                    alt="">
+                                <span data-key="t-prmap">Purchase Request</span>
+                            </a>
                         </li>
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span
