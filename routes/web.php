@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Input\UnitController;
 use App\Http\Controllers\Admin\Input\SupplierController;
 use App\Http\Controllers\Admin\Input\BarangController;
 use App\Http\Controllers\Admin\PR\AdminPRStatusController;
+use App\Http\Controllers\Admin\PO\POController;
 use App\Http\Controllers\User\PR\PRController;
 use App\Http\Controllers\User\PR\PRStatusController;
 use App\Http\Controllers\SPV\PR\SPVPRController;
@@ -81,11 +82,20 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/barang/import', [BarangController::class, 'importCsv'])->name('admin.barang-import');
 
     Route::get('/admin/status-purchase-request-milenia', [AdminPRStatusController::class, 'milenia'])->name('admin.pr-milenia');
-    Route::get('/admin/status-purchase-request-map', [AdminPRStatusController::class, 'map'])->name('admin.pr-map');
     Route::get('/admin/status-purchase-request-milenia/pdf/{id}', [AdminPRStatusController::class, 'generatePDFMilenia'])->name('admin.pr-generatePDFMilenia');
-    Route::get('/admin/status-purchase-request-map/pdf/{id}', [AdminPRStatusController::class, 'generatePDFMAP'])->name('admin.pr-generatePDFMAP');
     Route::post('/admin/status-purchase-request-milenia/update', [AdminPRStatusController::class, 'updateStatusMilenia'])->name('admin.pr-updateStatusMilenia');
+    
+    Route::get('/admin/status-purchase-request-map', [AdminPRStatusController::class, 'map'])->name('admin.pr-map');
+    Route::get('/admin/status-purchase-request-map/pdf/{id}', [AdminPRStatusController::class, 'generatePDFMAP'])->name('admin.pr-generatePDFMAP');
     Route::post('/admin/status-purchase-request-map/update', [AdminPRStatusController::class, 'updateStatusMAP'])->name('admin.pr-updateStatusMAP');
+
+    Route::get('/admin/input-po-milenia', [POController::class, 'poMilenia'])->name('admin.po-milenia');
+    Route::post('/admin/input-po-milenia/preview', [POController::class, 'previewPDFMilenia']);
+    Route::post('/admin/input-po-milenia/store', [POController::class, 'storeMilenia'])->name('admin.po-milenia-store');
+
+    Route::get('/admin/input-po-map', [POController::class, 'poMap'])->name('admin.po-map');
+    Route::post('/admin/input-po-map/preview', [POController::class, 'previewPDFMap']);
+    Route::post('/admin/input-po-map/store', [POController::class, 'storeMap'])->name('admin.po-map-store');
 });
 
 // Grup User

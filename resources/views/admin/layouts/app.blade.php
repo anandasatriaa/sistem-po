@@ -283,16 +283,16 @@
                                     Data</span>
                             </a>
                         </li>
-                        <li class="menu-title"><span data-key="t-inputdata">Input Data</span></li>
+                        <li class="menu-title"><span data-key="t-masterdata">Master Data</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#inputData" data-bs-toggle="collapse" role="button"
+                            <a class="nav-link menu-link" href="#masterData" data-bs-toggle="collapse" role="button"
                                 aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'true' : 'false' }}"
-                                aria-controls="inputData">
-                                <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-inputdatas">Input
+                                aria-controls="masterData">
+                                <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-masterdatas">Master
                                     data</span>
                             </a>
                             <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'show' : '' }}"
-                                id="inputData">
+                                id="masterData">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ route('admin.cabang-index') }}"
@@ -332,14 +332,14 @@
                                 <span data-key="t-pr">Purchase Request</span>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('admin.inputpo-milenia') ? 'active' : '' }}"
-                                href="{{ route('admin.inputpo-milenia') }}">
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.po-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.po-milenia') }}">
                                 <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
                                     width="20px" alt="">
-                                <span data-key="t-inputpo">Input Purchase Order</span>
+                                <span data-key="t-po">Input Purchase Order</span>
                             </a>
-                        </li> --}}
+                        </li>
                         {{-- <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('admin.previewpo-milenia') ? 'active' : '' }}"
                                 href="{{ route('admin.previewpo-milenia') }}">
@@ -356,6 +356,14 @@
                                 <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2" width="20px"
                                     alt="">
                                 <span data-key="t-prmap">Purchase Request</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.po-map') ? 'active' : '' }}"
+                                href="{{ route('admin.po-map') }}">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-po">Input Purchase Order</span>
                             </a>
                         </li>
 
@@ -481,7 +489,7 @@
     <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
     <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/plugins.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/plugins.js') }}"></script>
 
     <!-- ApexCharts -->
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
