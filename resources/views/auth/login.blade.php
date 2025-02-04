@@ -23,6 +23,44 @@
     <!-- custom Css-->
     <link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
 
+    <style>
+        .hover-tooltip {
+            position: relative;
+            text-decoration: none;
+            /* Menghapus garis bawah tautan */
+            color: inherit;
+            /* Menggunakan warna teks bawaan */
+            cursor: pointer;
+        }
+
+        .hover-tooltip::after {
+            content: "Ananda Satria Ariyanto";
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .hover-tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .hover-tooltip:hover {
+            color: #007bff;
+            /* Opsional: warna teks berubah saat dihover */
+        }
+    </style>
+
 
 </head>
 
@@ -139,7 +177,10 @@
                                 <script>
                                     document.write(new Date().getFullYear())
                                 </script> Milenia Group. Crafted with <i
-                                    class="mdi mdi-heart text-danger"></i> by IT Milenia Group
+                                    class="mdi mdi-heart text-danger"></i> by <a href="https://anandasatriaa.github.io/" target="_blank"
+                                    class="hover-tooltip">
+                                    IT Milenia Group
+                                </a>
                             </p>
                         </div>
                     </div>
