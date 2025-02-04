@@ -79,45 +79,45 @@
             </td>
             <td style="text-align: right; width: 28%;">
                 <div class="company-name"
-                    style="border: 2px solid #000; padding: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">MILENIA
-                    MEGA MANDIRI</div>
+                    style="border: 2px solid #000; padding: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
+                    MILENIA MEGA MANDIRI
+                </div>
             </td>
         </tr>
     </table>
 
-
     <table cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 11%;"><strong>To: </strong></td>
-            <td colspan="3">{{ $formData['supplier'] }}</td>
+            <td colspan="3">{{ $purchaseOrder->supplier }}</td>
             <td style="width: 11%;"><strong>From: </strong></td>
             <td>Milenia Mega Mandiri</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 11%;"><strong>Address: </strong></td>
-            <td colspan="3">{{ $formData['address'] }}</td>
+            <td colspan="3">{{ $purchaseOrder->address }}</td>
             <td style="width: 11%;"><strong>Date: </strong></td>
-            <td>{{ \Carbon\Carbon::parse($formData['date'])->format('F d, Y') }}</td>
+            <td>{{ \Carbon\Carbon::parse($purchaseOrder->date)->format('F d, Y') }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 11%;"><strong>Phone: </strong></td>
-            <td>{{ $formData['phone'] }}</td>
+            <td>{{ $purchaseOrder->phone }}</td>
             <td style="width: 11%; text-align: right;"><strong>Fax: </strong></td>
-            <td>{{ $formData['fax'] }}</td>
+            <td>{{ $purchaseOrder->fax }}</td>
             <td style="width: 11%;"><strong>Page: </strong></td>
             <td>1</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 11%;"><strong>UP: </strong></td>
-            <td colspan="3">{{ $formData['up'] }}</td>
+            <td colspan="3">{{ $purchaseOrder->up }}</td>
             <td style="width: 11%;"><strong>NO: </strong></td>
-            <td>{{ $formData['no_po'] }}</td>
+            <td>{{ $purchaseOrder->no_po }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 11%;"><strong>Cabang: </strong></td>
-            <td colspan="3">{{ $formData['cabang'] }}</td>
-            <td style="width: 11%;"><strong>Kategori: </strong></td>
-            <td>{{ $formData['category'] }}</td>
+            <td colspan="3">{{ $purchaseOrder->cabang }}</td>
+            <td style="width: 11%;"><strong>Category: </strong></td>
+            <td>{{ $category }}</td>
         </tr>
     </table>
 
@@ -135,35 +135,36 @@
             </tr>
         </thead>
         <tbody style="font-size: 14px;">
-            @foreach ($barang as $index => $item)
+            @foreach ($purchaseOrder->barang as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $item['barang'] }}</td>
-                    <td>{{ $item['qty'] }} {{ $item['unit'] }}</td>
-                    <td style="text-align: right;">{{ number_format($item['price'], 0, ',', '.') }}</td>
-                    <td style="text-align: right;">{{ number_format($item['amount'], 0, ',', '.') }}</td>
-                    <td>{{ $item['keterangan'] }}</td>
+                    <td>{{ $item->barang }}</td>
+                    <td>{{ $item->qty }} {{ $item->unit }}</td>
+                    <td style="text-align: right;">{{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                    <td style="text-align: right;">{{ number_format($item->amount_price, 0, ',', '.') }}</td>
+                    <td>{{ $item->keterangan }}</td>
                 </tr>
             @endforeach
             <tr style="font-weight: bold;">
                 <td colspan="4">Sub Total</td>
-                <td style="text-align: right">{{ number_format($formData['subtotal'], 0, ',', '.') }}</td>
+                <td style="text-align: right">{{ number_format($purchaseOrder->sub_total, 0, ',', '.') }}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr style="font-weight: bold;">
-                <td colspan="4">Pajak ({{ $formData['tax'] }}%)</td>
-                <td style="text-align: right">+
-                    {{ number_format($formData['subtotal'] * ($formData['tax'] / 100), 0, ',', '.') }}</td>
+                <td colspan="4">Pajak
+                    ({{ number_format(($purchaseOrder->pajak / $purchaseOrder->sub_total) * 100) }}%)</td>
+                <td style="text-align: right">+ {{ number_format($purchaseOrder->pajak, 0, ',', '.') }}
+                </td>
                 <td style="border: none;"></td>
             </tr>
             <tr style="font-weight: bold;">
                 <td colspan="4">Diskon</td>
-                <td style="text-align: right">- {{ number_format($formData['discount'], 0, ',', '.') }}</td>
+                <td style="text-align: right">- {{ number_format($purchaseOrder->discount, 0, ',', '.') }}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr style="font-weight: bold;">
                 <td colspan="4">Total</td>
-                <td style="text-align: right">{{ number_format($formData['grandtotal'], 0, ',', '.') }}</td>
+                <td style="text-align: right">{{ number_format($purchaseOrder->total, 0, ',', '.') }}</td>
                 <td style="border: none;"></td>
             </tr>
         </tbody>
@@ -171,15 +172,16 @@
 
     <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0;">
         <strong>Terbilang:</strong><br>
-        {{ strtoupper($formData['grandtotal_words']) }} RUPIAH
+        {{ strtoupper($grandtotalWords) }} RUPIAH
     </div>
 
     <div style="margin-bottom: 10px;">
-        <strong>Tanggal Pengiriman: {{ \Carbon\Carbon::parse($formData['estimate_date'])->format('F d, Y') }}</strong>
+        <strong>Tanggal Pengiriman:
+            {{ \Carbon\Carbon::parse($purchaseOrder->estimate_date)->format('F d, Y') }}</strong>
     </div>
 
     <div>
-        <u><strong>REMARKS:</strong> {{ $formData['remarks'] }}</u>
+        <u><strong>REMARKS:</strong> {{ $purchaseOrder->remarks }}</u>
     </div>
 
     <div>
@@ -201,28 +203,36 @@
         </tr>
         <tr style="text-align: center;">
             <td style="border-bottom: none; height: 50px;">
-                
-            </td>
-            <td style="border-bottom: none; height: 50px;">
-                @if (!empty($signature))
-                    <img src="{{ $signature }}" width="150">
+                @if ($purchaseOrder->ttd_1)
+                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_1) }}" alt="Signature-GA" width="150">
                 @else
-                    <span>Tidak ada tanda tangan</span>
+                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
                 @endif
             </td>
             <td style="border-bottom: none; height: 50px;">
-                
+                @if ($purchaseOrder->ttd_2)
+                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_2) }}" alt="Signature-ADMIN" width="150">
+                @else
+                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
+                @endif
+            </td>
+            <td style="border-bottom: none; height: 50px;">
+                @if ($purchaseOrder->ttd_3)
+                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_3) }}" alt="Signature-DIRECTOR" width="150">
+                @else
+                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
+                @endif
             </td>
         </tr>
         <tr style="text-align: center;">
             <td style="border-top: none;">
-                
+                {{ $purchaseOrder->nama_1 }}
             </td>
             <td style="border-top: none;">
-                {{ strtoupper($formData['nama_pembuat']) }}
+                {{ strtoupper($purchaseOrder->nama_2) }}
             </td>
             <td style="border-top: none;">
-                
+                {{ $purchaseOrder->nama_3 }}
             </td>
         </tr>
         <tr style="text-align: center;">

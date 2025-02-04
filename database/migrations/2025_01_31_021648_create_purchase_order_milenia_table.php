@@ -37,6 +37,7 @@ class CreatePurchaseOrderMileniaTable extends Migration
             $table->string('nama_1')->nullable();
             $table->string('nama_2')->nullable();
             $table->string('nama_3')->nullable();
+            $table->integer('status');
             $table->timestamps();
 
             // Foreign keys

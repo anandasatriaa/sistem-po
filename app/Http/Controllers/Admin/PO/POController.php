@@ -116,6 +116,7 @@ class POController extends Controller
                 'total' => $data['total'] ?? 0,
                 'ttd_2' => $signaturePath,
                 'nama_2' => $data['namapembuat_po'] ?? null,
+                'status' => 1,
             ]);
 
             Log::info('Data purchase order berhasil disimpan dengan ID:', ['id' => $purchaseOrder->id]);
@@ -192,6 +193,39 @@ class POController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat mengajukan Purchase Request: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function statusPOMilenia()
+    {
+        $purchaseOrders = PurchaseOrderMilenia::with('barang')->get();
+        return view('admin.po-milenia.status', compact('purchaseOrders'));
+    }
+
+    public function generatePDFMilenia($id)
+    {
+        $purchaseOrder = PurchaseOrderMilenia::with('barang')->findOrFail($id);
+
+        // Ambil kategori pertama yang terkait dengan purchase_order_id
+        $category = $purchaseOrder->barang->first()->category;
+
+        // Pastikan 'grandtotal' diambil dari model dan dikonversi menjadi terbilang
+        $grandtotal = $purchaseOrder->total;
+        $grandtotalWords = $this->terbilang($grandtotal);
+
+        // Ambil nomor PO
+        $noPO = $purchaseOrder->no_po;
+
+        // Ambil tanggal hari ini
+        $today = \Carbon\Carbon::now()->format('Y-m-d'); // Format: YYYY-MM-DD
+
+        // Format nama file PDF
+        $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
+
+        // Load view untuk PDF
+        $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+
+        // Return file PDF
+        return $pdf->stream($fileName);
     }
 
     public function poMap()
@@ -287,6 +321,7 @@ class POController extends Controller
                 'total' => $data['total'] ?? 0,
                 'ttd_2' => $signaturePath,
                 'nama_2' => $data['namapembuat_po'] ?? null,
+                'status' => 1,
             ]);
 
             Log::info('Data purchase order berhasil disimpan dengan ID:', ['id' => $purchaseOrder->id]);
@@ -363,6 +398,39 @@ class POController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat mengajukan Purchase Request: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function statusPOMap()
+    {
+        $purchaseOrders = PurchaseOrderMAP::with('barang')->get();
+        return view('admin.po-map.status', compact('purchaseOrders'));
+    }
+
+    public function generatePDFMap($id)
+    {
+        $purchaseOrder = PurchaseOrderMAP::with('barang')->findOrFail($id);
+
+        // Ambil kategori pertama yang terkait dengan purchase_order_id
+        $category = $purchaseOrder->barang->first()->category;
+
+        // Pastikan 'grandtotal' diambil dari model dan dikonversi menjadi terbilang
+        $grandtotal = $purchaseOrder->total;
+        $grandtotalWords = $this->terbilang($grandtotal);
+
+        // Ambil nomor PO
+        $noPO = $purchaseOrder->no_po;
+
+        // Ambil tanggal hari ini
+        $today = \Carbon\Carbon::now()->format('Y-m-d'); // Format: YYYY-MM-DD
+
+        // Format nama file PDF
+        $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
+
+        // Load view untuk PDF
+        $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+
+        // Return file PDF
+        return $pdf->stream($fileName);
     }
 
     private function terbilang($angka)

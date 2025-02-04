@@ -218,7 +218,7 @@
                 
             </td>
             <td style="border-top: none;">
-                {{ $formData['nama_pembuat'] }}
+                {{ strtoupper($formData['nama_pembuat']) }}
             </td>
             <td style="border-top: none;">
                 

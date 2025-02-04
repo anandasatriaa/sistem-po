@@ -340,14 +340,14 @@
                                 <span data-key="t-po">Input Purchase Order</span>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('admin.previewpo-milenia') ? 'active' : '' }}"
-                                href="{{ route('admin.previewpo-milenia') }}">
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.statuspo-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.statuspo-milenia') }}">
                                 <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
                                     width="20px" alt="">
-                                <span data-key="t-previewpo">Preview Purchase Order</span>
+                                <span data-key="t-statuspo">Status Purchase Order</span>
                             </a>
-                        </li> --}}
+                        </li>
 
                         <li class="menu-title"><span data-key="t-map">PT. Mega Auto Prima</span></li>
                         <li class="nav-item">
@@ -364,6 +364,14 @@
                                 <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
                                     width="20px" alt="">
                                 <span data-key="t-po">Input Purchase Order</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.statuspo-map') ? 'active' : '' }}"
+                                href="{{ route('admin.statuspo-map') }}">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-statuspo">Status Purchase Order</span>
                             </a>
                         </li>
 

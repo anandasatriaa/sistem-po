@@ -96,6 +96,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/input-po-map', [POController::class, 'poMap'])->name('admin.po-map');
     Route::post('/admin/input-po-map/preview', [POController::class, 'previewPDFMap']);
     Route::post('/admin/input-po-map/store', [POController::class, 'storeMap'])->name('admin.po-map-store');
+
+    Route::get('/admin/status-po-milenia', [POController::class, 'statusPOMilenia'])->name('admin.statuspo-milenia');
+    Route::get('/admin/status-po-milenia/pdf/{id}', [POController::class, 'generatePDFMilenia'])->name('admin.po-generatePDFMilenia');
+
+    Route::get('/admin/status-po-map', [POController::class, 'statusPOMap'])->name('admin.statuspo-map');
+    Route::get('/admin/status-po-map/pdf/{id}', [POController::class, 'generatePDFMap'])->name('admin.po-generatePDFMap');
 });
 
 // Grup User

@@ -758,7 +758,7 @@
                             showConfirmButton: true
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "{{ route('admin.po-map') }}";
+                                window.location.href = "{{ route('admin.statuspo-map') }}";
                             }
                         });
                     } else {

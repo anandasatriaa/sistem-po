@@ -93,7 +93,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                 </div>
                 <div class="modal-body">
-                    <iframe id="pdfFrame" src="" style="width: 100%; height: 600px; border: none;"></iframe>
+                    <iframe id="pdfFrame" src="" style="width: 100%; height: 700px; border: none;"></iframe>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" onclick="rejectPR(event)"

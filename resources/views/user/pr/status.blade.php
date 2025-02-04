@@ -92,10 +92,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                 </div>
                 <div class="modal-body">
-                    <iframe id="pdfFrame" src="" style="width: 100%; height: 600px; border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    
+                    <iframe id="pdfFrame" src="" style="width: 100%; height: 800px; border: none;"></iframe>
                 </div>
             </div>
         </div>

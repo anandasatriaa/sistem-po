@@ -34,6 +34,7 @@ class PurchaseOrderMilenia extends Model
         'nama_1',
         'nama_2',
         'nama_3',
+        'status',
     ];
 
     public function barang()
