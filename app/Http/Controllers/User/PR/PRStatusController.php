@@ -47,7 +47,7 @@ class PRStatusController extends Controller
                 $pr->barang_list = PurchaseRequestBarang::where('purchase_request_id', $pr->id)
                     ->get()
                     ->map(function ($barang) {
-                        return "{$barang->nama_barang} <span class='bg-secondary text-white px-1 rounded'>({$barang->quantity} {$barang->unit})</span>";
+                        return "{$barang->nama_barang} <span class='badge text-bg-secondary'>({$barang->quantity} {$barang->unit})</span>";
                     })
                     ->toArray();
 
