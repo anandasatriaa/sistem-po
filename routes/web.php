@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Input\SupplierController;
 use App\Http\Controllers\Admin\Input\BarangController;
 use App\Http\Controllers\Admin\PR\AdminPRStatusController;
 use App\Http\Controllers\Admin\PO\POController;
+use App\Http\Controllers\Admin\PO\LaporanPOController;
 use App\Http\Controllers\User\PR\PRController;
 use App\Http\Controllers\User\PR\PRStatusController;
 use App\Http\Controllers\SPV\PR\SPVPRController;
@@ -102,6 +103,16 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     Route::get('/admin/status-po-map', [POController::class, 'statusPOMap'])->name('admin.statuspo-map');
     Route::get('/admin/status-po-map/pdf/{id}', [POController::class, 'generatePDFMap'])->name('admin.po-generatePDFMap');
+
+    Route::get('/admin/laporan-po-milenia', [LaporanPOController::class, 'index'])->name('admin.laporanpo-milenia');
+    Route::get('/admin/laporan-po-milenia/pdf-detail', [LaporanPOController::class, 'exportPDFDetail'])->name('admin.laporanpo-milenia.pdf-detail');
+    Route::get('/admin/laporan-po-milenia/pdf-summary', [LaporanPOController::class, 'exportPDFSummary'])->name('admin.laporanpo-milenia.pdf-summary');
+    Route::get('/admin/laporan-po-milenia/summary', [LaporanPOController::class, 'getFilteredSummary'])->name('admin.laporanpo-milenia.summary');
+
+    Route::get('/admin/laporan-po-map', [LaporanPOController::class, 'indexMAP'])->name('admin.laporanpo-map');
+    Route::get('/admin/laporan-po-map/pdf-detail', [LaporanPOController::class, 'exportPDFDetailMAP'])->name('admin.laporanpo-map.pdf-detail');
+    Route::get('/admin/laporan-po-map/pdf-summary', [LaporanPOController::class, 'exportPDFSummaryMAP'])->name('admin.laporanpo-map.pdf-summary');
+    Route::get('/admin/laporan-po-map/summary', [LaporanPOController::class, 'getFilteredSummaryMAP'])->name('admin.laporanpo-map.summary');
 });
 
 // Grup User

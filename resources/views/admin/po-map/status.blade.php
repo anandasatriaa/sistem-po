@@ -117,7 +117,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center">
-                                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-map me-2" data-bs-toggle="modal"
                                                 data-bs-target="#modalDetailPO" data-pdf-url="{{ route('admin.po-generatePDFMap', $po->id) }}">
                                                 <i class="ri-printer-line"></i>
                                             </button>
@@ -169,7 +169,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Temukan semua tombol "Print"
-            const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPO"]');
+            const printButtons = document.querySelectorAll('.btn-map[data-bs-target="#modalDetailPO"]');
 
             printButtons.forEach(button => {
                 button.addEventListener('click', function() {

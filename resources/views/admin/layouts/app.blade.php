@@ -22,6 +22,9 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
+    {{-- Select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <!-- jsvectormap css -->
     <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -348,6 +351,14 @@
                                 <span data-key="t-statuspo">Status Purchase Order</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.laporanpo-milenia') ? 'active' : '' }}"
+                                href="{{ route('admin.laporanpo-milenia') }}">
+                                <img src="{{ asset('assets/images/logo-milenia-2.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-laporanpo">Laporan Detail & Summary</span>
+                            </a>
+                        </li>
 
                         <li class="menu-title"><span data-key="t-map">PT. Mega Auto Prima</span></li>
                         <li class="nav-item">
@@ -374,64 +385,14 @@
                                 <span data-key="t-statuspo">Status Purchase Order</span>
                             </a>
                         </li>
-
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span
-                                data-key="t-components">Components</span></li>
-
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="widgets.html">
-                                <i data-feather="copy" class="icon-dual"></i> <span
-                                    data-key="t-widgets">Widgets</span>
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.laporanpo-map') ? 'active' : '' }}"
+                                href="{{ route('admin.laporanpo-map') }}">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
+                                    width="20px" alt="">
+                                <span data-key="t-laporanpomap">Laporan Detail & Summary</span>
                             </a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarMultilevel" data-bs-toggle="collapse"
-                                role="button" aria-expanded="false" aria-controls="sidebarMultilevel">
-                                <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-multi-level">Multi
-                                    Level</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="sidebarMultilevel">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-level-1.1"> Level 1.1 </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#sidebarAccount" class="nav-link" data-bs-toggle="collapse"
-                                            role="button" aria-expanded="false" aria-controls="sidebarAccount"
-                                            data-key="t-level-1.2"> Level 1.2
-                                        </a>
-                                        <div class="collapse menu-dropdown" id="sidebarAccount">
-                                            <ul class="nav nav-sm flex-column">
-                                                <li class="nav-item">
-                                                    <a href="#" class="nav-link" data-key="t-level-2.1">
-                                                        Level 2.1 </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="#sidebarCrm" class="nav-link" data-bs-toggle="collapse"
-                                                        role="button" aria-expanded="false"
-                                                        aria-controls="sidebarCrm" data-key="t-level-2.2"> Level 2.2
-                                                    </a>
-                                                    <div class="collapse menu-dropdown" id="sidebarCrm">
-                                                        <ul class="nav nav-sm flex-column">
-                                                            <li class="nav-item">
-                                                                <a href="#" class="nav-link"
-                                                                    data-key="t-level-3.1"> Level 3.1 </a>
-                                                            </li>
-                                                            <li class="nav-item">
-                                                                <a href="#" class="nav-link"
-                                                                    data-key="t-level-3.2"> Level 3.2 </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
                     </ul>
                 </div>
                 <!-- Sidebar -->
@@ -528,6 +489,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+
+    {{-- Select2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- prismjs plugin -->
     <script src="{{ asset('assets/libs/prismjs/prism.js') }}"></script>
