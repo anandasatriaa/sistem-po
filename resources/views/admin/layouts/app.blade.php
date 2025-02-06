@@ -463,6 +463,9 @@
     <!-- ApexCharts -->
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
+    <!-- barcharts init -->
+    <script src="{{ asset('assets/js/pages/apexcharts-bar.init.js') }}"></script>
+
     <!-- Vector map -->
     <script src="{{ asset('assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
     <script src="{{ asset('assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
