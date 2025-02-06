@@ -100,26 +100,32 @@ class PRController extends Controller
 
     public function generateNoPr()
     {
-        $currentMonth = Carbon::now()->format('m');
-        $currentYear = Carbon::now()->format('Y');
+        $currentMonth = Carbon::now()->format('m'); // Current month
+        $currentYear = Carbon::now()->format('Y');  // Current year
 
-        // Cek apakah ada PR di bulan ini
-        $lastPr = PurchaseRequest::whereYear('date_request', $currentYear)
-            ->whereMonth('date_request', $currentMonth)
-            ->orderByDesc('no_pr')
-            ->first();
+        // Check if there are any PRs
+        $lastPr = PurchaseRequest::orderByDesc('id')->first();
 
         if ($lastPr) {
-            // Ambil nomor PR terakhir, kemudian increment 1
+            // Extract the last PR number and month/year from no_pr
             $lastNoPr = explode('/', $lastPr->no_pr);
             $lastNumber = (int)$lastNoPr[0];
-            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+            $lastMonth = $lastNoPr[1];
+            $lastYear = $lastNoPr[2];
+
+            // Check if the year has changed; reset PR number if it has
+            if ($currentYear != $lastYear) {
+                $newNumber = '001';
+            } else {
+                // Continue the sequence from the last PR number
+                $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+            }
         } else {
-            // Jika tidak ada PR, mulai dari 001
+            // If there are no PRs, start from 001
             $newNumber = '001';
         }
 
-        // Generate no_pr baru
+        // Generate new no_pr with the current month and year
         $noPr = $newNumber . '/' . $currentMonth . '/' . $currentYear;
 
         return response()->json(['no_pr' => $noPr]);

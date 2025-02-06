@@ -1,4 +1,4 @@
-@extends('spv.layouts.app')
+@extends('ga.layouts.app')
 
 @section('title', 'Purchase Request | Sistem Purchase Order General Affair')
 
@@ -69,7 +69,7 @@
                                         <div class="d-flex justify-content-center align-items-center">
                                             <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
                                                 data-bs-target="#modalDetailPR" data-id="{{ $pr->id }}"
-                                                data-pdf-url="{{ route('spv.pr-generatePDF', $pr->id) }}">
+                                                data-pdf-url="{{ route('ga.pr-generatePDF', $pr->id) }}">
                                                 <i class="ri-printer-line"></i>
                                             </button>
                                         </div>
@@ -102,8 +102,8 @@
                     @else
                         <button type="button" class="btn btn-danger" disabled>Rejected</button>
                     @endif
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#modalTTD">Approved</button>
+                    <button id="approvedSignature" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-id="{{ $pr->id }}" data-bs-target="#modalTTD">Approved</button>
                 </div>
             </div>
         </div>
@@ -217,21 +217,40 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
+        // Menambahkan event listener untuk tombol yang ada di dalam tabel
+        document.querySelectorAll('button[data-bs-target="#modalDetailPR"]').forEach(button => {
+            button.addEventListener('click', (event) => {
+                // Pastikan kita mengambil elemen button yang benar, meskipun icon di dalamnya diklik
+                const clickedButton = event.target.closest('button'); // Mengambil elemen button
+                const prId = clickedButton.getAttribute('data-id'); // Ambil ID dari atribut data-id
+                console.log("Tombol dengan ID:", prId, "diklik!");
+
+                purchaseRequestId = prId;
+            });
+        });
+
         // Save Signature
         document.getElementById('saveSignature').addEventListener('click', () => {
+            if (!purchaseRequestId) {
+                alert('ID tidak valid, silakan coba lagi.');
+                return;
+            }
+
             const canvas = document.getElementById('signatureCanvas');
             const signatureData = canvas.toDataURL('image/png');
-            const prId = event.target.getAttribute('data-id');
             const userName = event.target.getAttribute('data-user-name');
 
-            fetch('{{ url('/spv/status-purchase-request/save-signature') }}', {
+            console.log("Data to be sent:");
+            console.log("ID:", purchaseRequestId);
+
+            fetch('{{ url('/ga/status-purchase-request/save-signature') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     },
                     body: JSON.stringify({
-                        id: prId,
+                        id: purchaseRequestId,
                         signature: signatureData,
                         user_name: userName,
                     }),
@@ -283,7 +302,7 @@
         function rejectPR(event) {
             const purchaseRequestId = event.target.getAttribute('data-id');
 
-            fetch('{{ url('/spv/status-purchase-request/reject') }}', {
+            fetch('{{ url('/ga/status-purchase-request/reject') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

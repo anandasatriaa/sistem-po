@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class IsSpv
+class IsGa
 {
     /**
      * Handle an incoming request.
@@ -22,20 +22,13 @@ class IsSpv
             return redirect()->route('login'); // Redirect ke login jika belum login
         }
 
-        $Jabatan = strtoupper(trim(Auth::user()->Jabatan));
+        // Cek apakah jabatan user adalah "SPV GA" atau "COO"
         $allowedRoles = ['SPV GA', 'COO'];
-        $allowedRoles = array_map('strtoupper', $allowedRoles);
-
-        if (in_array($Jabatan, $allowedRoles)) {
-            return redirect()->route('ga.pr-index');
-        }
-
-        // Jika jabatan tidak termasuk pengecualian, lanjutkan dengan pengecekan level
-        if (in_array(Auth::user()->lvl, [2, 3, 4])) {
+        if (in_array(Auth::user()->Jabatan, $allowedRoles)) {
             return $next($request);
         }
 
-        // Jika level atau jabatan tidak sesuai, redirect ke halaman lain
-        return redirect()->route('user.pr-index');
+        // Jika tidak memiliki jabatan yang sesuai, redirect ke halaman user PR Index
+        return redirect()->route('user.pr-index')->with('error', 'Anda tidak memiliki akses.');
     }
 }

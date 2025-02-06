@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SPV\PR;
+namespace App\Http\Controllers\GA\PR;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
-class SPVPRController extends Controller
+class GAPRController extends Controller
 {
     public function index()
     {
         $divisions = DB::table('users')->select('Divisi')->distinct()->whereNotNull('Divisi')->get();
         $units = DB::table('unit')->select('satuan')->get();
         $barangs = DB::table('barang')->select('nama')->get();
-        return view('spv.pr.index', compact('divisions', 'units', 'barangs'));
+        return view('ga.pr.index', compact('divisions', 'units', 'barangs'));
     }
 
     public function store(Request $request)
@@ -96,7 +96,6 @@ class SPVPRController extends Controller
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat mengajukan Purchase Request: ' . $e->getMessage()], 500);
         }
     }
-
 
     public function generateNoPr()
     {

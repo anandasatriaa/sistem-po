@@ -150,7 +150,13 @@
         @else
             <div style="height: 70px;"></div> <!-- Memberikan ruang jika tidak ada tanda tangan -->
         @endif
-        <div class="name">{{ $purchaseRequest->acc_by ?? ' ' }}</div>
+        <div class="name">
+            @if ($purchaseRequest->acc_by)
+                {{ $purchaseRequest->acc_by }}
+            @else
+                <div style="height: 20px;"></div> <!-- Memberikan ruang jika tidak ada tanda tangan -->
+            @endif
+        </div>
         <div class="line"></div>
     </div>
 

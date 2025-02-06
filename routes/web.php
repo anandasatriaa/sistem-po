@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Employee\EmployeeController;
 use App\Http\Controllers\Admin\Input\CabangController;
 use App\Http\Controllers\Admin\Input\CategoryController;
@@ -16,6 +17,9 @@ use App\Http\Controllers\User\PR\PRController;
 use App\Http\Controllers\User\PR\PRStatusController;
 use App\Http\Controllers\SPV\PR\SPVPRController;
 use App\Http\Controllers\SPV\PR\SPVPRStatusController;
+use App\Http\Controllers\GA\PR\GAPRController;
+use App\Http\Controllers\GA\PR\GAPRStatusController;
+use App\Http\Controllers\GA\PO\GAPOStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +46,7 @@ Route::post('/logout', function () {
 
 // Grup Admin
 Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('admin.dashboard-index');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard-index');
 
     Route::get('/admin/employee', [EmployeeController::class, 'index'])->name('admin.employee-index');
     Route::post('/admin/syncEmployee', [EmployeeController::class, 'APIgetAllEmployee'])->name('api-sync');
@@ -123,6 +125,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/status-purchase-request', [PRStatusController::class, 'status'])->name('user.pr-status');
     Route::get('/status-purchase-request/pdf/{id}', [PRStatusController::class, 'generatePDF'])->name('user.pr-generatePDF');
+});
+
+// Grup GA/Director
+Route::middleware(['auth', 'isGa'])->group(function () {
+    Route::get('/ga/purchase-request', [GAPRController::class, 'index'])->name('ga.pr-index');
+    Route::post('/ga/purchase-request/store', [GAPRController::class, 'store']);
+    Route::get('/ga/purchase-request/last-nopr', [GAPRController::class, 'generateNoPr']);
+
+    Route::get('/ga/status-purchase-request', [GAPRStatusController::class, 'status'])->name('ga.pr-status');
+    Route::get('/ga/status-purchase-request/pdf/{id}', [GAPRStatusController::class, 'generatePDF'])->name('ga.pr-generatePDF');
+    Route::post('/ga/status-purchase-request/save-signature', [GAPRStatusController::class, 'saveSignature'])->name('ga.pr-saveSignature');
+    Route::post('/ga/status-purchase-request/reject', [GAPRStatusController::class, 'rejectPR'])->name('ga.pr-rejectPR');
+
+    Route::get('/ga/status-purchase-order', [GAPOStatusController::class, 'status'])->name('ga.po-status');
+    Route::get('/ga/status-purchase-order/pdf-milenia/{id}', [GAPOStatusController::class, 'generatePDFMilenia'])->name('ga.po-generatePDFMilenia');
+    Route::get('/ga/status-purchase-order/pdf-map/{id}', [GAPOStatusController::class, 'generatePDFMAP'])->name('ga.po-generatePDFMAP');
+    Route::post('/ga/status-purchase-order/save-signature', [GAPOStatusController::class, 'saveSignature'])->name('ga.po-saveSignature');
+    Route::post('/ga/status-purchase-order/reject', [GAPOStatusController::class, 'rejectPO'])->name('ga.po-rejectPO');
 });
 
 // Grup SPV

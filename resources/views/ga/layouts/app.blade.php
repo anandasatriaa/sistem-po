@@ -264,16 +264,25 @@
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-pr">Purchase Request</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('spv.pr-index') ? 'active' : '' }}"
-                                href="{{ route('spv.pr-index') }}">
+                            <a class="nav-link menu-link {{ request()->routeIs('ga.pr-index') ? 'active' : '' }}"
+                                href="{{ route('ga.pr-index') }}">
                                 <i data-feather="file-text" class="icon-dual"></i> <span data-key="t-prs">Purchase
                                     Request</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->routeIs('spv.pr-status') ? 'active' : '' }}"
-                                href="{{ route('spv.pr-status') }}">
+                            <a class="nav-link menu-link {{ request()->routeIs('ga.pr-status') ? 'active' : '' }}"
+                                href="{{ route('ga.pr-status') }}">
                                 <i data-feather="check-circle" class="icon-dual"></i> <span data-key="t-prs">Approval PR</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav" id="navbar-nav">
+                        <li class="menu-title"><span data-key="t-po">Purchase Order</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('ga.po-status') ? 'active' : '' }}"
+                                href="{{ route('ga.po-status') }}">
+                                <i data-feather="check-circle" class="icon-dual"></i> <span data-key="t-prs">Approval PO</span>
                             </a>
                         </li>
                     </ul>
