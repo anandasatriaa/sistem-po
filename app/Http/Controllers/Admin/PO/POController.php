@@ -11,9 +11,12 @@ use App\Models\PO\PurchaseOrderBarangMilenia;
 use App\Models\PO\PurchaseOrderMAP;
 use App\Models\PO\PurchaseOrderBarangMAP;
 use App\Models\Supplier\Supplier;
+use App\Mail\PoCreatedMail;
+use App\Mail\PoCreatedMailMAP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -187,6 +190,10 @@ class POController extends Controller
 
             DB::commit();
             Log::info('Data berhasil disimpan ke database.');
+
+            // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
+            Mail::to('anandasatriaf6@gmail.com')
+            ->send(new PoCreatedMail($purchaseOrder));
 
             return response()->json(['success' => true, 'message' => 'Purchase Order berhasil dibuat'], 201);
         } catch (\Exception $e) {
@@ -392,6 +399,10 @@ class POController extends Controller
 
             DB::commit();
             Log::info('Data berhasil disimpan ke database.');
+
+            // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
+            Mail::to('anandasatriaf6@gmail.com')
+            ->send(new PoCreatedMailMAP($purchaseOrder));
 
             return response()->json(['success' => true, 'message' => 'Purchase Order berhasil dibuat'], 201);
         } catch (\Exception $e) {
