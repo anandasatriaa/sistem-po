@@ -93,7 +93,7 @@
 <body>
     <div class="container">
         <h2>Detail Purchase Request</h2>
-        <p>Purchase Request baru telah dibuat dengan detail sebagai berikut:</p>
+        <p>Purchase Request baru telah dibuat dan diapproved dengan detail sebagai berikut:</p>
 
         <table>
             <tr>
@@ -124,8 +124,8 @@
             <tr>
                 <th>Status</th>
                 <td>
-                    <span class="badge bg-warning">
-                        Need Approval
+                    <span class="badge bg-primary">
+                        Need Purchase Order
                     </span>
                 </td>
             </tr>
@@ -161,12 +161,14 @@
         <div
             style="border: 2px solid #0275d8; padding: 15px; background-color: #e9f7fd; border-radius: 5px; text-align: center; margin: 20px 0;">
             <p style="font-size: 1.2em; font-weight: bold; color: #0275d8; margin: 0;">
-                Dibutuhkan <span style="color: #d9534f;">Approval</span> untuk melanjutkan ke tahapan Purchase Order.
+                Purchase Request telah diapproved,
             </p>
             <p style="font-size: 1.1em; color: #0275d8; margin: 5px 0 0;">
-                Silakan lakukan pengecekan atau approval pada link berikut:
+                untuk melanjutkan ke tahapan Purchase Order admin dapat melakukan pembuatan Purchase Order pada link
+                berikut:
                 <a href="http://sistem-po.test/"
-                    style="color: #000000; font-weight: bold; text-decoration: none; border: 2px solid #0275d8; padding: 5px 10px; border-radius: 3px;">SISTEM GA</a>.
+                    style="color: #000000; font-weight: bold; text-decoration: none; border: 2px solid #0275d8; padding: 5px 10px; border-radius: 3px;">SISTEM
+                    GA</a>.
             </p>
         </div>
 

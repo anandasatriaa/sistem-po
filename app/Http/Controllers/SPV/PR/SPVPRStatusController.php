@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PR\PurchaseRequest;
 use App\Models\PR\PurchaseRequestBarang;
+use App\Mail\PrApprovedMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -58,7 +60,6 @@ class SPVPRStatusController extends Controller
         return view('spv.pr.status', ['purchaseRequests' => $purchaseRequests]);
     }
 
-
     public function generatePDF($id)
     {
         $purchaseRequest = PurchaseRequest::with('barang', 'user')->findOrFail($id);
@@ -101,7 +102,6 @@ class SPVPRStatusController extends Controller
         }
     }
 
-
     public function saveSignature(Request $request)
     {
         $request->validate([
@@ -124,6 +124,14 @@ class SPVPRStatusController extends Controller
                 'acc_sign' => $signaturePath,
                 'acc_by' => $request->user_name,
             ]);
+
+            // Mengambil data user dari kolom user_id pada purchase_request
+            $user = User::find($purchaseRequest->user_id);
+
+            // Mengirim email ke admin dan cc ke email karyawan dari user
+            Mail::to('admin.ga@ccas.co.id')
+            ->cc($user->email_karyawan)
+            ->send(new PrApprovedMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Approval Purchase Request berhasil dilakukan'], 201);
         } catch (\Exception $e) {

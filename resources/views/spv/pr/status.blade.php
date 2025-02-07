@@ -163,35 +163,35 @@
     </script>
 
     {{-- Script untuk PDF dan tombol terkait --}}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
-    const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
-    const approvedButton = document.querySelector('#modalDetailPR button[data-bs-target="#modalTTD"]');
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
+            const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
+            const approvedButton = document.querySelector('#modalDetailPR button[data-bs-target="#modalTTD"]');
 
-    printButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const prId = this.getAttribute('data-id');
-            console.log("Printer button clicked, PR ID:", prId);
+            printButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prId = this.getAttribute('data-id');
+                    console.log("Printer button clicked, PR ID:", prId);
 
-            rejectButton.setAttribute('data-id', prId);
-            approvedButton.setAttribute('data-id', prId);
-            console.log("Approved button data-id set to:", prId);
+                    rejectButton.setAttribute('data-id', prId);
+                    approvedButton.setAttribute('data-id', prId);
+                    console.log("Approved button data-id set to:", prId);
 
-            const pdfUrl = this.getAttribute('data-pdf-url');
-            const pdfFrame = document.getElementById('pdfFrame');
-            pdfFrame.src = pdfUrl;
+                    const pdfUrl = this.getAttribute('data-pdf-url');
+                    const pdfFrame = document.getElementById('pdfFrame');
+                    pdfFrame.src = pdfUrl;
+                });
+            });
+
+            approvedButton.addEventListener('click', function(event) {
+                const prId = this.getAttribute('data-id');
+                console.log("Approved button clicked, PR ID:", prId);
+                // Update tombol Save Signature agar sesuai dengan PR yang aktif
+                document.getElementById('saveSignature').setAttribute('data-id', prId);
+            });
         });
-    });
-
-    approvedButton.addEventListener('click', function(event) {
-        const prId = this.getAttribute('data-id');
-        console.log("Approved button clicked, PR ID:", prId);
-        // Update tombol Save Signature agar sesuai dengan PR yang aktif
-        document.getElementById('saveSignature').setAttribute('data-id', prId);
-    });
-});
-</script>
+    </script>
 
     {{-- Script untuk Signature dan tombol Simpan --}}
     <script>
