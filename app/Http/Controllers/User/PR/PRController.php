@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\PR\PurchaseRequest;
 use App\Models\PR\PurchaseRequestBarang;
 use App\Models\Barang\Barang;
+use App\Mail\PurchaseRequestMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -89,6 +91,21 @@ class PRController extends Controller
                 $purchaseRequestBarang->keterangan = $barang['keterangan'];
                 $purchaseRequestBarang->save();
             }
+            $purchaseRequest->load('barang');
+
+            // Ambil Email Atasan dari tabel Users
+            $user = User::find($request->user_id);
+            if (!$user || !$user->email_atasan
+            ) {
+                return response()->json(['success' => false, 'message' => 'Email atasan tidak ditemukan.']);
+            }
+
+            $emailAtasan = $user->email_atasan;
+            $ccAdmin = 'admin.ga@ccas.co.id';
+            $ccUser = $user->email_karyawan;
+
+            // Kirim Email ke Atasan dengan CC Admin
+            Mail::to($emailAtasan)->cc([$ccAdmin, $ccUser])->send(new PurchaseRequestMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Purchase Request berhasil diajukan'], 201);
         } catch (\Exception $e) {

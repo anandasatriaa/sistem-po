@@ -19,6 +19,8 @@ class User extends Authenticatable
 
     public $incrementing = false;
 
+    protected $table = 'users';
+    
     protected $primaryKey = 'ID';
     
     protected $fillable = [
