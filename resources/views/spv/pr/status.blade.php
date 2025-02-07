@@ -155,36 +155,47 @@
                 paging: true,
                 searching: true,
                 info: true,
-                order: [[5, 'desc']],
+                order: [
+                    [5, 'desc']
+                ],
             });
         });
     </script>
 
-    {{-- Frame PDF --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
-            const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
+    {{-- Script untuk PDF dan tombol terkait --}}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const printButtons = document.querySelectorAll('.btn-primary[data-bs-target="#modalDetailPR"]');
+    const rejectButton = document.querySelector('#modalDetailPR .btn-danger');
+    const approvedButton = document.querySelector('#modalDetailPR button[data-bs-target="#modalTTD"]');
 
-            printButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const prId = this.getAttribute('data-id'); // Ambil ID dari tombol
+    printButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const prId = this.getAttribute('data-id');
+            console.log("Printer button clicked, PR ID:", prId);
 
-                    // Update data-id pada tombol Reject
-                    rejectButton.setAttribute('data-id', prId);
+            rejectButton.setAttribute('data-id', prId);
+            approvedButton.setAttribute('data-id', prId);
+            console.log("Approved button data-id set to:", prId);
 
-                    // Update URL PDF jika diperlukan
-                    const pdfUrl = this.getAttribute('data-pdf-url');
-                    const pdfFrame = document.getElementById('pdfFrame');
-                    pdfFrame.src = pdfUrl;
-                });
-            });
+            const pdfUrl = this.getAttribute('data-pdf-url');
+            const pdfFrame = document.getElementById('pdfFrame');
+            pdfFrame.src = pdfUrl;
         });
-    </script>
+    });
 
-    {{-- Signature --}}
+    approvedButton.addEventListener('click', function(event) {
+        const prId = this.getAttribute('data-id');
+        console.log("Approved button clicked, PR ID:", prId);
+        // Update tombol Save Signature agar sesuai dengan PR yang aktif
+        document.getElementById('saveSignature').setAttribute('data-id', prId);
+    });
+});
+</script>
+
+    {{-- Script untuk Signature dan tombol Simpan --}}
     <script>
-        // Setup Canvas for Signature
+        // Setup Canvas untuk tanda tangan
         const canvas = document.getElementById('signatureCanvas');
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
@@ -213,17 +224,17 @@
             isDrawing = false;
         });
 
-        // Clear Signature
+        // Tombol untuk menghapus tanda tangan
         document.getElementById('clearSignature').addEventListener('click', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
-        // Save Signature
-        document.getElementById('saveSignature').addEventListener('click', () => {
-            const canvas = document.getElementById('signatureCanvas');
+        // Tombol untuk menyimpan tanda tangan
+        document.getElementById('saveSignature').addEventListener('click', (event) => {
             const signatureData = canvas.toDataURL('image/png');
             const prId = event.target.getAttribute('data-id');
             const userName = event.target.getAttribute('data-user-name');
+            console.log("Save Signature button clicked, PR ID:", prId, "User Name:", userName);
 
             fetch('{{ url('/spv/status-purchase-request/save-signature') }}', {
                     method: 'POST',
@@ -239,9 +250,8 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Response from server:", data); // Debugging response
+                    console.log("Response from server:", data);
                     if (data.success) {
-                        // SweetAlert for success
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -249,26 +259,24 @@
                             showConfirmButton: true
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                const modalTTD = new bootstrap.Modal(document.getElementById(
+                                // Sembunyikan modal tanda tangan dan refresh halaman
+                                const modalTTD = bootstrap.Modal.getInstance(document.getElementById(
                                     'modalTTD'));
                                 modalTTD.hide();
                                 window.location.reload();
                             }
                         });
                     } else {
-                        // SweetAlert for failure
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: data.message, // Display detailed error message
+                            text: data.message,
                             showConfirmButton: true
                         });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-
-                    // SweetAlert for unexpected error
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan!',
