@@ -126,11 +126,11 @@
                     ? explode(' to ', request('date'))[1] ?? $filterStartDate
                     : null;
                 $periodeFormatted = $filterStartDate
-                    ? date('d M Y', strtotime($filterStartDate)) . ' s/d ' . date('d M Y', strtotime($filterEndDate))
+                    ? date('d M, Y', strtotime($filterStartDate)) . ' s/d ' . date('d M, Y', strtotime($filterEndDate))
                     : ($summary->isNotEmpty()
-                        ? date('d M Y', strtotime($summary->min('start_date'))) .
+                        ? date('d M, Y', strtotime($summary->min('start_date'))) .
                             ' s/d ' .
-                            date('d M Y', strtotime($summary->max('end_date')))
+                            date('d M, Y', strtotime($summary->max('end_date')))
                         : '');
             @endphp
 

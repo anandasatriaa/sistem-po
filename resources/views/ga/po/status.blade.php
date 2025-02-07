@@ -131,8 +131,8 @@
                                         @endif
                                     </td>
                                     <td>{{ $po->remarks }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($po->date)->format('F d, Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($po->estimate_date)->format('F d, Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($po->date)->format('d M, Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($po->estimate_date)->format('d M, Y') }}</td>
                                     <td>{{ 'Rp. ' . number_format($po->total, 0, ',', '.') . ',-' }}</td>
                                     <td>{{ $po->nama_2 }}</td>
                                     <td>
@@ -227,8 +227,8 @@
                                         @endif
                                     </td>
                                     <td>{{ $poMAP->remarks }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($poMAP->date)->format('F d, Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($poMAP->estimate_date)->format('F d, Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($poMAP->date)->format('d M, Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($poMAP->estimate_date)->format('d M, Y') }}</td>
                                     <td>{{ 'Rp. ' . number_format($poMAP->total, 0, ',', '.') . ',-' }}</td>
                                     <td>{{ $poMAP->nama_2 }}</td>
                                     <td>
@@ -325,7 +325,8 @@
                 lengthChange: false,
                 paging: true,
                 searching: true,
-                info: true
+                info: true,
+                order: [[1, 'desc']],
             });
         });
 
@@ -336,7 +337,8 @@
                 lengthChange: false,
                 paging: true,
                 searching: true,
-                info: true
+                info: true,
+                order: [[1, 'desc']],
             });
         });
     </script>

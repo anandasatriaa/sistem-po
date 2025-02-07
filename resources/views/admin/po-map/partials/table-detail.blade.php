@@ -17,7 +17,7 @@
         @foreach ($detail as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($item->date)->format('d M, Y') }}</td>
                 <td>{{ $item->no_po }}</td>
                 <td>{{ $item->cabang_name }}</td>
                 <td>{{ $item->category_name }}</td>

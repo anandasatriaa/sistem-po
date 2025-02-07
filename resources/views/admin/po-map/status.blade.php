@@ -160,7 +160,8 @@
                 lengthChange: false,
                 paging: true,
                 searching: true,
-                info: true
+                info: true,
+                order: [[1, 'desc']],
             });
         });
     </script>

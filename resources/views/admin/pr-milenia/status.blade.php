@@ -104,7 +104,7 @@
                                     </td>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $pr->user->Nama ?? '-' }}</td>
-                                    <td>{{ $pr->date_request }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($pr->date_request)->format('d M, Y') }}</td>
                                     <td>
                                         @if ($pr->barang->count() > 0)
                                             <ul>
@@ -180,7 +180,8 @@
                 lengthChange: false,
                 paging: true,
                 searching: true,
-                info: true
+                info: true,
+                order: [[7, 'desc']],
             });
         });
     </script>

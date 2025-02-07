@@ -90,11 +90,8 @@
 
 @section('content')
     <div class="container-custom mx-auto">
-        <div class="d-flex justify-content-end mb-2">
-            <button class="btn btn-primary btnAjukan"><i class="ri-send-plane-line me-2"></i>Ajukan</button>
-        </div>
         <div class="badge bg-danger text-center mb-2 w-100">
-            Jika tidak ada barang yang dimaksud, silahkan tulis nama barang baru pada input.
+            Untuk menghindari duplikat silahkan pilih barang yang sudah ada. Jika tidak ada barang yang dimaksud, silahkan tulis nama barang baru pada input.
         </div>
     </div>
 
@@ -247,6 +244,10 @@
                 <button id="clearSignature" class="btn btn-outline-danger ms-2"><i
                         class="ri-delete-bin-2-line"></i></button>
             </div>
+        </div>
+        <div class="mt-3">
+            <button type="button" class="btn btn-primary btnAjukan w-100"><i
+                    class="ri-send-plane-line me-2"></i>Ajukan</button>
         </div>
     </div>
 @endsection

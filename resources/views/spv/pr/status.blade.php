@@ -38,7 +38,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $pr->user_name }}</td>
-                                    <td>{{ $pr->date_request }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($pr->date_request)->format('d M, Y') }}</td>
                                     <td>
                                         @if (!empty($pr->barang_list))
                                             <ul>
@@ -154,7 +154,8 @@
                 lengthChange: false,
                 paging: true,
                 searching: true,
-                info: true
+                info: true,
+                order: [[5, 'desc']],
             });
         });
     </script>

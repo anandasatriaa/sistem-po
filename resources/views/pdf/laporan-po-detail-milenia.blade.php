@@ -119,7 +119,7 @@
             @foreach ($laporan as $key => $item)
                 <tr>
                     <td style="width: 4%">{{ $key + 1 }}</td>
-                    <td style="width: 10%">{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
+                    <td style="width: 10%">{{ \Carbon\Carbon::parse($item->date)->format('d M, Y') }}</td>
                     <td>{{ $item->no_po }}</td>
                     <td style="width: 12%">{{ $item->cabang_name }}</td>
                     <td>{{ $item->category_name }}</td>

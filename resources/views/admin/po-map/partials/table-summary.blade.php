@@ -21,11 +21,11 @@
 
                 // Gunakan nilai filter jika tersedia, jika tidak gunakan nilai dari database
                 $startDate = $filterStartDate
-                    ? date('d M Y', strtotime($filterStartDate))
-                    : date('d M Y', strtotime($dataBulan->min('start_date')));
+                    ? date('d M, Y', strtotime($filterStartDate))
+                    : date('d M, Y', strtotime($dataBulan->min('start_date')));
                 $endDate = $filterEndDate
-                    ? date('d M Y', strtotime($filterEndDate))
-                    : date('d M Y', strtotime($dataBulan->max('end_date')));
+                    ? date('d M, Y', strtotime($filterEndDate))
+                    : date('d M, Y', strtotime($dataBulan->max('end_date')));
 
                 $periodeFormatted = "{$startDate} s/d {$endDate}";
             @endphp
