@@ -247,7 +247,7 @@
         // Memuat file CSV provinsi dan kota
         document.addEventListener('DOMContentLoaded', function() {
             // Memuat provinsi
-            fetch('{{ url('/assets/provinsi.csv') }}') // Menggunakan url() untuk path file CSV
+            fetch('{{ asset('assets/provinsi.csv') }}') // Menggunakan url() untuk path file CSV
                 .then(response => response.text())
                 .then(data => {
                     // Parsing file CSV provinsi
@@ -283,7 +283,7 @@
                 });
 
             // Memuat kota
-            fetch('{{ url('/assets/kota.csv') }}') // Menggunakan url() untuk path file CSV
+            fetch('{{ asset('assets/kota.csv') }}') // Menggunakan url() untuk path file CSV
                 .then(response => response.text())
                 .then(data => {
                     // Parsing file CSV kota
@@ -336,7 +336,7 @@
             function generateCabangId() {
                 // Ambil ID cabang terakhir dari tabel
                 fetch(
-                        '{{ url('admin/cabang/last-id') }}'
+                        '{{ url('/admin/cabang/last-id') }}'
                     ) // Gantilah dengan URL API untuk mendapatkan ID cabang terakhir
                     .then(response => response.json())
                     .then(data => {
