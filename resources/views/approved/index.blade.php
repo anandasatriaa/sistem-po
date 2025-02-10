@@ -35,7 +35,7 @@
 </head>
 
 <body>
-    <div class="container mt-4 bg-white rounded-3 shadow-lg p-4">
+    <div class="mx-2 mt-2 bg-white rounded-3 shadow-lg p-4">
         <!-- Header Section -->
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold text-primary">Approved Purchase Request</h1>
@@ -47,10 +47,8 @@
             <div class="card-header bg-primary text-white">
                 <i class="ri-file-pdf-line"></i> Preview Dokumen
             </div>
-            <div class="card-body p-0">
-                <iframe src="{{ url('/pdf-view/' . $pr->id) }}" class="w-100" style="height: 75vh; border: none"
-                    title="PDF Viewer">
-                </iframe>
+            <div class="card-body p-0 text-center">
+                <div id="pdf-container" style="height:55vh; overflow: auto; border: none;"></div>
             </div>
         </div>
 
@@ -120,6 +118,13 @@
 
     <!-- Library Signature Pad -->
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.4/dist/signature_pad.umd.min.js"></script>
+
+    <!-- Sertakan PDF.js dan worker-nya -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+</script>
+
 
     <script>
         $(document).ready(function() {
@@ -257,6 +262,40 @@
             });
         });
     </script>
+
+    <script>
+    // URL PDF yang akan ditampilkan (disesuaikan dengan route Anda)
+    const url = "{{ url('/pdf-view/' . $pr->id) }}";
+
+    // Fungsi untuk merender halaman PDF ke dalam canvas
+    function renderPage(page) {
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale: scale });
+
+        // Buat canvas untuk halaman PDF
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        document.getElementById('pdf-container').appendChild(canvas);
+
+        // Render halaman ke canvas
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        page.render(renderContext);
+    }
+
+    // Memuat dokumen PDF
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        // Render halaman pertama (Anda dapat mengubah ini untuk merender semua halaman)
+        pdf.getPage(1).then(renderPage);
+    }).catch(function(error) {
+        console.error('Error saat memuat PDF: ', error);
+    });
+</script>
+
 </body>
 
 </html>
