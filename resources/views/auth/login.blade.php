@@ -86,7 +86,7 @@
                     <div class="col-lg-12">
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
-                                <a href="index.html" class="d-inline-block auth-logo">
+                                <a href="https://ccas.co.id/" target="_blank" class="d-inline-block auth-logo">
                                     <img src="{{ asset('assets/images/logo-milenia.png') }}" alt=""
                                         width="150">
                                 </a>
@@ -130,7 +130,7 @@
                                         @csrf
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Username</label>
-                                            <input type="text" class="form-control" id="username" name="username" value="admin-ga"
+                                            <input type="text" class="form-control" id="username" name="username"
                                                 placeholder="Enter username" required>
                                         </div>
 
@@ -138,7 +138,7 @@
                                             <label class="form-label" for="password-input">Password</label>
                                             <div class="position-relative auth-pass-inputgroup mb-3">
                                                 <input type="password" class="form-control pe-5 password-input"
-                                                    name="password" value="admin-ga123" placeholder="Enter password" id="password-input"
+                                                    name="password" placeholder="Enter password" id="password-input"
                                                     required>
                                                 <button
                                                     class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
