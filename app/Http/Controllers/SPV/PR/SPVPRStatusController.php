@@ -91,7 +91,7 @@ class SPVPRStatusController extends Controller
             // Update status menjadi 0
             $purchaseRequest->update([
                 'status' => 0,
-                'acc_sign' => null,
+                'acc_sign' => 'REJECTED',
                 'acc_by' => null,
             ]);
 

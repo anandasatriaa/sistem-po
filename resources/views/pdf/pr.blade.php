@@ -146,7 +146,14 @@
     <div class="signature-spv @if (empty($purchaseRequest->acc_sign)) empty-signature @endif">
         <div class="title">Disetujui oleh,</div>
         @if ($purchaseRequest->acc_sign)
-            <img src="{{ asset('storage/' . $purchaseRequest->acc_sign) }}" alt="Signature-SPV" width="150">
+            @if ($purchaseRequest->acc_sign === 'REJECTED')
+                <div
+                    style="margin-top: 25px; margin-bottom: 10px; text-align: center; border: 2px solid red; color: red; padding: 10px;">
+                    REJECTED
+                </div>
+            @else
+                <img src="{{ asset('storage/' . $purchaseRequest->acc_sign) }}" alt="Signature-SPV" width="150">
+            @endif
         @else
             <div style="height: 70px;"></div> <!-- Memberikan ruang jika tidak ada tanda tangan -->
         @endif

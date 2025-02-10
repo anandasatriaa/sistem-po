@@ -20,6 +20,9 @@ use App\Http\Controllers\SPV\PR\SPVPRStatusController;
 use App\Http\Controllers\GA\PR\GAPRController;
 use App\Http\Controllers\GA\PR\GAPRStatusController;
 use App\Http\Controllers\GA\PO\GAPOStatusController;
+use App\Models\PR\PurchaseRequest;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\PDF as PDF;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +46,28 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect()->route('login');
 })->name('logout');
+
+Route::get('/approval-pr/{id}', function ($id) {
+    // Mengambil data purchase request berdasarkan id
+    $pr = PurchaseRequest::findOrFail($id);
+    $users = User::where('Aktif', 1)->get();
+    return view('approved.index', compact('pr', 'users'));
+});
+
+Route::get('/pdf-view/{id}', function ($id) {
+    $purchaseRequest = PurchaseRequest::findOrFail($id);
+
+    // Menghasilkan PDF dari view 'pr' dengan data purchase request
+    $pdf = PDF::loadView('pdf.pr', compact('purchaseRequest'));
+
+    // Mengembalikan stream PDF
+    return $pdf->stream('purchase-request-' . $id . '.pdf');
+});
+
+// Approval PR tanpa login
+Route::post('/pr/approved', [SPVPRStatusController::class, 'saveSignature'])->name('pr.approved');
+Route::post('/pr/rejected', [SPVPRStatusController::class, 'rejectPR'])->name('pr.rejected');
+
 
 // Grup Admin
 Route::middleware(['auth', 'isAdmin'])->group(function () {
