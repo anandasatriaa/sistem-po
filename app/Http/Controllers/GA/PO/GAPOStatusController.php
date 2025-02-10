@@ -114,7 +114,7 @@ class GAPOStatusController extends Controller
             // Update status dan kolom ttd sesuai dengan jabatan
             $purchaseOrder->update([
                 'status' => 0,
-                $ttdField => null,  // Update kolom ttd yang sesuai
+                $ttdField => 'REJECTED',  // Update kolom ttd yang sesuai
                 $namaField => null, // Update kolom nama yang sesuai
             ]);
 
@@ -175,4 +175,94 @@ class GAPOStatusController extends Controller
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat approval purchase request: ' . $e->getMessage()], 500);
         }
     }
+
+    public function rejectPONotLogin(Request $request)
+    {
+        $request->validate([
+            'id'       => 'required',
+            'type'     => 'required|string|in:milenia,map',
+            'jabatan'  => 'required|string', // informasi jabatan dikirim via request
+        ]);
+
+        try {
+            // Tentukan model berdasarkan type
+            $purchaseOrder = $request->type === 'milenia'
+            ? PurchaseOrderMilenia::find($request->id)
+                : PurchaseOrderMAP::find($request->id);
+
+            if (!$purchaseOrder) {
+                return response()->json(['success' => false, 'message' => 'Purchase Order tidak ditemukan'], 404);
+            }
+
+            // Gunakan jabatan yang dikirim melalui request
+            $jabatan = $request->jabatan;
+
+            // Tentukan kolom yang akan diupdate berdasarkan jabatan
+            $ttdField = ($jabatan === 'COO') ? 'ttd_3' : 'ttd_1';
+            $namaField = ($jabatan === 'COO') ? 'nama_3' : 'nama_1';
+
+            // Update status dan kolom ttd sesuai dengan jabatan
+            $purchaseOrder->update([
+                'status'   => 0,
+                $ttdField  => 'REJECTED',  // Update kolom ttd yang sesuai dengan nilai 'REJECTED'
+                $namaField => null,        // Reset kolom nama
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Purchase Request berhasil ditolak'], 200);
+        } catch (\Exception $e) {
+            // Handle errors
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menolak purchase request: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function saveSignatureNotLogin(Request $request)
+    {
+        Log::info('Request Data:', $request->all());
+
+        $request->validate([
+            'id'        => 'required',
+            'signature' => 'required',
+            'user_name' => 'required|string',
+            'type'      => 'required|string',
+            'jabatan'   => 'required|string', // informasi jabatan dikirim via request
+        ]);
+
+        try {
+            if ($request->type === 'milenia') {
+                $purchaseOrder = PurchaseOrderMilenia::find($request->id);
+            } elseif ($request->type === 'map') {
+                $purchaseOrder = PurchaseOrderMAP::find($request->id);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Tipe tidak valid'], 400);
+            }
+
+            if (!$purchaseOrder) {
+                return response()->json(['success' => false, 'message' => 'Purchase Order tidak ditemukan'], 404);
+            }
+
+            // Simpan tanda tangan ke storage
+            $signaturePath = 'signature-ga-po/signature_' . time() . '.png';
+            $signatureData = explode(',', $request->signature)[1];
+            Storage::put('public/' . $signaturePath, base64_decode($signatureData));
+
+            // Gunakan jabatan yang dikirim melalui request
+            $jabatan = $request->jabatan;
+
+            // Tentukan kolom yang akan diupdate berdasarkan jabatan
+            $ttdField = ($jabatan === 'COO') ? 'ttd_3' : 'ttd_1';
+            $namaField = ($jabatan === 'COO') ? 'nama_3' : 'nama_1';
+
+            // Update status dan kolom ttd sesuai dengan jabatan
+            $purchaseOrder->update([
+                'status'   => 2,
+                $ttdField  => $signaturePath,      // simpan path tanda tangan
+                $namaField => $request->user_name, // simpan nama user yang meng-approve
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Approval Purchase Request berhasil dilakukan'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat approval purchase request: ' . $e->getMessage()], 500);
+        }
+    }
+
 }

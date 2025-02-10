@@ -164,7 +164,8 @@
             <p><strong>Dibutuhkan Approval</strong> untuk Purchase Order di atas.</p>
             <p>
                 Silakan lakukan pengecekan atau approval pada link berikut:
-                <a href="http://sistem-po.test/">SISTEM GA</a>
+                <a href="{{ url('/approval-po-milenia/' . $po->id) }}"
+                    style="color: #000000; font-weight: bold; text-decoration: none; border: 2px solid #0275d8; padding: 5px 10px; border-radius: 3px;">SISTEM GA</a>.
             </p>
         </div>
 

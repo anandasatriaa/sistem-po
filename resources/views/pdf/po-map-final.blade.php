@@ -204,23 +204,40 @@
         <tr style="text-align: center;">
             <td style="border-bottom: none; height: 50px;">
                 @if ($purchaseOrder->ttd_1)
-                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_1) }}" alt="Signature-GA" width="150">
-                @else
-                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
+                    @if ($purchaseOrder->ttd_1 === 'REJECTED')
+                        <div
+                            style="margin-top: 25px; margin-bottom: 10px; text-align: center; border: 2px solid red; color: red; padding: 10px;">
+                            REJECTED
+                        </div>
+                    @else
+                        <img src="{{ asset('storage/' . $purchaseOrder->ttd_1) }}" alt="Signature-GA" width="150">
+                    @endif
                 @endif
             </td>
             <td style="border-bottom: none; height: 50px;">
                 @if ($purchaseOrder->ttd_2)
-                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_2) }}" alt="Signature-ADMIN" width="150">
-                @else
-                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
+                    @if ($purchaseOrder->ttd_2 === 'REJECTED')
+                        <div
+                            style="margin-top: 25px; margin-bottom: 10px; text-align: center; border: 2px solid red; color: red; padding: 10px;">
+                            REJECTED
+                        </div>
+                    @else
+                        <img src="{{ asset('storage/' . $purchaseOrder->ttd_2) }}" alt="Signature-ADMIN"
+                            width="150">
+                    @endif
                 @endif
             </td>
             <td style="border-bottom: none; height: 50px;">
                 @if ($purchaseOrder->ttd_3)
-                    <img src="{{ asset('storage/' . $purchaseOrder->ttd_3) }}" alt="Signature-DIRECTOR" width="150">
-                @else
-                    <!-- Jika tidak ada tanda tangan, biarkan kosong -->
+                    @if ($purchaseOrder->ttd_3 === 'REJECTED')
+                        <div
+                            style="margin-top: 25px; margin-bottom: 10px; text-align: center; border: 2px solid red; color: red; padding: 10px;">
+                            REJECTED
+                        </div>
+                    @else
+                        <img src="{{ asset('storage/' . $purchaseOrder->ttd_3) }}" alt="Signature-DIRECTOR"
+                            width="150">
+                    @endif
                 @endif
             </td>
         </tr>

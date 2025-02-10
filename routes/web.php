@@ -20,6 +20,8 @@ use App\Http\Controllers\SPV\PR\SPVPRStatusController;
 use App\Http\Controllers\GA\PR\GAPRController;
 use App\Http\Controllers\GA\PR\GAPRStatusController;
 use App\Http\Controllers\GA\PO\GAPOStatusController;
+use App\Models\PO\PurchaseOrderMAP;
+use App\Models\PO\PurchaseOrderMilenia;
 use App\Models\PR\PurchaseRequest;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\PDF as PDF;
@@ -67,6 +69,52 @@ Route::get('/pdf-view/{id}', function ($id) {
 // Approval PR tanpa login
 Route::post('/pr/approved', [SPVPRStatusController::class, 'saveSignature'])->name('pr.approved');
 Route::post('/pr/rejected', [SPVPRStatusController::class, 'rejectPR'])->name('pr.rejected');
+
+Route::get('/approval-po-milenia/{id}', function ($id) {
+    // Mengambil data purchase request berdasarkan id
+    $po = PurchaseOrderMilenia::findOrFail($id);
+    $users = User::where('Aktif', 1)->get();
+    return view('approved.po-milenia', compact('po', 'users'));
+});
+
+Route::get('/pdf-view-milenia/{id}', function ($id) {
+    $purchaseOrder = PurchaseOrderMilenia::findOrFail($id);
+    $category = $purchaseOrder->barang->first()->category;
+    $grandtotal = $purchaseOrder->total;
+    $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+    $grandtotalWords = ucfirst($formatter->format($grandtotal));
+
+    // Menghasilkan PDF dari view 'pr' dengan data purchase order
+    $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+
+    // Mengembalikan stream PDF
+    return $pdf->stream('purchase-order-' . $id . '.pdf');
+});
+
+Route::get('/approval-po-map/{id}', function ($id) {
+    // Mengambil data purchase request berdasarkan id
+    $po = PurchaseOrderMAP::findOrFail($id);
+    $users = User::where('Aktif', 1)->get();
+    return view('approved.po-map', compact('po', 'users'));
+});
+
+Route::get('/pdf-view-map/{id}', function ($id) {
+    $purchaseOrder = PurchaseOrderMAP::findOrFail($id);
+    $category = $purchaseOrder->barang->first()->category;
+    $grandtotal = $purchaseOrder->total;
+    $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+    $grandtotalWords = ucfirst($formatter->format($grandtotal));
+
+    // Menghasilkan PDF dari view 'pr' dengan data purchase order
+    $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+
+    // Mengembalikan stream PDF
+    return $pdf->stream('purchase-order-' . $id . '.pdf');
+});
+
+// Approval PO tanpa login
+Route::post('/po/approved', [GAPOStatusController::class, 'saveSignatureNotLogin'])->name('po.approved');
+Route::post('/po/rejected', [GAPOStatusController::class, 'rejectPONotLogin'])->name('po.rejected');
 
 
 // Grup Admin
