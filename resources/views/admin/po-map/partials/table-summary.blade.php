@@ -46,14 +46,3 @@
         @endforeach
     </tbody>
 </table>
-
-<script>
-    $('#table-summary').DataTable({
-        scrollX: true,
-        responsive: false,
-        lengthChange: false,
-        paging: true,
-        searching: true,
-        info: true
-    });
-</script>
