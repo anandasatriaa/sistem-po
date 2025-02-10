@@ -99,7 +99,8 @@
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover img, .nav-link.active img {
+        .nav-link:hover img,
+        .nav-link.active img {
             filter: grayscale(0%);
             opacity: 1;
         }
@@ -288,10 +289,12 @@
                         </li>
                         <li class="menu-title"><span data-key="t-masterdata">Master Data</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#masterData" data-bs-toggle="collapse" role="button"
+                            <a class="nav-link menu-link" href="#masterData" data-bs-toggle="collapse"
+                                role="button"
                                 aria-expanded="{{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'true' : 'false' }}"
                                 aria-controls="masterData">
-                                <i data-feather="share-2" class="icon-dual"></i> <span data-key="t-masterdatas">Master
+                                <i data-feather="share-2" class="icon-dual"></i> <span
+                                    data-key="t-masterdatas">Master
                                     data</span>
                             </a>
                             <div class="collapse menu-dropdown {{ request()->routeIs('admin.cabang-index', 'admin.supplier-index', 'admin.category-index', 'admin.unit-index', 'admin.barang-index') ? 'show' : '' }}"
@@ -372,24 +375,24 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('admin.po-map') ? 'active' : '' }}"
                                 href="{{ route('admin.po-map') }}">
-                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
-                                    width="20px" alt="">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2" width="20px"
+                                    alt="">
                                 <span data-key="t-po">Input Purchase Order</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('admin.statuspo-map') ? 'active' : '' }}"
                                 href="{{ route('admin.statuspo-map') }}">
-                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
-                                    width="20px" alt="">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2" width="20px"
+                                    alt="">
                                 <span data-key="t-statuspo">Status Purchase Order</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('admin.laporanpo-map') ? 'active' : '' }}"
                                 href="{{ route('admin.laporanpo-map') }}">
-                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2"
-                                    width="20px" alt="">
+                                <img src="{{ asset('assets/images/map-logo.png') }}" class="me-2" width="20px"
+                                    alt="">
                                 <span data-key="t-laporanpomap">Laporan Detail & Summary</span>
                             </a>
                         </li>
@@ -510,6 +513,15 @@
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+
+    <!-- Library Signature Pad -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.4/dist/signature_pad.umd.min.js"></script>
+
+    <!-- Sertakan PDF.js dan worker-nya -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+    </script>
 
     <script>
         window.addEventListener('load', function() {

@@ -91,7 +91,8 @@
 @section('content')
     <div class="container-custom mx-auto">
         <div class="badge bg-danger text-center mb-2 w-100">
-            Untuk menghindari duplikat silahkan pilih barang yang sudah ada. Jika tidak ada barang yang dimaksud, silahkan tulis nama barang baru pada input.
+            Untuk menghindari duplikat silahkan pilih barang yang sudah ada. Jika tidak ada barang yang dimaksud, silahkan
+            tulis nama barang baru pada input.
         </div>
     </div>
 
@@ -464,36 +465,30 @@
 
     {{-- Signature --}}
     <script>
+        // Inisialisasi SignaturePad (menggantikan kode event manual)
         const canvas = document.getElementById('signatureCanvas');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-
-        canvas.addEventListener('mousedown', () => {
-            isDrawing = true;
-            ctx.beginPath();
+        // Inisialisasi SignaturePad; atur backgroundColor jika diperlukan
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)' // atau gunakan 'white'
         });
 
-        canvas.addEventListener('mousemove', (event) => {
-            if (isDrawing) {
-                const rect = canvas.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
-                ctx.lineTo(x, y);
-                ctx.stroke();
+        // (Opsional) Fungsi untuk mengupdate status atau melakukan sesuatu setelah tanda tangan selesai
+        function updateButtonState() {
+            // Contoh: jika ingin memeriksa apakah canvas sudah tidak kosong
+            if (!signaturePad.isEmpty()) {
+                console.log('Tanda tangan telah dibuat.');
+            } else {
+                console.log('Canvas kosong.');
             }
-        });
+        }
 
-        canvas.addEventListener('mouseup', () => {
-            isDrawing = false;
-            ctx.closePath();
-        });
+        // Panggil updateButtonState setiap kali pengguna selesai menggambar tanda tangan
+        signaturePad.onEnd = updateButtonState;
 
-        canvas.addEventListener('mouseout', () => {
-            isDrawing = false;
-        });
-
+        // Tombol Clear Signature
         document.getElementById('clearSignature').addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            signaturePad.clear();
+            updateButtonState();
         });
     </script>
 
