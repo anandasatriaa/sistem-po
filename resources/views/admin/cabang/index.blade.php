@@ -244,88 +244,92 @@
         let provinsiData = [];
         let kotaData = {};
 
-        // Memuat file CSV provinsi dan kota
+        // Fungsi untuk memuat file CSV dan mengembalikan teksnya
+        function loadCSV(url) {
+            return fetch(url).then(response => response.text());
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Memuat provinsi
-            fetch('{{ asset('assets/provinsi.csv') }}') // Menggunakan url() untuk path file CSV
-                .then(response => response.text())
-                .then(data => {
-                    // Parsing file CSV provinsi
-                    const rows = data.split('\n');
-                    const provinsiSelect = document.getElementById('provinsiCabang');
-
-                    rows.forEach(row => {
-                        // Memisahkan kolom dengan koma
-                        const columns = row.split(',');
-                        if (columns.length === 2) {
-                            const provinsiId = columns[0].trim();
-                            const provinsiName = columns[1].trim();
-
-                            // Menyimpan data provinsi
-                            provinsiData.push({
-                                id: provinsiId,
-                                name: provinsiName
-                            });
-
-                            // Menambah option provinsi ke dropdown
-                            const option = document.createElement('option');
-                            option.value = provinsiId;
-                            option.textContent = provinsiName;
-                            provinsiSelect.appendChild(option);
-
-                            // Menyimpan data kota berdasarkan provinsi
-                            kotaData[provinsiId] = [];
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading CSV file for provinsi:', error);
-                });
-
-            // Memuat kota
-            fetch('{{ asset('assets/kota.csv') }}') // Menggunakan url() untuk path file CSV
-                .then(response => response.text())
-                .then(data => {
-                    // Parsing file CSV kota
-                    const rows = data.split('\n');
-
-                    rows.forEach(row => {
-                        const columns = row.split(',');
-                        if (columns.length === 3) { // Format: ID Kota, ID Provinsi, Nama Kota
-                            const kotaId = columns[0].trim();
-                            const provinsiId = columns[1].trim();
-                            const kotaName = columns[2].trim();
-
-                            // Menyimpan data kota untuk provinsi terkait
-                            if (kotaData[provinsiId]) {
-                                kotaData[provinsiId].push({
-                                    id: kotaId,
-                                    name: kotaName
-                                });
-                            }
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading CSV file for kota:', error);
-                });
-        });
-
-        // Event listener untuk provinsi, mengisi dropdown kota berdasarkan provinsi yang dipilih
-        document.getElementById('provinsiCabang').addEventListener('change', function() {
-            const provinsiId = this.value;
+            // Dapatkan elemen dropdown
+            const provinsiSelect = document.getElementById('provinsiCabang');
             const kotaSelect = document.getElementById('kotaCabang');
-            kotaSelect.innerHTML = '<option selected>Choose...</option>'; // Reset pilihan kota
 
-            if (provinsiId && kotaData[provinsiId]) {
-                // Menambah pilihan kota berdasarkan provinsi yang dipilih
-                kotaData[provinsiId].forEach(kota => {
-                    const option = document.createElement('option');
-                    option.value = kota.id;
-                    option.textContent = kota.name;
-                    kotaSelect.appendChild(option);
+            // Nonaktifkan dropdown sampai data selesai dimuat
+            provinsiSelect.disabled = true;
+            kotaSelect.disabled = true;
+
+            // Muat kedua file CSV secara bersamaan menggunakan Promise.all
+            Promise.all([
+                loadCSV("{{ asset('assets/provinsi.csv') }}"),
+                loadCSV("{{ asset('assets/kota.csv') }}")
+            ]).then(function([provinsiText, kotaText]) {
+                // Parsing CSV provinsi
+                const provinsiRows = provinsiText.split('\n');
+                provinsiRows.forEach(function(row) {
+                    const columns = row.split(',');
+                    if (columns.length === 2) {
+                        const provinsiId = columns[0].trim();
+                        const provinsiName = columns[1].trim();
+
+                        // Simpan data provinsi
+                        provinsiData.push({
+                            id: provinsiId,
+                            name: provinsiName
+                        });
+
+                        // Tambahkan option ke dropdown provinsi
+                        const option = document.createElement('option');
+                        option.value = provinsiId;
+                        option.textContent = provinsiName;
+                        provinsiSelect.appendChild(option);
+
+                        // Inisialisasi array kota untuk provinsi tersebut
+                        kotaData[provinsiId] = [];
+                    }
                 });
-            }
+
+                // Parsing CSV kota
+                const kotaRows = kotaText.split('\n');
+                kotaRows.forEach(function(row) {
+                    const columns = row.split(',');
+                    if (columns.length === 3) { // Format: ID Kota, ID Provinsi, Nama Kota
+                        const kotaId = columns[0].trim();
+                        const provinsiId = columns[1].trim();
+                        const kotaName = columns[2].trim();
+
+                        // Simpan data kota ke dalam array kotaData sesuai provinsi
+                        if (kotaData[provinsiId]) {
+                            kotaData[provinsiId].push({
+                                id: kotaId,
+                                name: kotaName
+                            });
+                        }
+                    }
+                });
+
+                // Aktifkan kembali dropdown setelah data selesai dimuat
+                provinsiSelect.disabled = false;
+                kotaSelect.disabled = false;
+            }).catch(function(error) {
+                console.error('Error loading CSV files:', error);
+            });
+
+            // Event listener untuk dropdown provinsi
+            provinsiSelect.addEventListener('change', function() {
+                const provinsiId = this.value;
+                // Reset dropdown kota
+                kotaSelect.innerHTML = '<option selected>Choose...</option>';
+
+                if (provinsiId && kotaData[provinsiId]) {
+                    // Tambahkan option ke dropdown kota berdasarkan provinsi yang dipilih
+                    kotaData[provinsiId].forEach(function(kota) {
+                        const option = document.createElement('option');
+                        option.value = kota.id;
+                        option.textContent = kota.name;
+                        kotaSelect.appendChild(option);
+                    });
+                }
+            });
         });
     </script>
 
@@ -659,7 +663,7 @@
         });
     </script>
 
-    {{-- Delete Cabang --}}
+    {{-- DELETE Cabang --}}
     <script>
         function confirmDelete(cabangId) {
             console.log(cabangId);
