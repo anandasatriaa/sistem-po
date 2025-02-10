@@ -247,7 +247,7 @@
         // Memuat file CSV provinsi dan kota
         document.addEventListener('DOMContentLoaded', function() {
             // Memuat provinsi
-            fetch('{{ url('assets/provinsi.csv') }}') // Menggunakan url() untuk path file CSV
+            fetch('{{ url('/assets/provinsi.csv') }}') // Menggunakan url() untuk path file CSV
                 .then(response => response.text())
                 .then(data => {
                     // Parsing file CSV provinsi
@@ -283,7 +283,7 @@
                 });
 
             // Memuat kota
-            fetch('{{ url('assets/kota.csv') }}') // Menggunakan url() untuk path file CSV
+            fetch('{{ url('/assets/kota.csv') }}') // Menggunakan url() untuk path file CSV
                 .then(response => response.text())
                 .then(data => {
                     // Parsing file CSV kota
