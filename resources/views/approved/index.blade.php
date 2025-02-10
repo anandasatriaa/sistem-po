@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Approved Document | Sistem Purchase Order General Affair</title>
+    <title>Approved Purchase Request | Sistem Purchase Order General Affair</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
     <!-- (Opsional) Memuat Bootstrap untuk styling -->
