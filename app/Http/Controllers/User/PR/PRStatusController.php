@@ -106,10 +106,10 @@ class PRStatusController extends Controller
                         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
 
                         // Tambahkan header teks "Lampiran" di atas konten lampiran
-                        $fpdi->SetFont('Arial', 'B', 16);
-                        $fpdi->SetTextColor(0, 0, 0);
-                        // Cell dengan lebar halaman; gunakan tinggi 10 mm untuk header
-                        $fpdi->Cell($size['width'], 10, 'Lampiran', 0, 1, 'C');
+                        // $fpdi->SetFont('Arial', 'B', 16);
+                        // $fpdi->SetTextColor(0, 0, 0);
+                        // // Cell dengan lebar halaman; gunakan tinggi 10 mm untuk header
+                        // $fpdi->Cell($size['width'], 10, 'Lampiran', 0, 1, 'C');
 
                         // Tempatkan template lampiran dengan offset vertikal agar tidak tertutup header
                         $fpdi->useTemplate($templateId, 0, 10, $size['width'], $size['height'] - 10);
