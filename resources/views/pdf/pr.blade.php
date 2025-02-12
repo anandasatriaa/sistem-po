@@ -30,7 +30,6 @@
 
         thead th {
             background-color: #ddd;
-            /* Latar abu-abu untuk header */
         }
 
         th {
