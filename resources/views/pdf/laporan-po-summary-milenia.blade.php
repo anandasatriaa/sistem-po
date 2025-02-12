@@ -34,12 +34,12 @@
 
         .details-table th,
         .details-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #000;
             padding: 5px;
         }
 
         .details-table th {
-            background-color: #f5f5f5;
+            background-color: #ddd;
         }
 
         .ttd-table {
@@ -181,7 +181,7 @@
         </tbody>
     </table>
 
-    <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0;">
+    <div style="border: 1px solid #000; padding: 10px; margin: 10px 0;">
         <strong>Terbilang:</strong><br>
         {{ strtoupper($grandtotalWords) }} RUPIAH
     </div>

@@ -34,12 +34,12 @@
 
         .details-table th,
         .details-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #000;
             padding: 5px;
         }
 
         .details-table th {
-            background-color: #f5f5f5;
+            background-color: #ddd;
         }
 
         .ttd-table {

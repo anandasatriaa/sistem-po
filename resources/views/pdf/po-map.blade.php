@@ -34,12 +34,12 @@
 
         .details-table th,
         .details-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #000;
             padding: 5px;
         }
 
         .details-table th {
-            background-color: #f5f5f5;
+            background-color: #ddd;
         }
 
         .ttd-table {
@@ -84,39 +84,45 @@
         </tr>
     </table>
 
-
     <table cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 11%;"><strong>To: </strong></td>
-            <td colspan="3">{{ $formData['supplier'] }}</td>
-            <td style="width: 11%;"><strong>From: </strong></td>
-            <td>Mega Auto Prima</td>
+            <td style="width: 10%;"><strong>To: </strong></td>
+            <td colspan="3" style="width: 40%;">{{ $formData['supplier'] }}</td>
+            <td style="width: 10%;"><strong>From: </strong></td>
+            <td style="width: 40%;">Milenia Mega Mandiri</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 11%;"><strong>Address: </strong></td>
-            <td colspan="3">{{ $formData['address'] }}</td>
-            <td style="width: 11%;"><strong>Date: </strong></td>
-            <td>{{ \Carbon\Carbon::parse($formData['date'])->format('F d, Y') }}</td>
+            <td style="width: 10%;"><strong>Address: </strong></td>
+            <td colspan="3" style="width: 40%;">{{ $formData['address'] }}</td>
+            <td style="width: 10%;"><strong>Address: </strong></td>
+            <td style="width: 40%;">{{ $formData['cabang_alamat'] }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 11%;"><strong>Phone: </strong></td>
-            <td>{{ $formData['phone'] }}</td>
-            <td style="width: 11%; text-align: right;"><strong>Fax: </strong></td>
-            <td>{{ $formData['fax'] }}</td>
-            <td style="width: 11%;"><strong>Page: </strong></td>
-            <td>1</td>
+            <td style="width: 10%;"><strong>Phone: </strong></td>
+            <td style="width: 17%;">{{ $formData['phone'] }}</td>
+            <td style="width: 10%; text-align: right;"><strong>Fax: </strong></td>
+            <td style="width: 15%;">{{ $formData['fax'] }}</td>
+            <td style="width: 10%;"><strong>Phone: </strong></td>
+            <td style="width: 35%;">{{ $formData['cabang_telepon'] }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 11%;"><strong>UP: </strong></td>
-            <td colspan="3">{{ $formData['up'] }}</td>
-            <td style="width: 11%;"><strong>NO: </strong></td>
-            <td>{{ $formData['no_po'] }}</td>
+            <td style="width: 10%;"><strong>UP: </strong></td>
+            <td colspan="3" style="width: 40%;">{{ $formData['up'] }}</td>
+            <td style="width: 10%;"><strong>NO: </strong></td>
+            <td style="width: 40%;">{{ $formData['no_po'] }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 11%;"><strong>Cabang: </strong></td>
-            <td colspan="3">{{ $formData['cabang'] }}</td>
-            <td style="width: 11%;"><strong>Kategori: </strong></td>
-            <td>{{ $formData['category'] }}</td>
+            <td style="width: 10%;"><strong>Cabang: </strong></td>
+            <td colspan="3" style="width: 40%;">{{ $formData['cabang'] }}</td>
+            <td style="width: 10%;"><strong>Kategori: </strong></td>
+            <td style="width: 40%;">{{ $formData['category'] }}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #000;">
+            <td style="width: 10%;"><strong>Date: </strong></td>
+            <td colspan="3" style="width: 40%;">{{ \Carbon\Carbon::parse($formData['date'])->format('F d, Y') }}
+            </td>
+            <td style="width: 10%;"><strong>Page: </strong></td>
+            <td style="width: 40%;">1</td>
         </tr>
     </table>
 
@@ -168,7 +174,7 @@
         </tbody>
     </table>
 
-    <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0;">
+    <div style="border: 1px solid #000; padding: 10px; margin: 10px 0;">
         <strong>Terbilang:</strong><br>
         {{ strtoupper($formData['grandtotal_words']) }} RUPIAH
     </div>

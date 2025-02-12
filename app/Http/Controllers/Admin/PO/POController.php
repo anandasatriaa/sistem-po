@@ -11,6 +11,7 @@ use App\Models\PO\PurchaseOrderBarangMilenia;
 use App\Models\PO\PurchaseOrderMAP;
 use App\Models\PO\PurchaseOrderBarangMAP;
 use App\Models\Supplier\Supplier;
+use App\Models\Barang\Barang;
 use App\Mail\PoCreatedMail;
 use App\Mail\PoCreatedMailMAP;
 use Illuminate\Http\Request;
@@ -142,47 +143,60 @@ class POController extends Controller
                 }
             }
 
-            // Memastikan format data barang valid
+            // Proses data barang
             if (!empty($data['barang'])) {
                 // Jika data barang berupa string JSON, decode menjadi array
                 if (is_string($data['barang'])) {
                     $barangArray = json_decode($data['barang'], true);
-
-                    // Jika JSON tidak valid, tampilkan error
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         throw new \Exception("Format data barang tidak valid.");
                     }
                 } elseif (is_array($data['barang'])) {
-                    // Jika data barang sudah berupa array, gunakan langsung
                     $barangArray = $data['barang'];
                 } else {
-                    // Jika format tidak sesuai, tampilkan error
                     throw new \Exception("Format data barang tidak sesuai.");
                 }
 
                 Log::info('Barang diterima dari frontend:', $barangArray);
 
                 foreach ($barangArray as $barang) {
+                    // Ambil nama barang dari data (gunakan key 'barang' atau 'nama_barang')
+                    $barangName = $barang['barang'] ?? $barang['nama_barang'] ?? null;
+                    if (!$barangName) {
+                        continue; // Lewati jika nama barang tidak ada
+                    }
+
+                    // Cek apakah barang sudah ada di tabel Barang (berdasarkan nama)
+                    $existingBarang = Barang::where('nama', $barangName)->first();
+                    if (!$existingBarang) {
+                        // Jika barang tidak ditemukan, buat barang baru
+                        $lastBarang = Barang::orderBy('id', 'desc')->first();
+                        $newCode = $lastBarang ? 'ITEM' . ((int) substr($lastBarang->kode, 4) + 1) : 'ITEM1';
+
+                        $existingBarang = Barang::create([
+                            'kode' => $newCode,
+                            'nama' => $barangName,
+                        ]);
+                        Log::info('Barang baru dibuat:', ['id' => $existingBarang->id, 'nama' => $barangName]);
+                    }
+
                     // Simpan data barang ke tabel purchase_order_barang_milenia
                     $barangEntry = PurchaseOrderBarangMilenia::create([
                         'purchase_order_id' => $purchaseOrder->id,
-                        'category_id' => $barang['category_id'] ?? null,
-                        'category' => $barang['category'] ?? null,
-                        'barang_id' => $barang['barang_id'] ?? null,
-                        'barang' => $barang['barang'] ?? null,
-                        'qty' => $barang['qty'] ?? 1,
-                        'unit_id' => $barang['unit_id'] ?? null,
-                        'unit' => $barang['unit'] ?? null,
-                        'keterangan' => $barang['keterangan'] ?? null,
-                        'unit_price' => $barang['unit_price'] ?? 0,
-                        'amount_price' => $barang['amount_price'] ?? 0,
+                        'category_id'       => $barang['category_id'] ?? null,
+                        'category'          => $barang['category'] ?? null,
+                        // Gunakan ID dan nama barang dari tabel Barang
+                        'barang_id'         => $existingBarang->id,
+                        'barang'            => $existingBarang->nama,
+                        'qty'               => $barang['qty'] ?? 1,
+                        'unit_id'           => $barang['unit_id'] ?? null,
+                        'unit'              => $barang['unit'] ?? null,
+                        'keterangan'        => $barang['keterangan'] ?? null,
+                        'unit_price'        => $barang['unit_price'] ?? 0,
+                        'amount_price'      => $barang['amount_price'] ?? 0,
                     ]);
 
-                    // Log jika barang berhasil disimpan
-                    Log::info(
-                        'Data barang berhasil disimpan ke tabel purchase_order_barang_milenia:',
-                        ['id' => $barangEntry->id]
-                    );
+                    Log::info('Data barang berhasil disimpan ke tabel purchase_order_barang_milenia:', ['id' => $barangEntry->id]);
                 }
             } else {
                 Log::warning('Data barang tidak ditemukan di request.');
@@ -228,8 +242,12 @@ class POController extends Controller
         // Format nama file PDF
         $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
 
-        // Load view untuk PDF
-        $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+        // Query data cabang berdasarkan nama cabang yang disimpan di purchaseOrder.
+        // Jika purchaseOrder->cabang berisi nama cabang, kita asumsikan itu sesuai dengan field 'nama' di tabel cabang.
+        $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
+
+        // Load view untuk PDF dengan meneruskan data tambahan (misalnya, $cabangData)
+        $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
         // Return file PDF
         return $pdf->stream($fileName);
@@ -351,47 +369,60 @@ class POController extends Controller
                 }
             }
 
-            // Memastikan format data barang valid
+            // Proses data barang
             if (!empty($data['barang'])) {
                 // Jika data barang berupa string JSON, decode menjadi array
                 if (is_string($data['barang'])) {
                     $barangArray = json_decode($data['barang'], true);
-
-                    // Jika JSON tidak valid, tampilkan error
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         throw new \Exception("Format data barang tidak valid.");
                     }
                 } elseif (is_array($data['barang'])) {
-                    // Jika data barang sudah berupa array, gunakan langsung
                     $barangArray = $data['barang'];
                 } else {
-                    // Jika format tidak sesuai, tampilkan error
                     throw new \Exception("Format data barang tidak sesuai.");
                 }
 
                 Log::info('Barang diterima dari frontend:', $barangArray);
 
                 foreach ($barangArray as $barang) {
-                    // Simpan data barang ke tabel purchase_order_barang_map
+                    // Ambil nama barang dari data (gunakan key 'barang' atau 'nama_barang')
+                    $barangName = $barang['barang'] ?? $barang['nama_barang'] ?? null;
+                    if (!$barangName) {
+                        continue; // Lewati jika nama barang tidak ada
+                    }
+
+                    // Cek apakah barang sudah ada di tabel Barang (berdasarkan nama)
+                    $existingBarang = Barang::where('nama', $barangName)->first();
+                    if (!$existingBarang) {
+                        // Jika barang tidak ditemukan, buat barang baru
+                        $lastBarang = Barang::orderBy('id', 'desc')->first();
+                        $newCode = $lastBarang ? 'ITEM' . ((int) substr($lastBarang->kode, 4) + 1) : 'ITEM1';
+
+                        $existingBarang = Barang::create([
+                            'kode' => $newCode,
+                            'nama' => $barangName,
+                        ]);
+                        Log::info('Barang baru dibuat:', ['id' => $existingBarang->id, 'nama' => $barangName]);
+                    }
+
+                    // Simpan data barang ke tabel purchase_order_barang_milenia
                     $barangEntry = PurchaseOrderBarangMAP::create([
                         'purchase_order_id' => $purchaseOrder->id,
-                        'category_id' => $barang['category_id'] ?? null,
-                        'category' => $barang['category'] ?? null,
-                        'barang_id' => $barang['barang_id'] ?? null,
-                        'barang' => $barang['barang'] ?? null,
-                        'qty' => $barang['qty'] ?? 1,
-                        'unit_id' => $barang['unit_id'] ?? null,
-                        'unit' => $barang['unit'] ?? null,
-                        'keterangan' => $barang['keterangan'] ?? null,
-                        'unit_price' => $barang['unit_price'] ?? 0,
-                        'amount_price' => $barang['amount_price'] ?? 0,
+                        'category_id'       => $barang['category_id'] ?? null,
+                        'category'          => $barang['category'] ?? null,
+                        // Gunakan ID dan nama barang dari tabel Barang
+                        'barang_id'         => $existingBarang->id,
+                        'barang'            => $existingBarang->nama,
+                        'qty'               => $barang['qty'] ?? 1,
+                        'unit_id'           => $barang['unit_id'] ?? null,
+                        'unit'              => $barang['unit'] ?? null,
+                        'keterangan'        => $barang['keterangan'] ?? null,
+                        'unit_price'        => $barang['unit_price'] ?? 0,
+                        'amount_price'      => $barang['amount_price'] ?? 0,
                     ]);
 
-                    // Log jika barang berhasil disimpan
-                    Log::info(
-                        'Data barang berhasil disimpan ke tabel purchase_order_barang_map:',
-                        ['id' => $barangEntry->id]
-                    );
+                    Log::info('Data barang berhasil disimpan ke tabel purchase_order_barang_milenia:', ['id' => $barangEntry->id]);
                 }
             } else {
                 Log::warning('Data barang tidak ditemukan di request.');
@@ -437,8 +468,12 @@ class POController extends Controller
         // Format nama file PDF
         $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
 
-        // Load view untuk PDF
-        $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+        // Query data cabang berdasarkan nama cabang yang disimpan di purchaseOrder.
+        // Jika purchaseOrder->cabang berisi nama cabang, kita asumsikan itu sesuai dengan field 'nama' di tabel cabang.
+        $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
+
+        // Load view untuk PDF dengan meneruskan data tambahan (misalnya, $cabangData)
+        $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
         // Return file PDF
         return $pdf->stream($fileName);

@@ -97,10 +97,14 @@
                 </div>
                 <div class="col-md-12">
                     <label for="cabang_po" class="form-label"><span class="text-danger">*</span>Cabang</label>
-                    <select id="cabang_po" name="cabang_po" class="form-select" data-choices data-choices-sorting="true" required>
+                    <select id="cabang_po" name="cabang_po" class="form-select"
+                        required>
                         <option selected disabled>Choose...</option>
                         @foreach ($cabang as $c)
-                            <option value="{{ $c->nama }}" data-id="{{ $c->id_cabang }}">{{ $c->nama }}</option>
+                            <option value="{{ $c->nama }}" data-id="{{ $c->id_cabang }}"
+                                data-alamat="{{ $c->alamat }}" data-telepon="{{ $c->telepon }}">
+                                {{ $c->nama }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -536,10 +540,23 @@
             const signatureCanvas = document.getElementById('signatureCanvas');
             const signatureDataURL = signatureCanvas.toDataURL('image/png'); // Mengubah ke Base64 PNG
 
+            // Ambil elemen select cabang
+            const cabangSelect = document.getElementById('cabang_po');
+            // Ambil option yang dipilih
+            const selectedOption = cabangSelect.options[cabangSelect.selectedIndex];
+
+            // Gunakan dataset (atau getAttribute jika diperlukan)
+            const cabang_id = selectedOption.dataset.id || selectedOption.getAttribute('data-id');
+            const cabang_alamat = selectedOption.dataset.alamat || selectedOption.getAttribute('data-alamat');
+            const cabang_telepon = selectedOption.dataset.telepon || selectedOption.getAttribute('data-telepon');
+
             // Kumpulkan data formulir
             const formData = {
                 no_po: document.getElementById('no_po').value,
-                cabang: document.getElementById('cabang_po').value,
+                cabang: cabangSelect.value,
+                cabang_id: cabang_id,
+                cabang_alamat: cabang_alamat,
+                cabang_telepon: cabang_telepon,
                 supplier: document.getElementById('supplier_po').value,
                 address: document.getElementById('address_po').value,
                 phone: document.getElementById('phone_po').value,
