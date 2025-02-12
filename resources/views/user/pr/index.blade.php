@@ -14,7 +14,7 @@
         .paper {
             background-color: #fff;
             width: 21cm;
-            height: 29.7cm;
+            height: auto;
             /* A4 size */
             padding: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -85,6 +85,12 @@
             cursor: crosshair;
             border: 1px solid #000;
         }
+
+        /* Membatasi lebar FilePond */
+        .filepond--root {
+            max-width: 300px;
+            /* margin: 0 auto; */
+        }
     </style>
 @endsection
 
@@ -99,7 +105,8 @@
     <div class="paper mx-auto">
         <div class="header mb-5">
             <div style="flex: 1;" class="text-start">
-                <img src="{{ asset('assets/images/logo-milenia.png') }}" alt="Logo Milenia" style="width: 100px;">
+                <img id="headerLogo" src="{{ asset('assets/images/logo-milenia.png') }}" alt="Logo Milenia"
+                    style="width: 100px;">
             </div>
             <div style="flex: 1;" class="fw-bold text-center">
                 <h3>Purchase Request (Permintaan Barang)</h3>
@@ -236,13 +243,25 @@
             </table>
             <button type="button" id="addRowBtn" class="btn btn-primary mt-2"><i class="ri-add-line"></i></button>
         </div>
-        <div class="signature-container">
-            <div class="fw-bold">TTD:</div>
-            <small><span class="text-danger">**</span>Sign Pad wajib digores</small>
-            <div class="d-flex align-content-center justify-content-start">
-                <canvas id="signatureCanvas" width="200" height="100"></canvas>
-                <button id="clearSignature" class="btn btn-outline-danger ms-2"><i
-                        class="ri-delete-bin-2-line"></i></button>
+        <div class="d-flex justify-content-between align-items-start">
+            <!-- Signature di sebelah kiri -->
+            <div class="signature-container" style="flex: 1; margin-right: 20px;">
+                <div class="fw-bold">TTD:</div>
+                <small><span class="text-danger">**</span>Sign Pad wajib digores</small>
+                <div class="d-flex align-items-center mt-2">
+                    <canvas id="signatureCanvas" width="200" height="100"></canvas>
+                    <button id="clearSignature" class="btn btn-outline-danger ms-2">
+                        <i class="ri-delete-bin-2-line"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Upload di sebelah kanan -->
+            <div class="upload-container">
+                <div class="fw-bold">Upload Lampiran Foto/PDF (Optional):</div>
+                <small><span class="text-danger">**</span>(Optional) Upload bukti foto / pdf (maks. file 10MB)</small>
+                <input type="file" class="filepond filepond-input-multiple mt-2" multiple name="filepond"
+                    data-allow-reorder="true" data-max-file-size="10MB" data-max-files="15">
             </div>
         </div>
         <div class="mt-3">
@@ -359,16 +378,17 @@
     {{-- POST Data Purchase Request --}}
     <script>
         document.querySelector(".btnAjukan").addEventListener("click", function() {
+            // Ambil signature dari canvas dan konversi ke data URL
             const signatureCanvas = document.getElementById("signatureCanvas");
             const signatureData = signatureCanvas.toDataURL("image/png");
 
-            // Ambil data dari form
+            // Ambil data form
             const dateRequest = document.getElementById("dateInput").value;
             const divisi = document.getElementById("divisi").value;
             const noPr = document.getElementById("nopr").value;
             const pt = document.getElementById("ForminputState").value;
 
-            // Mengambil important berdasarkan checkbox yang terpilih
+            // Ambil nilai important dari checkbox
             const importantCheckboxes = document.querySelectorAll(".form-check-input");
             let important = [];
             importantCheckboxes.forEach(checkbox => {
@@ -377,7 +397,7 @@
                 }
             });
 
-            // Ambil data barang
+            // Ambil data barang dari tabel
             const rows = document.querySelectorAll("#barangTable tbody tr");
             const barangData = [];
             rows.forEach(row => {
@@ -394,41 +414,61 @@
                 });
             });
 
+            // Ambil ID user (dari auth, contoh dengan Blade)
             const userId = @json(auth()->user()->ID);
 
-            // Console log data yang diambil
-            console.log("Purchase Request Data:");
-            console.log("user_id: ", userId); // Ganti dengan nilai user_id yang sesuai
-            console.log("date_request: ", dateRequest);
-            console.log("divisi: ", divisi);
-            console.log("no_pr: ", noPr);
-            console.log("pt: ", pt);
-            console.log("important: ", important);
-            console.log("barang data: ", barangData);
+            // Buat objek FormData
+            let formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('date_request', dateRequest);
+            formData.append('divisi', divisi);
+            formData.append('no_pr', noPr);
+            formData.append('pt', pt);
+            // Simpan array important dan barang_data dalam bentuk JSON string
+            formData.append('important', JSON.stringify(important));
+            formData.append('barang_data', JSON.stringify(barangData));
+            formData.append('signature', signatureData);
 
-            // Kirim data ke backend dengan POST menggunakan fetch
+            // Ambil file lampiran (opsional) dari input file yang berada di dalam .upload-container
+            const filepondElements = document.querySelectorAll('.filepond');
+            filepondElements.forEach(inputElement => {
+                // Dapatkan instance FilePond terkait
+                const pondInstance = FilePond.find(inputElement);
+                if (pondInstance) {
+                    const files = pondInstance.getFiles();
+                    if (files.length > 0) {
+                        console.log("Jumlah file lampiran:", files.length);
+                        files.forEach((fileItem, index) => {
+                            console.log(`File ${index + 1}:`, fileItem.file);
+                            // Masukkan file asli ke FormData
+                            formData.append('lampiran[]', fileItem.file);
+                        });
+                    } else {
+                        console.log("Tidak ada file lampiran yang dipilih di FilePond.");
+                    }
+                } else {
+                    console.log("Instance FilePond tidak ditemukan untuk input:", inputElement);
+                }
+            });
+
+            // Opsional: Log semua entry FormData untuk memastikan data yang dikirim
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+            // Kirim data ke backend menggunakan fetch dengan FormData
             fetch('{{ url('/purchase-request/store') }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan CSRF token disertakan
+                        // Jangan set Content-Type, biarkan browser mengatur boundary multipart-nya
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        date_request: dateRequest,
-                        divisi: divisi,
-                        no_pr: noPr,
-                        pt: pt,
-                        important: important,
-                        barang_data: barangData,
-                        signature: signatureData,
-                    })
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Response from server:", data); // Debugging response
+                    console.log("Response from server:", data);
                     if (data.success) {
-                        // SweetAlert for success
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -440,19 +480,16 @@
                             }
                         });
                     } else {
-                        // SweetAlert for failure
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: data.message, // Display detailed error message
+                            text: data.message,
                             showConfirmButton: true
                         });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-
-                    // SweetAlert for unexpected error
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan!',
@@ -489,6 +526,55 @@
         document.getElementById('clearSignature').addEventListener('click', () => {
             signaturePad.clear();
             updateButtonState();
+        });
+    </script>
+
+    <!-- Script untuk mengganti logo header sesuai pilihan PT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ptDropdown = document.getElementById('ForminputState');
+            const headerLogo = document.getElementById('headerLogo');
+
+            ptDropdown.addEventListener('change', function() {
+                const selectedPT = ptDropdown.value;
+
+                if (selectedPT === "PT. Milenia Mega Mandiri") {
+                    headerLogo.src = "{{ asset('assets/images/logo-milenia-2.png') }}";
+                } else if (selectedPT === "PT. Mega Auto Prima") {
+                    headerLogo.src = "{{ asset('assets/images/map-logo.png') }}";
+                } else {
+                    // Jika ingin mengembalikan ke logo default bila tidak ada pilihan yang cocok
+                    headerLogo.src = "{{ asset('assets/images/logo-milenia.png') }}";
+                }
+            });
+        });
+    </script>
+
+    {{-- Filepond --}}
+    <script>
+        // Inisialisasi setelah DOM siap
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pastikan semua plugin telah diregistrasi terlebih dahulu
+            FilePond.registerPlugin(
+                FilePondPluginImagePreview,
+                FilePondPluginFileValidateSize,
+                FilePondPluginImageExifOrientation,
+                FilePondPluginFileEncode
+            );
+
+            // Cari elemen input FilePond
+            const fileInputs = document.querySelectorAll('.filepond');
+
+            // Pastikan elemen input ditemukan sebelum melakukan inisialisasi
+            if (fileInputs.length) {
+                // Buat instance FilePond untuk setiap elemen yang ditemukan
+                fileInputs.forEach(input => {
+                    FilePond.create(input, {
+                        instantUpload: false, // Menonaktifkan unggahan otomatis
+                        allowMultiple: true // Jika mengizinkan beberapa file (sesuaikan kebutuhan)
+                    });
+                });
+            }
         });
     </script>
 

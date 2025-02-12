@@ -33,4 +33,9 @@ class PurchaseRequest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function lampiran()
+    {
+        return $this->hasMany(PurchaseRequestLampiran::class);
+    }
 }

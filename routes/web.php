@@ -24,6 +24,7 @@ use App\Models\PO\PurchaseOrderMAP;
 use App\Models\PO\PurchaseOrderMilenia;
 use App\Models\PR\PurchaseRequest;
 use App\Models\User;
+use setasign\Fpdi\Fpdi;
 use Barryvdh\DomPDF\Facade\PDF as PDF;
 
 /*
@@ -50,20 +51,28 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/approval-pr/{id}', function ($id) {
-    // Mengambil data purchase request berdasarkan id
-    $pr = PurchaseRequest::findOrFail($id);
-    $users = User::where('Aktif', 1)->get();
+    // Ambil data purchase request beserta lampiran
+    $pr = \App\Models\PR\PurchaseRequest::with('lampiran')->findOrFail($id);
+    $users = \App\Models\User::where('Aktif', 1)->get();
     return view('approved.index', compact('pr', 'users'));
 });
 
 Route::get('/pdf-view/{id}', function ($id) {
-    $purchaseRequest = PurchaseRequest::findOrFail($id);
+    // Ambil data purchase request (tanpa lampiran, atau cukup user untuk format file)
+    $purchaseRequest = \App\Models\PR\PurchaseRequest::with('user')->findOrFail($id);
 
-    // Menghasilkan PDF dari view 'pr' dengan data purchase request
-    $pdf = PDF::loadView('pdf.pr', compact('purchaseRequest'));
+    // Format nama file PDF
+    $userName = $purchaseRequest->user->Nama;
+    $today = \Carbon\Carbon::now()->format('Y-m-d');
+    $fileName = 'PR_' . strtolower(str_replace(' ', '_', $userName)) . '_' . $today . '.pdf';
 
-    // Mengembalikan stream PDF
-    return $pdf->stream('purchase-request-' . $id . '.pdf');
+    // Generate PDF utama dari view (misalnya: resources/views/pdf/pr.blade.php)
+    $dompdf = Pdf::loadView('pdf.pr', compact('purchaseRequest'));
+    $mainPdfContent = $dompdf->output();
+
+    return response($mainPdfContent, 200)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="' . $fileName . '"');
 });
 
 // Approval PR tanpa login

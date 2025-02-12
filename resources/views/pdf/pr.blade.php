@@ -23,9 +23,14 @@
 
         th,
         td {
-            border: 1px solid #ddd;
+            border: 1px solid #000;
             padding: 8px;
             text-align: left;
+        }
+
+        thead th {
+            background-color: #ddd;
+            /* Latar abu-abu untuk header */
         }
 
         th {
@@ -39,7 +44,7 @@
         }
 
         .info-section td {
-            padding: 5px;
+            /* padding: 5px; */
             border: none;
         }
 
@@ -69,9 +74,17 @@
         <!-- Header Section -->
         <table class="header-table">
             <tr>
-                <td style="width: 20%;"><img src="{{ asset('assets/images/logo-milenia.png') }}" alt="Logo Milenia"
-                        width="80"></td>
-                <td style="width: 60%; text-align: center; font-weight: bold;">
+                <td style="width: 20%;">
+                    @if ($purchaseRequest->pt === 'PT. Milenia Mega Mandiri')
+                        <img src="{{ asset('assets/images/logo-milenia-2.png') }}" alt="Logo Milenia" width="80">
+                    @elseif ($purchaseRequest->pt === 'PT. Mega Auto Prima')
+                        <img src="{{ asset('assets/images/map-logo.png') }}" alt="Logo MAP" width="80">
+                    @else
+                        <!-- Jika tidak memenuhi salah satu kondisi, bisa ditampilkan logo default -->
+                        <img src="{{ asset('assets/images/logo-milenia.png') }}" alt="Logo Default" width="80">
+                    @endif
+                </td>
+                <td style="width: 60%; text-align: center; font-weight: bold; font-size: 20px;">
                     <h3>Purchase Request <br> (Permintaan Barang)</h3>
                 </td>
                 <td style="width: 20%;"></td>
@@ -79,37 +92,38 @@
         </table>
 
         <!-- Info Section -->
-        <table class="info-section">
+        <table class="info-section" cellpadding="10" cellspacing="0" style="width: 100%;">
             <tr>
-                <td style="width: 100px"><strong>Nama:</strong></td>
-                <td>{{ $purchaseRequest->user->Nama }}</td>
-                <td style="width: 208px">[{{ $purchaseRequest->important == 'Rutin, Tidak Segera' ? 'x' : ' ' }}] Rutin,
+                <td style="width: 100px; border-bottom: 1px solid #000;"><strong>Nama</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->user->Nama }}</td>
+                <td style="width: 208px;">[{{ $purchaseRequest->important == 'Rutin, Tidak Segera' ? 'x' : ' ' }}]
+                    Rutin,
                     Tidak Segera</td>
             </tr>
             <tr>
-                <td><strong>Tanggal:</strong></td>
-                <td>{{ $purchaseRequest->date_request }}</td>
+                <td style="border-bottom: 1px solid #000;"><strong>Tanggal</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->date_request }}</td>
                 <td>[{{ $purchaseRequest->important == 'Rutin, Mendesak' ? 'x' : ' ' }}] Rutin, Mendesak</td>
             </tr>
             <tr>
-                <td><strong>Divisi:</strong></td>
-                <td>{{ $purchaseRequest->divisi }}</td>
+                <td style="border-bottom: 1px solid #000;"><strong>Divisi</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->divisi }}</td>
                 <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Tidak Segera' ? 'x' : ' ' }}] Tidak Rutin, Tidak
                     Segera</td>
             </tr>
             <tr>
-                <td><strong>No. PR:</strong></td>
-                <td>{{ $purchaseRequest->no_pr }}</td>
+                <td style="border-bottom: 1px solid #000;"><strong>No. PR</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->no_pr }}</td>
                 <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Segera' ? 'x' : ' ' }}] Tidak Rutin, Segera</td>
             </tr>
             <tr>
-                <td><strong>PT:</strong></td>
-                <td>{{ $purchaseRequest->pt }}</td>
+                <td style="border-bottom: 1px solid #000;"><strong>PT</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->pt }}</td>
             </tr>
         </table>
 
         <!-- Items Section -->
-        <h3>Items</h3>
+        <h3>Items:</h3>
         <table>
             <thead>
                 <tr>
