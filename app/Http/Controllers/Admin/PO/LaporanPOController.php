@@ -23,7 +23,7 @@ class LaporanPOController extends Controller
         $cabangs = Cabang::all();
         $categories = Category::all();
 
-        $detail = $this->getDetail($request);
+        $detail = $this->getDetail($request)->sortBy('no_po');
         $summary = $this->getSummary($request);
         $cabangList = DB::table('cabang')->pluck('nama');
 
@@ -106,6 +106,7 @@ class LaporanPOController extends Controller
                 'purchase_order_barang_milenia.unit_price',
                 'purchase_order_barang_milenia.amount_price'
             )
+            ->orderBy('purchase_order_milenia.no_po', 'asc')
             ->get();
 
         // Proses filter untuk ditampilkan di PDF
@@ -313,7 +314,7 @@ class LaporanPOController extends Controller
         $cabangs = Cabang::all();
         $categories = Category::all();
 
-        $detail = $this->getDetailMAP($request);
+        $detail = $this->getDetailMAP($request)->sortBy('no_po');
         $summary = $this->getSummaryMAP($request);
         $cabangList = DB::table('cabang')->pluck('nama');
 
@@ -396,6 +397,7 @@ class LaporanPOController extends Controller
                 'purchase_order_barang_map.unit_price',
                 'purchase_order_barang_map.amount_price'
             )
+            ->orderBy('purchase_order_map.no_po', 'asc')
             ->get();
 
         // Proses filter untuk ditampilkan di PDF
