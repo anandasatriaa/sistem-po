@@ -92,9 +92,10 @@ Route::get('/pdf-view-milenia/{id}', function ($id) {
     $grandtotal = $purchaseOrder->total;
     $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
     $grandtotalWords = ucfirst($formatter->format($grandtotal));
+    $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
 
     // Menghasilkan PDF dari view 'pr' dengan data purchase order
-    $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+    $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
     // Mengembalikan stream PDF
     return $pdf->stream('purchase-order-' . $id . '.pdf');
@@ -113,9 +114,10 @@ Route::get('/pdf-view-map/{id}', function ($id) {
     $grandtotal = $purchaseOrder->total;
     $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
     $grandtotalWords = ucfirst($formatter->format($grandtotal));
+    $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
 
     // Menghasilkan PDF dari view 'pr' dengan data purchase order
-    $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+    $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
     // Mengembalikan stream PDF
     return $pdf->stream('purchase-order-' . $id . '.pdf');
