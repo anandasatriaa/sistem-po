@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <label for="remarks_po" class="form-label">Remarks</label>
+                    <label for="remarks_po" class="form-label"><span class="text-danger">*</span>Remarks</label>
                     <input type="text" name="remarks_po" class="form-control" id="remarks_po">
                 </div>
                 <div class="col-md-6">
@@ -168,8 +168,6 @@
                             <i class="ri-percent-line"></i>
                         </span>
                     </div>
-                    <small class="text-muted"><span class="text-danger">**</span>input angka pajak bila terdapat
-                        pajak</small>
                 </div>
                 <div class="col-md-6">
                     <label for="discount-input" class="form-label">Discount</label>
@@ -255,7 +253,7 @@
                             </button>
                         </div>
                         <div class="col-md-4 mt-2">
-                            <input type="text" name="namapembuat_po" class="form-control" id="namapembuat_po"
+                            <input type="text" name="namapembuat_po" class="form-control" id="namapembuat_po" value="Windy Wulandari"
                                 placeholder="Nama Pembuat PO" required>
                         </div>
                     </div>
