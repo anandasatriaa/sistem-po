@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Order - PT. Mega Auto Prima</title>
+    <title>Detail Purchase Order - PT. Mega Auto Prima</title>
     <style>
         body {
             font-family: Arial, sans-serif;
