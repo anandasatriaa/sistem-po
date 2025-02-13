@@ -49,14 +49,20 @@ class AuthController extends Controller
             Log::info('Session ID:', [session()->getId()]);
 
             // Redirect berdasarkan level user
+            // if ($user->lvl == 1) {
+            //     return redirect()->route('admin.dashboard-index');
+            // } elseif (in_array($user->Jabatan, ['SPV GA', 'COO'])) {
+            //     // Jika jabatan SPV GA atau COO, arahkan ke ga.pr-status
+            //     return redirect()->route('ga.po-status');
+            // } elseif (($user->lvl == 2 || $user->lvl == 3 || $user->lvl == 4) && !in_array($user->Jabatan, ['SPV GA', 'COO'])) {
+            //     // Jika level 2, 3, atau 4 dan jabatan bukan SPV GA atau COO, arahkan ke spv.pr-status
+            //     return redirect()->route('spv.pr-status');
+            // } else {
+            //     return redirect()->route('user.pr-index');
+            // }
+
             if ($user->lvl == 1) {
                 return redirect()->route('admin.dashboard-index');
-            } elseif (in_array($user->Jabatan, ['SPV GA', 'COO'])) {
-                // Jika jabatan SPV GA atau COO, arahkan ke ga.pr-status
-                return redirect()->route('ga.po-status');
-            } elseif (($user->lvl == 2 || $user->lvl == 3 || $user->lvl == 4) && !in_array($user->Jabatan, ['SPV GA', 'COO'])) {
-                // Jika level 2, 3, atau 4 dan jabatan bukan SPV GA atau COO, arahkan ke spv.pr-status
-                return redirect()->route('spv.pr-status');
             } else {
                 return redirect()->route('user.pr-index');
             }

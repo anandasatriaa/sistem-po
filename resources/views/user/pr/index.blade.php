@@ -248,7 +248,7 @@
             <div class="signature-container" style="flex: 1; margin-right: 20px;">
                 <div class="fw-bold">TTD:</div>
                 <small><span class="text-danger">**</span>Sign Pad wajib digores</small>
-                <div class="d-flex align-items-center mt-2">
+                <div class="d-flex align-content-center mt-2">
                     <canvas id="signatureCanvas" width="200" height="100"></canvas>
                     <button id="clearSignature" class="btn btn-outline-danger ms-2">
                         <i class="ri-delete-bin-2-line"></i>
