@@ -46,8 +46,10 @@ class GAPOStatusController extends Controller
         // Format nama file PDF
         $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
 
+        $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
+
         // Load view untuk PDF
-        $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+        $pdf = PDF::loadView('pdf.po-milenia-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
         // Return file PDF
         return $pdf->stream($fileName);
@@ -73,8 +75,10 @@ class GAPOStatusController extends Controller
         // Format nama file PDF
         $fileName = 'PO_' . strtolower(str_replace(' ', '_', $noPO)) . '_' . $today . '.pdf';
 
+        $cabangData = \App\Models\Cabang\Cabang::where('nama', $purchaseOrder->cabang)->first();
+
         // Load view untuk PDF
-        $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category'));
+        $pdf = PDF::loadView('pdf.po-map-final', compact('purchaseOrder', 'grandtotalWords', 'category', 'cabangData'));
 
         // Return file PDF
         return $pdf->stream($fileName);

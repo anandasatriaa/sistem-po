@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PR\PurchaseRequest;
 use App\Models\PR\PurchaseRequestBarang;
+use App\Mail\PrApprovedMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use setasign\Fpdi\Fpdi;
 use Barryvdh\DomPDF\Facade\PDF as PDF;
 
 class GAPRStatusController extends Controller
@@ -72,21 +75,154 @@ class GAPRStatusController extends Controller
 
     public function generatePDF($id)
     {
-        $purchaseRequest = PurchaseRequest::with('barang', 'user')->findOrFail($id);
+        // Ambil data Purchase Request beserta relasi (barang, user, lampiran)
+        $purchaseRequest = PurchaseRequest::with('barang', 'user', 'lampiran')->findOrFail($id);
 
+        // Format nama file PDF berdasarkan nama user dan tanggal hari ini
         $userName = $purchaseRequest->user->Nama; // Sesuaikan jika field nama user berbeda
-
-        // Ambil tanggal hari ini
         $today = \Carbon\Carbon::now()->format('Y-m-d'); // Format: YYYY-MM-DD
-
-        // Format nama file PDF
         $fileName = 'PR_' . strtolower(str_replace(' ', '_', $userName)) . '_' . $today . '.pdf';
 
-        // Load view untuk PDF
-        $pdf = PDF::loadView('pdf.pr', compact('purchaseRequest'));
+        // 1. Generate PDF utama dari view (misalnya: resources/views/pdf/pr.blade.php)
+        $dompdf = Pdf::loadView('pdf.pr', compact('purchaseRequest'));
+        $mainPdfContent = $dompdf->output();
 
-        // Return file PDF
-        return $pdf->stream($fileName);
+        // Simpan PDF utama ke file sementara
+        $tempMainPath = tempnam(sys_get_temp_dir(), 'main') . '.pdf';
+        file_put_contents($tempMainPath, $mainPdfContent);
+
+        // 2. Buat instance FPDI untuk menggabungkan PDF
+        $fpdi = new Fpdi();
+
+        // Import setiap halaman dari PDF utama ke FPDI
+        $pageCountMain = $fpdi->setSourceFile($tempMainPath);
+        for ($pageNo = 1; $pageNo <= $pageCountMain; $pageNo++) {
+            $templateId = $fpdi->importPage($pageNo);
+            $size = $fpdi->getTemplateSize($templateId);
+            $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $fpdi->useTemplate($templateId);
+        }
+
+        // Variabel untuk mengumpulkan lampiran gambar
+        $imageAttachments = [];
+
+        // 3. Tambahkan lampiran dari Purchase Request
+        foreach ($purchaseRequest->lampiran as $lampiran) {
+            $extension = strtolower(pathinfo($lampiran->file_path, PATHINFO_EXTENSION));
+            $lampiranPath = storage_path('app/public/' . $lampiran->file_path);
+
+            // Jika lampiran berupa PDF, impor setiap halamannya
+            if ($extension === 'pdf') {
+                if (file_exists($lampiranPath)) {
+                    $pageCountAttach = $fpdi->setSourceFile($lampiranPath);
+                    for ($page = 1; $page <= $pageCountAttach; $page++) {
+                        $templateId = $fpdi->importPage($page);
+                        $size = $fpdi->getTemplateSize($templateId);
+                        $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+
+                        // Tambahkan header teks "Lampiran" di atas konten lampiran
+                        // $fpdi->SetFont('Arial', 'B', 16);
+                        // $fpdi->SetTextColor(0, 0, 0);
+                        // // Cell dengan lebar halaman; gunakan tinggi 10 mm untuk header
+                        // $fpdi->Cell($size['width'], 10, 'Lampiran', 0, 1, 'C');
+
+                        // Tempatkan template lampiran dengan offset vertikal agar tidak tertutup header
+                        $fpdi->useTemplate($templateId, 0, 10, $size['width'], $size['height'] - 10);
+                    }
+                }
+            }
+            // Jika lampiran berupa gambar, simpan ke array untuk diproses secara terpisah
+            elseif (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                if (file_exists($lampiranPath)) {
+                    $imageAttachments[] = $lampiranPath;
+                }
+            }
+            // Format lain dapat ditangani sesuai kebutuhan
+        }
+
+        // 4. Jika terdapat lampiran gambar, tampilkan dalam grid pada halaman tersendiri
+        if (count($imageAttachments) > 0) {
+            // Definisikan layout grid:
+            $maxColumns = 2;         // Jumlah kolom per halaman
+            $maxRows = 3;            // Jumlah baris per halaman
+            $imagesPerPage = $maxColumns * $maxRows; // Maksimal gambar per halaman
+
+            // Gunakan ukuran halaman A4 portrait
+            $pageWidth  = 210;  // lebar A4 dalam mm
+            $pageHeight = 297;  // tinggi A4 dalam mm
+            $margin     = 10;   // margin dalam mm
+            $headerHeight = 10; // tinggi header "Lampiran" dalam mm
+
+            // Hitung dimensi cell (area untuk tiap gambar)
+            $availableWidth  = $pageWidth - 2 * $margin;  // misal, 210 - 20 = 190 mm
+            $availableHeight = $pageHeight - $margin - $headerHeight - $margin; // misal, 297 - 10 - 10 - 10 = 267 mm
+            $cellWidth  = $availableWidth / $maxColumns;   // misal, 190 / 2 = 95 mm
+            $cellHeight = $availableHeight / $maxRows;      // misal, 267 / 3 ≈ 89 mm
+
+            // Bagi gambar menjadi beberapa halaman jika perlu
+            $chunks = array_chunk($imageAttachments, $imagesPerPage);
+            foreach ($chunks as $chunk) {
+                // Tambahkan halaman baru dengan ukuran A4 portrait
+                $fpdi->AddPage(
+                    'P',
+                    'A4'
+                );
+                // Tambahkan header teks "Lampiran"
+                $fpdi->SetFont('Arial', 'B', 16);
+                $fpdi->SetTextColor(0, 0, 0);
+                $fpdi->Cell(
+                    0,
+                    $headerHeight,
+                    'Lampiran',
+                    0,
+                    1,
+                    'C'
+                );
+
+                // Posisi awal untuk grid gambar
+                $startX = $margin;
+                $startY = $margin + $headerHeight; // header menggunakan 10 mm
+
+                $row = 0;
+                $col = 0;
+                foreach ($chunk as $imgPath) {
+                    // Dapatkan ukuran asli gambar
+                    list($origWidth, $origHeight) = getimagesize($imgPath);
+
+                    // Hitung skala agar gambar muat di dalam cell (tanpa mengubah aspek rasio)
+                    $scale = min($cellWidth / $origWidth, $cellHeight / $origHeight);
+                    $displayWidth  = $origWidth  * $scale;
+                    $displayHeight = $origHeight * $scale;
+
+                    // Hitung posisi (offset) agar gambar di-center dalam cell
+                    $cellX = $startX + $col * $cellWidth;
+                    $cellY = $startY + $row * $cellHeight;
+                    $offsetX = $cellX + ($cellWidth - $displayWidth) / 2;
+                    $offsetY = $cellY + ($cellHeight - $displayHeight) / 2;
+
+                    // Tempatkan gambar dengan ukuran yang telah dihitung
+                    $fpdi->Image($imgPath, $offsetX, $offsetY, $displayWidth, $displayHeight);
+
+                    // Pindah ke cell berikutnya
+                    $col++;
+                    if (
+                        $col >= $maxColumns
+                    ) {
+                        $col = 0;
+                        $row++;
+                    }
+                }
+            }
+        }
+
+        // Hapus file PDF utama sementara
+        @unlink($tempMainPath);
+
+        // 5. Output PDF gabungan
+        $mergedPdfContent = $fpdi->Output('S', $fileName);
+
+        return response($mergedPdfContent, 200)
+            ->header('Content-Type', 'application/pdf');
     }
 
     public function rejectPR(Request $request)
@@ -101,7 +237,7 @@ class GAPRStatusController extends Controller
             // Update status menjadi 0
             $purchaseRequest->update([
                 'status' => 0,
-                'acc_sign' => null,
+                'acc_sign' => 'REJECTED',
                 'acc_by' => null,
             ]);
 
@@ -134,6 +270,14 @@ class GAPRStatusController extends Controller
                 'acc_sign' => $signaturePath,
                 'acc_by' => $request->user_name,
             ]);
+
+            // // Mengambil data user dari kolom user_id pada purchase_request
+            // $user = User::find($purchaseRequest->user_id);
+
+            // // Mengirim email ke admin dan cc ke email karyawan dari user
+            // Mail::to('admin.ga@ccas.co.id')
+            // ->cc($user->email_karyawan)
+            // ->send(new PrApprovedMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Approval Purchase Request berhasil dilakukan'], 201);
         } catch (\Exception $e) {
