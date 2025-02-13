@@ -126,20 +126,23 @@ class AdminPRStatusController extends Controller
         if (count($imageAttachments) > 0) {
             // Definisikan layout grid:
             $maxColumns = 2;         // Jumlah kolom per halaman
-            $maxRows = 3;            // Jumlah baris per halaman
+            $maxRows = 2;            // Jumlah baris per halaman
             $imagesPerPage = $maxColumns * $maxRows; // Maksimal gambar per halaman
 
             // Gunakan ukuran halaman A4 portrait
-            $pageWidth  = 210;  // lebar A4 dalam mm
-            $pageHeight = 297;  // tinggi A4 dalam mm
-            $margin     = 10;   // margin dalam mm
-            $headerHeight = 10; // tinggi header "Lampiran" dalam mm
+            $pageWidth    = 210;  // lebar A4 dalam mm
+            $pageHeight   = 297;  // tinggi A4 dalam mm
+            $margin       = 10;   // margin dalam mm
+            $headerHeight = 10;   // tinggi header "Lampiran" dalam mm
 
             // Hitung dimensi cell (area untuk tiap gambar)
             $availableWidth  = $pageWidth - 2 * $margin;  // misal, 210 - 20 = 190 mm
             $availableHeight = $pageHeight - $margin - $headerHeight - $margin; // misal, 297 - 10 - 10 - 10 = 267 mm
             $cellWidth  = $availableWidth / $maxColumns;   // misal, 190 / 2 = 95 mm
-            $cellHeight = $availableHeight / $maxRows;      // misal, 267 / 3 ≈ 89 mm
+            $cellHeight = $availableHeight / $maxRows;      // misal, 267 / 2 ≈ 133.5 mm
+
+            // Tentukan gap/padding untuk tiap gambar (misalnya 3 mm di setiap sisi)
+            $gap = 3; // dalam mm
 
             // Bagi gambar menjadi beberapa halaman jika perlu
             $chunks = array_chunk($imageAttachments, $imagesPerPage);
@@ -151,7 +154,10 @@ class AdminPRStatusController extends Controller
                 );
                 // Tambahkan header teks "Lampiran"
                 $fpdi->SetFont('Arial', 'B', 16);
-                $fpdi->SetTextColor(0, 0, 0);
+                $fpdi->SetTextColor(0,
+                    0,
+                    0
+                );
                 $fpdi->Cell(
                     0,
                     $headerHeight,
@@ -169,18 +175,25 @@ class AdminPRStatusController extends Controller
                 $col = 0;
                 foreach ($chunk as $imgPath) {
                     // Dapatkan ukuran asli gambar
-                    list($origWidth, $origHeight) = getimagesize($imgPath);
+                    list($origWidth,
+                        $origHeight
+                    ) = getimagesize($imgPath);
 
-                    // Hitung skala agar gambar muat di dalam cell (tanpa mengubah aspek rasio)
-                    $scale = min($cellWidth / $origWidth, $cellHeight / $origHeight);
-                    $displayWidth  = $origWidth  * $scale;
+                    // Hitung effective cell dimensions dengan gap (padding) di semua sisi
+                    $effectiveCellWidth  = $cellWidth - 2 * $gap;
+                    $effectiveCellHeight = $cellHeight - 2 * $gap;
+
+                    // Hitung skala agar gambar muat di dalam effective cell (tanpa mengubah aspek rasio)
+                    $scale = min($effectiveCellWidth / $origWidth, $effectiveCellHeight / $origHeight);
+                    $displayWidth  = $origWidth * $scale;
                     $displayHeight = $origHeight * $scale;
 
-                    // Hitung posisi (offset) agar gambar di-center dalam cell
+                    // Hitung posisi cell
                     $cellX = $startX + $col * $cellWidth;
                     $cellY = $startY + $row * $cellHeight;
-                    $offsetX = $cellX + ($cellWidth - $displayWidth) / 2;
-                    $offsetY = $cellY + ($cellHeight - $displayHeight) / 2;
+                    // Hitung offset di dalam cell: mulai dari cellX + gap, dan center dalam effective area
+                    $offsetX = $cellX + $gap + (($effectiveCellWidth - $displayWidth) / 2);
+                    $offsetY = $cellY + $gap + (($effectiveCellHeight - $displayHeight) / 2);
 
                     // Tempatkan gambar dengan ukuran yang telah dihitung
                     $fpdi->Image($imgPath, $offsetX, $offsetY, $displayWidth, $displayHeight);
@@ -278,20 +291,23 @@ class AdminPRStatusController extends Controller
         if (count($imageAttachments) > 0) {
             // Definisikan layout grid:
             $maxColumns = 2;         // Jumlah kolom per halaman
-            $maxRows = 3;            // Jumlah baris per halaman
+            $maxRows = 2;            // Jumlah baris per halaman
             $imagesPerPage = $maxColumns * $maxRows; // Maksimal gambar per halaman
 
             // Gunakan ukuran halaman A4 portrait
-            $pageWidth  = 210;  // lebar A4 dalam mm
-            $pageHeight = 297;  // tinggi A4 dalam mm
-            $margin     = 10;   // margin dalam mm
-            $headerHeight = 10; // tinggi header "Lampiran" dalam mm
+            $pageWidth    = 210;  // lebar A4 dalam mm
+            $pageHeight   = 297;  // tinggi A4 dalam mm
+            $margin       = 10;   // margin dalam mm
+            $headerHeight = 10;   // tinggi header "Lampiran" dalam mm
 
             // Hitung dimensi cell (area untuk tiap gambar)
             $availableWidth  = $pageWidth - 2 * $margin;  // misal, 210 - 20 = 190 mm
             $availableHeight = $pageHeight - $margin - $headerHeight - $margin; // misal, 297 - 10 - 10 - 10 = 267 mm
             $cellWidth  = $availableWidth / $maxColumns;   // misal, 190 / 2 = 95 mm
-            $cellHeight = $availableHeight / $maxRows;      // misal, 267 / 3 ≈ 89 mm
+            $cellHeight = $availableHeight / $maxRows;      // misal, 267 / 2 ≈ 133.5 mm
+
+            // Tentukan gap/padding untuk tiap gambar (misalnya 3 mm di setiap sisi)
+            $gap = 3; // dalam mm
 
             // Bagi gambar menjadi beberapa halaman jika perlu
             $chunks = array_chunk($imageAttachments, $imagesPerPage);
@@ -303,7 +319,10 @@ class AdminPRStatusController extends Controller
                 );
                 // Tambahkan header teks "Lampiran"
                 $fpdi->SetFont('Arial', 'B', 16);
-                $fpdi->SetTextColor(0, 0, 0);
+                $fpdi->SetTextColor(0,
+                    0,
+                    0
+                );
                 $fpdi->Cell(
                     0,
                     $headerHeight,
@@ -321,18 +340,25 @@ class AdminPRStatusController extends Controller
                 $col = 0;
                 foreach ($chunk as $imgPath) {
                     // Dapatkan ukuran asli gambar
-                    list($origWidth, $origHeight) = getimagesize($imgPath);
+                    list($origWidth,
+                        $origHeight
+                    ) = getimagesize($imgPath);
 
-                    // Hitung skala agar gambar muat di dalam cell (tanpa mengubah aspek rasio)
-                    $scale = min($cellWidth / $origWidth, $cellHeight / $origHeight);
-                    $displayWidth  = $origWidth  * $scale;
+                    // Hitung effective cell dimensions dengan gap (padding) di semua sisi
+                    $effectiveCellWidth  = $cellWidth - 2 * $gap;
+                    $effectiveCellHeight = $cellHeight - 2 * $gap;
+
+                    // Hitung skala agar gambar muat di dalam effective cell (tanpa mengubah aspek rasio)
+                    $scale = min($effectiveCellWidth / $origWidth, $effectiveCellHeight / $origHeight);
+                    $displayWidth  = $origWidth * $scale;
                     $displayHeight = $origHeight * $scale;
 
-                    // Hitung posisi (offset) agar gambar di-center dalam cell
+                    // Hitung posisi cell
                     $cellX = $startX + $col * $cellWidth;
                     $cellY = $startY + $row * $cellHeight;
-                    $offsetX = $cellX + ($cellWidth - $displayWidth) / 2;
-                    $offsetY = $cellY + ($cellHeight - $displayHeight) / 2;
+                    // Hitung offset di dalam cell: mulai dari cellX + gap, dan center dalam effective area
+                    $offsetX = $cellX + $gap + (($effectiveCellWidth - $displayWidth) / 2);
+                    $offsetY = $cellY + $gap + (($effectiveCellHeight - $displayHeight) / 2);
 
                     // Tempatkan gambar dengan ukuran yang telah dihitung
                     $fpdi->Image($imgPath, $offsetX, $offsetY, $displayWidth, $displayHeight);
