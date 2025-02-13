@@ -22,7 +22,7 @@
         }
 
         .po-title {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
         }
 
@@ -47,41 +47,25 @@
             border-collapse: collapse;
             margin: 2px 0;
             page-break-inside: avoid;
+            font-size: 12px;
         }
 
         .ttd-table td {
             border: 1px solid #000;
             padding: 2px;
         }
-
-        .total-section {
-            margin-left: auto;
-            width: 300px;
-            padding: 15px;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
     </style>
 </head>
 
 <body>
-    <table style="margin-bottom: 20px">
+    <table style="margin-bottom: 10px">
         <tr>
-            <td style="text-align: left; width: 20%;">
-                <img src="{{ asset('assets/images/logo-milenia-2.png') }}" alt="Company Logo" style="height: 80px;">
+            <td style="text-align: left; width: 30%;"></td>
+            <td style="text-align: center; width: 39%;">
+                <div class="po-title">LAPORAN PO SUMMARY</div>
             </td>
-            <td style="text-align: center; width: 50%;">
-                <div class="po-title">Laporan PO Summary</div>
-            </td>
-            <td style="text-align: right; width: 28%;">
-                <div class="company-name"
-                    style="border: 2px solid #000; padding: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
-                    MILENIA MEGA MANDIRI
-                </div>
+            <td style="text-align: right; width: 30%;">
+                <img src="{{ asset('assets/images/logo-milenia-rm.png') }}" alt="Company Logo" style="height: 60px;">
             </td>
         </tr>
     </table>
@@ -147,7 +131,7 @@
                                 $totalPerCabang[$cabang] += $amount;
                                 $grandTotal += $amount;
                             @endphp
-                            <td>
+                            <td style="text-align: right">
                                 Rp. {{ $cabangData ? number_format($amount, 0, ',', '.') : '-' }},-
                             </td>
                         @endforeach
@@ -160,7 +144,7 @@
             <tr>
                 <td colspan="2"><strong>Total:</strong></td>
                 @foreach ($cabangList as $cabang)
-                    <td>
+                    <td style="text-align: right">
                         <strong>
                             Rp. {{ number_format($totalPerCabang[$cabang], 0, ',', '.') }},-
                         </strong>
@@ -172,7 +156,7 @@
             <!-- Baris Grand Total (opsional) -->
             <tr>
                 <td colspan="{{ 2 + count($cabangList) }}"><strong>Total Semua:</strong></td>
-                <td>
+                <td style="text-align: right">
                     <strong>
                         Rp. {{ number_format($grandTotal, 0, ',', '.') }},-
                     </strong>
@@ -181,8 +165,8 @@
         </tbody>
     </table>
 
-    <div style="border: 1px solid #000; padding: 10px; margin: 10px 0;">
-        <strong>Terbilang:</strong><br>
+    <div style="border: 1px solid #000; padding: 2px; margin-top: 10px; font-size: 12px;">
+        <strong>Terbilang:</strong>
         {{ strtoupper($grandtotalWords) }} RUPIAH
     </div>
 </body>

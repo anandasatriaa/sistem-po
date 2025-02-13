@@ -111,6 +111,12 @@ class LaporanPOController extends Controller
 
         // Proses filter untuk ditampilkan di PDF
 
+        // Hitung total amount dari seluruh laporan
+        $totalAmount = $laporan->sum('amount_price');
+
+        // Konversi totalAmount ke dalam bentuk terbilang
+        $grandtotalWords = $this->terbilang($totalAmount);
+
         // Filter Cabang
         if ($request->filled('cabang') && !in_array('all', $request->cabang)) {
             $cabangNames = DB::table('cabang')
@@ -137,7 +143,7 @@ class LaporanPOController extends Controller
         $dateText = $request->filled('date') ? $request->date : 'Semua Periode';
 
         // Kirim data laporan dan filter ke view PDF
-        $pdf = PDF::loadView('pdf.laporan-po-detail-milenia', compact('laporan', 'cabangText', 'categoryText', 'dateText'));
+        $pdf = PDF::loadView('pdf.laporan-po-detail-milenia', compact('laporan', 'cabangText', 'categoryText','dateText', 'grandtotalWords'));
         return $pdf->download('laporan_po_detail.pdf');
     }
 
@@ -402,6 +408,12 @@ class LaporanPOController extends Controller
 
         // Proses filter untuk ditampilkan di PDF
 
+        // Hitung total amount dari seluruh laporan
+        $totalAmount = $laporan->sum('amount_price');
+
+        // Konversi totalAmount ke dalam bentuk terbilang
+        $grandtotalWords = $this->terbilang($totalAmount);
+
         // Filter Cabang
         if ($request->filled('cabang') && !in_array('all', $request->cabang)) {
             $cabangNames = DB::table('cabang')
@@ -428,7 +440,7 @@ class LaporanPOController extends Controller
         $dateText = $request->filled('date') ? $request->date : 'Semua Periode';
 
         // Kirim data laporan dan filter ke view PDF
-        $pdf = PDF::loadView('pdf.laporan-po-detail-map', compact('laporan', 'cabangText', 'categoryText', 'dateText'));
+        $pdf = PDF::loadView('pdf.laporan-po-detail-map', compact('laporan', 'cabangText', 'categoryText', 'dateText', 'grandtotalWords'));
         return $pdf->download('laporan_po_detail.pdf');
     }
 

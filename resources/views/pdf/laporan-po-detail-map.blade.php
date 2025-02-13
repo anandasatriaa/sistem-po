@@ -22,7 +22,7 @@
         }
 
         .po-title {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
         }
 
@@ -35,7 +35,7 @@
         .details-table th,
         .details-table td {
             border: 1px solid #000;
-            padding: 5px;
+            padding: 2px;
         }
 
         .details-table th {
@@ -47,41 +47,25 @@
             border-collapse: collapse;
             margin: 2px 0;
             page-break-inside: avoid;
+            font-size: 12px;
         }
 
         .ttd-table td {
             border: 1px solid #000;
             padding: 2px;
         }
-
-        .total-section {
-            margin-left: auto;
-            width: 300px;
-            padding: 15px;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
     </style>
 </head>
 
 <body>
-    <table style="margin-bottom: 20px">
+    <table style="margin-bottom: 10px">
         <tr>
-            <td style="text-align: left; width: 20%;">
-                <img src="{{ asset('assets/images/map-logo.png') }}" alt="Company Logo" style="height: 80px;">
+            <td style="text-align: left; width: 33%;"></td>
+            <td style="text-align: center; width: 33%;">
+                <div class="po-title">LAPORAN PO DETAIL</div>
             </td>
-            <td style="text-align: center; width: 50%;">
-                <div class="po-title">Laporan PO Detail</div>
-            </td>
-            <td style="text-align: right; width: 22%;">
-                <div class="company-name"
-                    style="border: 2px solid #000; padding: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
-                    MEGA AUTO PRIMA
-                </div>
+            <td style="text-align: right; width: 33%;">
+                <img src="{{ asset('assets/images/logo-map-rm.png') }}" alt="Company Logo" style="height: 60px;">
             </td>
         </tr>
     </table>
@@ -124,13 +108,26 @@
                     <td style="width: 12%">{{ $item->cabang_name }}</td>
                     <td>{{ $item->category_name }}</td>
                     <td style="width: 20%">{{ $item->barang }}</td>
-                    <td style="width: 7%">{{ $item->qty }} {{ $item->unit }}</td>
-                    <td>Rp. {{ number_format($item->unit_price, 0, ',', '.') }},-</td>
-                    <td>Rp. {{ number_format($item->amount_price, 0, ',', '.') }},-</td>
+                    <td style="width: 7%; text-align: center;">{{ $item->qty }} {{ $item->unit }}</td>
+                    <td style="text-align: right">Rp. {{ number_format($item->unit_price, 0, ',', '.') }},-</td>
+                    <td style="text-align: right">Rp. {{ number_format($item->amount_price, 0, ',', '.') }},-</td>
                 </tr>
             @endforeach
+
+            @php
+                $totalAmount = $laporan->sum('amount_price');
+            @endphp
+            <tr style="font-weight: bold;">
+                <td colspan="8" style="text-align: left">Total:</td>
+                <td style="text-align: right">Rp. {{ number_format($totalAmount, 0, ',', '.') }},-</td>
+            </tr>
         </tbody>
     </table>
+
+    <div style="border: 1px solid #000; padding: 2px; margin-top: 10px; font-size: 12px;">
+        <strong>Terbilang:</strong>
+        {{ strtoupper($grandtotalWords) }} RUPIAH
+    </div>
 </body>
 
 </html>
