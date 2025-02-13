@@ -457,7 +457,7 @@
             fetch('{{ url('/spv/purchase-request/store') }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        // Jangan set Content-Type, biarkan browser mengatur boundary multipart-nya
                         'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan CSRF token disertakan
                     },
                     body: formData

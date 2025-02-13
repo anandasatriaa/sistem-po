@@ -271,13 +271,13 @@ class GAPRStatusController extends Controller
                 'acc_by' => $request->user_name,
             ]);
 
-            // // Mengambil data user dari kolom user_id pada purchase_request
-            // $user = User::find($purchaseRequest->user_id);
+            // Mengambil data user dari kolom user_id pada purchase_request
+            $user = User::find($purchaseRequest->user_id);
 
-            // // Mengirim email ke admin dan cc ke email karyawan dari user
-            // Mail::to('admin.ga@ccas.co.id')
-            // ->cc($user->email_karyawan)
-            // ->send(new PrApprovedMail($purchaseRequest, $user));
+            // Mengirim email ke admin dan cc ke email karyawan dari user
+            Mail::to('admin.ga@ccas.co.id')
+            ->cc($user->email_karyawan)
+            ->send(new PrApprovedMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Approval Purchase Request berhasil dilakukan'], 201);
         } catch (\Exception $e) {

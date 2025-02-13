@@ -453,10 +453,10 @@
             }
 
             // Kirim data ke backend dengan POST menggunakan fetch
-            fetch('{{ url('/purchase-request/store') }}', {
+            fetch('{{ url('/ga/purchase-request/store') }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        // Jangan set Content-Type, biarkan browser mengatur boundary multipart-nya
                         'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan CSRF token disertakan
                     },
                     body: formData
