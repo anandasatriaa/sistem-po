@@ -23,6 +23,7 @@ class CreatePurchaseRequestTable extends Migration
             $table->string('important');
             $table->integer('status');
             $table->string('signature');
+            $table->string('remarks');
             $table->string('acc_sign')->nullable();
             $table->string('acc_by')->nullable();
             $table->timestamps();

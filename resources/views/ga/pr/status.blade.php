@@ -29,6 +29,7 @@
                                 <th>No PR</th>
                                 <th>PT</th>
                                 <th>Kebutuhan</th>
+                                <th>Remarks</th>
                                 <th>Status</th>
                                 <th>Detail</th>
                             </tr>
@@ -54,6 +55,7 @@
                                     <td>{{ $pr->no_pr }}</td>
                                     <td>{{ $pr->pt }}</td>
                                     <td>{{ $pr->important }}</td>
+                                    <td>{{ $pr->remarks }}</td>
                                     <td>
                                         <span
                                             class="badge 
@@ -102,8 +104,13 @@
                     @else
                         <button type="button" class="btn btn-danger" disabled>Rejected</button>
                     @endif
-                    <button id="approvedSignature" type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-id="{{ $pr->id }}" data-bs-target="#modalTTD">Approved</button>
+
+                    @if (isset($pr) && $pr)
+                        <button id="approvedSignature" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-id="{{ $pr->id }}" data-bs-target="#modalTTD">Approved</button>
+                    @else
+                        <button type="button" class="btn btn-primary" disabled>Approved</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -155,7 +162,9 @@
                 paging: true,
                 searching: true,
                 info: true,
-                order: [[5, 'desc']],
+                order: [
+                    [5, 'desc']
+                ],
             });
         });
     </script>

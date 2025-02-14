@@ -29,6 +29,7 @@
                                 <th>No PR</th>
                                 <th>PT</th>
                                 <th>Kebutuhan</th>
+                                <th>Remarks</th>
                                 <th>Status</th>
                                 <th>Detail</th>
                             </tr>
@@ -54,6 +55,7 @@
                                     <td>{{ $pr->no_pr }}</td>
                                     <td>{{ $pr->pt }}</td>
                                     <td>{{ $pr->important }}</td>
+                                    <td>{{ $pr->remarks }}</td>
                                     <td>
                                         <span
                                             class="badge 

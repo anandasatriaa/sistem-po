@@ -119,6 +119,10 @@
                 <td style="border-bottom: 1px solid #000;"><strong>PT</strong></td>
                 <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->pt }}</td>
             </tr>
+            <tr>
+                <td style="border-bottom: 1px solid #000;"><strong>Remarks</strong></td>
+                <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->remarks }}</td>
+            </tr>
         </table>
 
         <!-- Items Section -->

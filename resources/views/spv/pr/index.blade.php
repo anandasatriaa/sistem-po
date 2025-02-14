@@ -14,7 +14,7 @@
         .paper {
             background-color: #fff;
             width: 21cm;
-            height: 29.7cm;
+            height: auto;
             /* A4 size */
             padding: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -117,12 +117,12 @@
             <div class="col-lg-8 info-section mb-3">
                 <div class="row mb-1">
                     <div class="col-lg-2">
-                        <label for="dateInput" class="form-label">Date</label>
+                        <label for="dateInput" class="form-label"><span class="text-danger">**</span>Date</label>
                     </div>
                     <div class="col-lg-10">
                         <div class="input-group">
-                            <input type="date" class="form-control" data-provider="flatpickr" id="dateInput">
-                            <span class="input-group-text">
+                            <input type="date" class="form-control" data-provider="flatpickr" id="dateInput" required>
+                            <span class="input-group-text" style="cursor:pointer;">
                                 <i class="ri-calendar-todo-line"></i>
                             </span>
                         </div>
@@ -130,10 +130,10 @@
                 </div>
                 <div class="row mb-1">
                     <div class="col-lg-2">
-                        <label for="divisi" class="form-label">Divisi</label>
+                        <label for="divisi" class="form-label"><span class="text-danger">**</span>Divisi</label>
                     </div>
                     <div class="col-lg-10">
-                        <select id="divisi" class="form-select" data-choices data-choices-sorting="true">
+                        <select id="divisi" class="form-select" data-choices data-choices-sorting="true" required>
                             <option selected disabled>Pilih Divisi...</option>
                             @foreach ($divisions as $division)
                                 <option value="{{ $division->Divisi }}">{{ $division->Divisi }}</option>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="row mb-1">
                     <div class="col-lg-2">
-                        <label for="nopr" class="form-label">No. PR</label>
+                        <label for="nopr" class="form-label"><span class="text-danger">**</span>No. PR</label>
                     </div>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" placeholder="" id="nopr" disabled>
@@ -151,14 +151,22 @@
                 </div>
                 <div class="row mb-1">
                     <div class="col-lg-2">
-                        <label for="ForminputState" class="form-label">PT.</label>
+                        <label for="ForminputState" class="form-label"><span class="text-danger">**</span>PT.</label>
                     </div>
                     <div class="col-lg-10">
-                        <select id="ForminputState" class="form-select" data-choices data-choices-sorting="true">
+                        <select id="ForminputState" class="form-select" data-choices data-choices-sorting="true" required>
                             <option selected disabled>Pilih PT...</option>
                             <option>PT. Milenia Mega Mandiri</option>
                             <option>PT. Mega Auto Prima</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-lg-2">
+                        <label for="remarks" class="form-label"><span class="text-danger">**</span>Remarks</label>
+                    </div>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" placeholder="ex: Untuk Perbaikan" id="remarks" required>
                     </div>
                 </div>
             </div>
@@ -205,9 +213,9 @@
                 <thead>
                     <tr class="text-center">
                         <th>No</th>
-                        <th>Nama Barang</th>
-                        <th>Qty</th>
-                        <th>Satuan</th>
+                        <th><span class="text-danger">**</span>Nama Barang</th>
+                        <th><span class="text-danger">**</span>Qty</th>
+                        <th><span class="text-danger">**</span>Satuan</th>
                         <th>Keterangan</th>
                         <th>Aksi</th>
                     </tr>
@@ -258,7 +266,7 @@
             <!-- File Upload di sebelah kanan -->
             <div class="upload-container">
                 <div class="fw-bold">Upload Lampiran Foto/PDF (Optional):</div>
-                <small><span class="text-danger">**</span>(Optional) Upload bukti foto / pdf (maks. file 10MB)</small>
+                <small>**(Optional) Upload bukti foto / pdf (maks. file 10MB)</small>
                 <input type="file" class="filepond filepond-input-multiple mt-2" multiple name="filepond"
                     data-allow-reorder="true" data-max-file-size="10MB" data-max-files="15">
             </div>
@@ -385,6 +393,7 @@
             const divisi = document.getElementById("divisi").value;
             const noPr = document.getElementById("nopr").value;
             const pt = document.getElementById("ForminputState").value;
+            const remarks = document.getElementById("remarks").value;
 
             // Mengambil important berdasarkan checkbox yang terpilih
             const importantCheckboxes = document.querySelectorAll(".form-check-input");
@@ -421,6 +430,7 @@
             formData.append('divisi', divisi);
             formData.append('no_pr', noPr);
             formData.append('pt', pt);
+            formData.append('remarks', remarks);
             // Simpan array important dan barang_data dalam bentuk JSON string
             formData.append('important', JSON.stringify(important));
             formData.append('barang_data', JSON.stringify(barangData));
@@ -574,6 +584,28 @@
                         instantUpload: false, // Menonaktifkan unggahan otomatis
                         allowMultiple: true // Jika mengizinkan beberapa file (sesuaikan kebutuhan)
                     });
+                });
+            }
+        });
+    </script>
+
+    {{-- Icon Calendar --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pastikan flatpickr telah diinisialisasi
+            const dateInput = document.getElementById('dateInput');
+            const calendarIcon = document.querySelector('.input-group-text');
+
+            // Jika menggunakan inisialisasi otomatis dengan data-provider, flatpickr instance akan tersimpan pada properti _flatpickr
+            if (dateInput._flatpickr) {
+                calendarIcon.addEventListener('click', function() {
+                    dateInput._flatpickr.open();
+                });
+            } else {
+                // Jika belum diinisialisasi, kamu bisa inisialisasi secara manual
+                const fp = flatpickr(dateInput, {});
+                calendarIcon.addEventListener('click', function() {
+                    fp.open();
                 });
             }
         });

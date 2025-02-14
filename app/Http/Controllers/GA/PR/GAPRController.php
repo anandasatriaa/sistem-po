@@ -34,6 +34,7 @@ class GAPRController extends Controller
             'divisi'       => 'required|string',
             'no_pr'        => 'required|string',
             'pt'           => 'required|string',
+            'remarks'      => 'required|string',
             'important'    => 'required|string', // Berisi JSON string array
             'barang_data'  => 'required|string', // Berisi JSON string array
             'signature'    => 'required|string',
@@ -58,6 +59,7 @@ class GAPRController extends Controller
             $purchaseRequest->divisi       = $request->divisi;
             $purchaseRequest->no_pr        = $request->no_pr;
             $purchaseRequest->pt           = $request->pt;
+            $purchaseRequest->remarks      = $request->remarks;
             // Decode JSON string dan gabungkan menjadi string (sesuai kebutuhan)
             $importantArray = json_decode($request->important, true);
             $purchaseRequest->important = implode(", ", $importantArray);
