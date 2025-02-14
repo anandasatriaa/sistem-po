@@ -23,13 +23,18 @@ class SPVPRStatusController extends Controller
     {
         // Ambil data user yang sedang login
         $user = Auth::user();
+        $userId = $user->ID;
         $userDivisi = $user->Divisi;
+        $userNama   = $user->Nama;
 
-        Log::info('Divisi user yang sedang login:', ['divisi' => $userDivisi]);
+        Log::info('Data user yang sedang login:', ['divisi' => $userDivisi, 'nama' => $userNama]);
 
         // Ambil data dari database dengan join ke tabel users dan filter berdasarkan divisi
         $purchaseRequests = PurchaseRequest::join('users', 'users.ID', '=', 'purchase_request.user_id')
-            ->where('purchase_request.divisi', $userDivisi) // Filter berdasarkan divisi
+            ->where(function ($query) use ($userDivisi, $userId) {
+                $query->where('purchase_request.divisi', $userDivisi)
+                    ->orWhere('purchase_request.user_id', $userId);
+            })
             ->select(
                 'purchase_request.*',
                 'users.Nama as user_name'

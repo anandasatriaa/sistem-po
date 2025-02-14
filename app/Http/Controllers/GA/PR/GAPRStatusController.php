@@ -30,16 +30,17 @@ class GAPRStatusController extends Controller
 
         // Ambil data dari database dengan join ke tabel users dan filter berdasarkan divisi
         $purchaseRequests = PurchaseRequest::join('users', 'users.ID', '=', 'purchase_request.user_id')
-            ->where(function ($query) use ($userDivisi, $userJabatan) {
-                // Kondisi untuk jabatan COO
-                if ($userJabatan === 'COO') {
-                    $query->where('purchase_request.divisi', $userDivisi)
-                        ->where('purchase_request.divisi', '!=', 'GA');
-                } else {
-                    // Jika bukan COO, tampilkan data untuk divisi yang sama atau divisi 'GA'
-                    $query->where('purchase_request.divisi', $userDivisi)
-                        ->orWhere('purchase_request.divisi', 'GA');
-                }
+            ->where(function ($query) use ($userDivisi, $userJabatan, $user) {
+                $query->where(function ($q) use ($userDivisi, $userJabatan) {
+                    if ($userJabatan === 'COO') {
+                        $q->where('purchase_request.divisi', $userDivisi)
+                            ->where('purchase_request.divisi', '!=', 'GA');
+                    } else {
+                        $q->where('purchase_request.divisi', $userDivisi)
+                            ->orWhere('purchase_request.divisi', 'GA');
+                    }
+                })
+                    ->orWhere('purchase_request.user_id', $user->ID);
             })
             ->select(
                 'purchase_request.*',
@@ -71,7 +72,6 @@ class GAPRStatusController extends Controller
 
         return view('ga.pr.status', ['purchaseRequests' => $purchaseRequests]);
     }
-
 
     public function generatePDF($id)
     {
