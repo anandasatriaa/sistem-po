@@ -176,7 +176,7 @@
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
                                     @php
-                                        $formattedFoto = str_pad($employee->ID, 5, '0', STR_PAD_LEFT);
+                                        $formattedFoto = str_pad(Auth::user()->ID, 5, '0', STR_PAD_LEFT);
 
                                         // Deteksi IP atau domain jaringan yang digunakan
                                         $serverHost = $_SERVER['SERVER_NAME'];
