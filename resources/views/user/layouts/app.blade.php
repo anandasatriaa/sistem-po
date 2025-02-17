@@ -183,7 +183,7 @@
 
                                         // Jika bukan jaringan kantor, ganti IP dengan domain ccas.co.id
                                         if ($serverHost != '192.168.0.8') {
-                                            $fotoUrl = "http://ccas.co.id/hrd-milenia/foto/{$formattedFoto}.JPG";
+                                            $fotoUrl = "http://pc.dyndns-office.com:8001/hrd-milenia/foto/{$formattedFoto}.JPG";
                                         } else {
                                             $fotoUrl = "http://192.168.0.8/hrd-milenia/foto/{$formattedFoto}.JPG";
                                         }
