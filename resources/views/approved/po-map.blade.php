@@ -93,8 +93,8 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="nameInput" class="form-label fw-bold">Nama Penanggung Jawab:</label>
-                    <input type="text" id="nameInput" name="nama" class="form-control form-control-lg"
+                    <label for="namaPenandatangan" class="form-label fw-bold">Nama Penanggung Jawab:</label>
+                    <input type="text" id="namaPenandatangan" name="nama" class="form-control form-control-lg"
                         value="{{ $spvGA ? $spvGA->Nama : '' }}">
                 </div>
             </div>
@@ -130,52 +130,48 @@
 
     <script>
         $(document).ready(function() {
-            // Inisialisasi Select2 (tetap sama)
-            $('#nameDropdown').select2({
-                placeholder: "Silahkan pilih nama...",
-                allowClear: true,
-                width: '100%'
-            });
-
-            // Inisialisasi SignaturePad (menggantikan kode event manual)
             const canvas = document.getElementById('signatureCanvas');
-            // Pastikan canvas telah disesuaikan ukurannya (opsional)
             const signaturePad = new SignaturePad(canvas, {
-                backgroundColor: 'rgba(255, 255, 255, 0)' // atau bisa diset ke 'white'
+                backgroundColor: 'rgba(255, 255, 255, 0)'
             });
 
-            // Fungsi untuk mengupdate status tombol Approved
+            // Fungsi untuk update status tombol Approved
             function updateButtonState() {
-                var selectedName = $('#nameDropdown').val();
-                // Gunakan method isEmpty() dari SignaturePad untuk cek apakah sudah ada tanda tangan
-                if (!signaturePad.isEmpty() && selectedName) {
-                    $('#btnApproved').prop('disabled', false);
-                } else {
-                    $('#btnApproved').prop('disabled', true);
-                }
+                var namaPenandatangan = $('#namaPenandatangan').val().trim();
+
+                // Tombol aktif hanya jika nama penandatangan sudah diisi
+                $('#btnApproved').prop('disabled', !namaPenandatangan);
             }
 
-            // Panggil updateButtonState setiap kali pengguna selesai menggambar tanda tangan
-            signaturePad.onEnd = updateButtonState;
+            // Pastikan tombol dalam keadaan disable saat halaman dimuat
+            updateButtonState();
+
+            // Update tombol saat input nama berubah
+            $('#namaPenandatangan').on('input', function() {
+                updateButtonState();
+            });
 
             // Tombol Clear Signature
-            document.getElementById('clearSignature').addEventListener('click', () => {
+            $('#clearSignature').on('click', function() {
                 signaturePad.clear();
                 updateButtonState();
             });
 
-            // Update tombol saat dropdown berubah
-            $('#nameDropdown').on('change', function() {
+            // Gunakan onEnd langsung pada SignaturePad untuk update tombol saat selesai menggambar
+            signaturePad.onEnd = function() {
+                console.log('Tanda tangan selesai');
                 updateButtonState();
-            });
+            };
 
             // Event klik tombol Approved
             $('#btnApproved').on('click', function() {
                 // Ambil data tanda tangan dari canvas sebagai data URL
                 var signatureData = signaturePad.toDataURL();
-                var userName = $('#nameDropdown').val();
-                // Ambil jabatan dari option yang dipilih
-                var jabatan = $('#nameDropdown option:selected').data('jabatan');
+                var userName = $('#namaPenandatangan').val().trim();
+                var jabatan = 'SPV GA';
+
+                console.log("Nama Penandatangan: " + userName);
+            console.log("Jabatan: " + jabatan);
                 var poId = {{ $po->id }};
 
                 $.ajax({
@@ -228,7 +224,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Ambil jabatan dari option yang dipilih
-                        var jabatan = $('#nameDropdown option:selected').data('jabatan');
+                        var jabatan = 'SPV GA';
                         var poId = {{ $po->id }};
                         $.ajax({
                             url: '{{ route('po.rejected') }}',
