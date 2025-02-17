@@ -166,7 +166,7 @@
             <p style="font-size: 1.1em; color: #0275d8; margin: 5px 0 0;">
                 untuk melanjutkan ke tahapan Purchase Order admin dapat melakukan pembuatan Purchase Order pada link
                 berikut:
-                <a href="http://192.168.0.8/sistem-po/"
+                <a href="http://ccas.co.id/sistem-po/"
                     style="color: #000000; font-weight: bold; text-decoration: none; border: 2px solid #0275d8; padding: 5px 10px; border-radius: 3px;">SISTEM
                     GA</a>.
             </p>
