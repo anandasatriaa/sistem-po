@@ -4,6 +4,7 @@
 
 @section('css')
     <style>
+        /* CSS Awal */
         body {
             background-color: #f5f5f5;
             font-family: Arial, sans-serif;
@@ -19,10 +20,6 @@
             padding: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd;
-            /* display: flex; */
-            /* flex-direction: column; */
-            /* justify-content: space-between; */
-            /* position: relative; */
         }
 
         .header,
@@ -43,15 +40,12 @@
         }
 
         .checkbox-group {
-            /* Menghilangkan display flex agar checkbox berada satu per baris */
             display: block;
         }
 
         .checkbox-group .form-check {
-            /* Setiap checkbox berada dalam satu baris */
             display: block;
             margin-bottom: 10px;
-            /* Memberikan jarak antar checkbox */
         }
 
         table {
@@ -75,10 +69,7 @@
         }
 
         .signature-container {
-            /* margin-top: auto; */
-            /* Dorong elemen ini ke bagian bawah kontainer */
             text-align: left;
-            /* padding-top: 20px; */
         }
 
         canvas {
@@ -86,10 +77,48 @@
             border: 1px solid #000;
         }
 
-        /* Membatasi lebar FilePond */
         .filepond--root {
             max-width: 300px;
-            /* margin: 0 auto; */
+        }
+
+        /* Tambahan untuk badge agar teks tidak meluber */
+        .badge {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        /* Media Query untuk tampilan mobile */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container-custom,
+            .paper {
+                width: 100%;
+                padding: 15px;
+                margin: 0 auto;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header img {
+                width: 80px;
+                margin-bottom: 10px;
+            }
+
+            .checkbox-group {
+                margin-top: 15px;
+            }
+
+            table,
+            th,
+            td {
+                font-size: 12px;
+            }
         }
     </style>
 @endsection
@@ -208,66 +237,75 @@
         </div>
 
         <div class="table-section mt-3">
-            <table id="barangTable">
-                <thead>
-                    <tr class="text-center">
-                        <th>No</th>
-                        <th><span class="text-danger">**</span>Nama Barang</th>
-                        <th><span class="text-danger">**</span>Qty</th>
-                        <th><span class="text-danger">**</span>Satuan</th>
-                        <th>Keterangan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><input list="barangList" name="barang[]" class="form-control" />
-                            <datalist id="barangList">
-                                @foreach ($barangs as $barang)
-                                    <option value="{{ $barang->nama }}">{{ $barang->nama }}</option>
-                                @endforeach
-                            </datalist>
-                        </td>
-                        <td><input type="number" name="qty[]" class="form-control" placeholder="" style="width: 60px">
-                        </td>
-                        <td>
-                            <select name="satuan[]" class="form-select" data-choices data-choices-sorting="true">
-                                <option selected disabled>Pilih...</option>
-                                @foreach ($units as $unit)
-                                    <option value="{{ $unit->satuan }}">{{ $unit->satuan }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <textarea name="keterangan[]" id="" class="form-control" style="height: 40px"></textarea>
-                        </td>
-                        <td><button type="button" class="removeRowBtn btn btn-danger"><i
-                                    class="ri-delete-bin-2-line"></i></button></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="barangTable">
+                    <thead>
+                        <tr class="text-center">
+                            <th>No</th>
+                            <th><span class="text-danger">**</span>Nama Barang</th>
+                            <th><span class="text-danger">**</span>Qty</th>
+                            <th><span class="text-danger">**</span>Satuan</th>
+                            <th>Keterangan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input list="barangList" name="barang[]" class="form-control" style="width: 230px" />
+                                <datalist id="barangList">
+                                    @foreach ($barangs as $barang)
+                                        <option value="{{ $barang->nama }}">{{ $barang->nama }}</option>
+                                    @endforeach
+                                </datalist>
+                            </td>
+                            <td><input type="number" name="qty[]" class="form-control" placeholder=""
+                                    style="width: 60px">
+                            </td>
+                            <td>
+                                <select name="satuan[]" class="form-select" style="width: 100px">
+                                    <option selected disabled>Pilih...</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->satuan }}">{{ $unit->satuan }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <textarea name="keterangan[]" id="" class="form-control" style="height: 40px; width: 230px;"></textarea>
+                            </td>
+                            <td><button type="button" class="removeRowBtn btn btn-danger"><i
+                                        class="ri-delete-bin-2-line"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <button type="button" id="addRowBtn" class="btn btn-primary mt-2"><i class="ri-add-line"></i></button>
         </div>
-        <div class="d-flex justify-content-between align-items-start">
+        <div class="row">
             <!-- Signature di sebelah kiri -->
-            <div class="signature-container" style="flex: 1; margin-right: 20px;">
-                <div class="fw-bold">TTD:</div>
-                <small><span class="text-danger">**</span>Sign Pad wajib digores</small>
-                <div class="d-flex align-content-center mt-2">
-                    <canvas id="signatureCanvas" width="200" height="100"></canvas>
-                    <button id="clearSignature" class="btn btn-outline-danger ms-2">
-                        <i class="ri-delete-bin-2-line"></i>
-                    </button>
+            <div class="col-12 col-md-6">
+                <div class="signature-container">
+                    <div class="fw-bold">TTD:</div>
+                    <small><span class="text-danger">**</span>Sign Pad wajib digores</small>
+                    <div class="d-flex align-content-center mt-2">
+                        <canvas id="signatureCanvas" width="200" height="100"></canvas>
+                        <button id="clearSignature" class="btn btn-outline-danger ms-2">
+                            <i class="ri-delete-bin-2-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- File Upload di sebelah kanan -->
-            <div class="upload-container">
-                <div class="fw-bold">Upload Lampiran Foto/PDF (Optional):</div>
-                <small>**(Optional) Upload bukti foto / pdf (maks. file 10MB)</small>
-                <input type="file" class="filepond filepond-input-multiple mt-2" multiple name="filepond"
-                    data-allow-reorder="true" data-max-file-size="10MB" data-max-files="15">
+            <!-- File Upload di sebelah kanan (akan turun ke baris bawah di layar kecil) -->
+            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                <div class="d-flex justify-content-end">
+                    <div class="upload-container">
+                        <div class="fw-bold">Upload Lampiran Foto/PDF (Optional):</div>
+                        <small>**(Optional) Upload bukti foto / pdf (maks. file 10MB)</small>
+                        <input type="file" class="filepond filepond-input-multiple mt-2" multiple name="filepond"
+                            data-allow-reorder="true" data-max-file-size="10MB" data-max-files="15">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mt-3">
@@ -317,7 +355,7 @@
                 </td>
                 <td><input type="number" name="qty[]" class="form-control" placeholder="" style="width: 60px"></td>
                 <td>
-                    <select name="satuan[]" class="form-select" data-choices data-choices-sorting="true">
+                    <select name="satuan[]" class="form-select">
                         <option selected disabled>Pilih...</option>
                         @foreach ($units as $unit)
                             <option value="{{ $unit->satuan }}">{{ $unit->satuan }}</option>
