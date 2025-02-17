@@ -282,7 +282,7 @@ class SPVPRStatusController extends Controller
 
             // Mengirim email ke admin dan cc ke email karyawan dari user
             Mail::to('admin.ga@ccas.co.id')
-            ->cc($user->email_karyawan)
+            ->cc([$user->email_karyawan, 'it.web2@ccas.co.id'])
             ->send(new PrApprovedMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Approval Purchase Request berhasil dilakukan'], 201);

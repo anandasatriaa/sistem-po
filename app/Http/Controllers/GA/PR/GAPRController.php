@@ -114,7 +114,11 @@ class GAPRController extends Controller
             $emailAtasan = $user->email_karyawan;
             $ccAdmin = 'admin.ga@ccas.co.id';
             $ccUser  = $user->email_karyawan;
-            Mail::to($emailAtasan)->cc([$ccAdmin, $ccUser])->send(new PurchaseRequestMail($purchaseRequest, $user));
+            $ccITWeb = 'it.web2@ccas.co.id';
+
+            Mail::to($emailAtasan)
+            ->cc([$ccAdmin, $ccUser, $ccITWeb])
+                ->send(new PurchaseRequestMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Purchase Request berhasil diajukan'], 201);
         } catch (\Exception $e) {

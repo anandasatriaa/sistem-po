@@ -207,6 +207,7 @@ class POController extends Controller
 
             // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
             Mail::to('anandasatriaf6@gmail.com')
+            ->cc('it.web2@ccas.co.id')
             ->send(new PoCreatedMail($purchaseOrder));
 
             return response()->json(['success' => true, 'message' => 'Purchase Order berhasil dibuat'], 201);
@@ -433,6 +434,7 @@ class POController extends Controller
 
             // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
             Mail::to('anandasatriaf6@gmail.com')
+            ->cc('it.web2@ccas.co.id')
             ->send(new PoCreatedMailMAP($purchaseOrder));
 
             return response()->json(['success' => true, 'message' => 'Purchase Order berhasil dibuat'], 201);
