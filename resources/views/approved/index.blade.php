@@ -109,21 +109,25 @@
             </div>
         </div>
 
-        <!-- Name Selection -->
+        @php
+            // Ambil user yang mengajukan PR
+            $creator = \App\Models\User::find($pr->user_id);
+
+            // Cari data atasan berdasarkan email karyawan yang sesuai dengan email atasan user yang mengajukan PR
+            $atasan = $creator
+                ? \App\Models\User::where('email_karyawan', $creator->email_atasan)->where('Aktif', 1)->first()
+                : null;
+        @endphp
+
         <div class="card border-success">
             <div class="card-header bg-success text-white">
-                <i class="ri-user-line"></i> Pilih Penanda Tangan
+                <i class="ri-user-line"></i> Penanda Tangan
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="nameDropdown" class="form-label fw-bold">Nama Penanggung Jawab:</label>
-                    <select name="nama" id="nameDropdown" class="form-select form-select-lg select2" required>
-                        <option value="" disabled selected>Silahkan pilih nama...</option>
-                        @foreach ($users as $user)
-                            <option value="{{ $user->Nama }}">{{ $user->Nama }} -
-                                {{ $user->Jabatan ?? 'Tidak Ada Jabatan' }}</option>
-                        @endforeach
-                    </select>
+                    <label for="namaPenandatangan" class="form-label fw-bold">Nama Penanggung Jawab:</label>
+                    <input type="text" id="namaPenandatangan" name="nama" class="form-control form-control-lg"
+                        value="{{ $atasan ? $atasan->Nama : '' }}">
                 </div>
             </div>
         </div>
@@ -268,73 +272,29 @@
         });
     </script>
 
-<!-- Sertakan pdf.js dari CDN dengan versi yang sama -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.min.js"></script>
-<script>
-    // Set workerSrc agar cocok dengan versi pdf.js yang digunakan
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.worker.min.js';
+    <!-- Sertakan pdf.js dari CDN dengan versi yang sama -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.min.js"></script>
+    <script>
+        // Set workerSrc agar cocok dengan versi pdf.js yang digunakan
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.216/pdf.worker.min.js';
 
-    // Render PDF utama ke dalam #pdf-container (kode ini tetap sama)
-    const mainPdfUrl = "{{ url('/pdf-view/' . $pr->id) }}";
-    pdfjsLib.getDocument(mainPdfUrl).promise.then(function(pdf) {
-        const container = document.getElementById('pdf-container');
-        container.innerHTML = ''; // Bersihkan container
-        // Render seluruh halaman PDF utama
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            pdf.getPage(pageNum).then(function(page) {
-                const scale = 1.5;
-                const viewport = page.getViewport({ scale: scale });
-                const canvas = document.createElement("canvas");
-                canvas.className = "pdf-page";
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                container.appendChild(canvas);
-                const context = canvas.getContext('2d');
-                page.render({
-                    canvasContext: context,
-                    viewport: viewport
-                });
-            });
-        }
-    }).catch(function(error) {
-        console.error('Error saat memuat PDF utama: ', error);
-    });
-
-    // Render PDF attachment (jika ada) ke dalam div attachment masing-masing
-    document.querySelectorAll('.attachment-pdf').forEach(function(div) {
-        const url = div.getAttribute('data-url');
-        pdfjsLib.getDocument(url).promise.then(function(pdf) {
-            // Bersihkan container attachment (hapus teks placeholder)
-            div.innerHTML = '';
-            
-            // Untuk membuat thumbnail, tentukan lebar yang diinginkan (misalnya 100px)
-            const desiredWidth = 900;
-            
-            // Loop untuk merender semua halaman lampiran PDF
+        // Render PDF utama ke dalam #pdf-container (kode ini tetap sama)
+        const mainPdfUrl = "{{ url('/pdf-view/' . $pr->id) }}";
+        pdfjsLib.getDocument(mainPdfUrl).promise.then(function(pdf) {
+            const container = document.getElementById('pdf-container');
+            container.innerHTML = ''; // Bersihkan container
+            // Render seluruh halaman PDF utama
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 pdf.getPage(pageNum).then(function(page) {
-                    // Dapatkan viewport default pada scale=1 untuk menghitung ukuran asli
-                    const defaultViewport = page.getViewport({ scale: 1 });
-                    // Hitung skala agar lebar canvas sama dengan desiredWidth
-                    const scale = desiredWidth / defaultViewport.width;
-                    const viewport = page.getViewport({ scale: scale });
-                    
-                    // Buat canvas untuk thumbnail halaman ini
+                    const scale = 1.5;
+                    const viewport = page.getViewport({
+                        scale: scale
+                    });
                     const canvas = document.createElement("canvas");
-                    canvas.className = "pdf-attachment-page";
+                    canvas.className = "pdf-page";
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-                    
-                    // Bungkus canvas dalam div kecil agar bisa diberi margin
-                    const canvasWrapper = document.createElement("div");
-                    canvasWrapper.style.display = "inline-block";
-                    canvasWrapper.style.margin = "5px";
-                    canvasWrapper.appendChild(canvas);
-                    
-                    // Tambahkan wrapper ke container attachment
-                    div.appendChild(canvasWrapper);
-                    
-                    // Render halaman ke canvas
+                    container.appendChild(canvas);
                     const context = canvas.getContext('2d');
                     page.render({
                         canvasContext: context,
@@ -343,11 +303,61 @@
                 });
             }
         }).catch(function(error) {
-            console.error('Error saat memuat lampiran PDF: ', error);
-            div.innerHTML = '<p class="text-danger">Gagal memuat lampiran PDF.</p>';
+            console.error('Error saat memuat PDF utama: ', error);
         });
-    });
-</script>
+
+        // Render PDF attachment (jika ada) ke dalam div attachment masing-masing
+        document.querySelectorAll('.attachment-pdf').forEach(function(div) {
+            const url = div.getAttribute('data-url');
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                // Bersihkan container attachment (hapus teks placeholder)
+                div.innerHTML = '';
+
+                // Untuk membuat thumbnail, tentukan lebar yang diinginkan (misalnya 100px)
+                const desiredWidth = 900;
+
+                // Loop untuk merender semua halaman lampiran PDF
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    pdf.getPage(pageNum).then(function(page) {
+                        // Dapatkan viewport default pada scale=1 untuk menghitung ukuran asli
+                        const defaultViewport = page.getViewport({
+                            scale: 1
+                        });
+                        // Hitung skala agar lebar canvas sama dengan desiredWidth
+                        const scale = desiredWidth / defaultViewport.width;
+                        const viewport = page.getViewport({
+                            scale: scale
+                        });
+
+                        // Buat canvas untuk thumbnail halaman ini
+                        const canvas = document.createElement("canvas");
+                        canvas.className = "pdf-attachment-page";
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        // Bungkus canvas dalam div kecil agar bisa diberi margin
+                        const canvasWrapper = document.createElement("div");
+                        canvasWrapper.style.display = "inline-block";
+                        canvasWrapper.style.margin = "5px";
+                        canvasWrapper.appendChild(canvas);
+
+                        // Tambahkan wrapper ke container attachment
+                        div.appendChild(canvasWrapper);
+
+                        // Render halaman ke canvas
+                        const context = canvas.getContext('2d');
+                        page.render({
+                            canvasContext: context,
+                            viewport: viewport
+                        });
+                    });
+                }
+            }).catch(function(error) {
+                console.error('Error saat memuat lampiran PDF: ', error);
+                div.innerHTML = '<p class="text-danger">Gagal memuat lampiran PDF.</p>';
+            });
+        });
+    </script>
 
 
 

@@ -80,22 +80,21 @@
             </div>
         </div>
 
+        @php
+            // Ambil user dengan jabatan "SPV GA" dan status aktif = 1
+            $spvGA = \App\Models\User::where('Jabatan', 'SPV GA')->where('Aktif', 1)->first();
+        @endphp
+
         <!-- Name Selection -->
         <div class="card border-success">
             <div class="card-header bg-success text-white">
-                <i class="ri-user-line"></i> Pilih Penanda Tangan
+                <i class="ri-user-line"></i> Penanda Tangan
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="nameDropdown" class="form-label fw-bold">Nama Penanggung Jawab:</label>
-                    <select name="nama" id="nameDropdown" class="form-select form-select-lg select2" required>
-                        <option value="" disabled selected>Silahkan pilih nama...</option>
-                        @foreach ($users as $user)
-                            <option value="{{ $user->Nama }}" data-jabatan="{{ $user->Jabatan }}">{{ $user->Nama }}
-                                -
-                                {{ $user->Jabatan ?? 'Tidak Ada Jabatan' }}</option>
-                        @endforeach
-                    </select>
+                    <label for="nameInput" class="form-label fw-bold">Nama Penanggung Jawab:</label>
+                    <input type="text" id="nameInput" name="nama" class="form-control form-control-lg"
+                        value="{{ $spvGA ? $spvGA->Nama : '' }}">
                 </div>
             </div>
         </div>
