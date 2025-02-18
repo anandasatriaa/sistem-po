@@ -80,7 +80,7 @@
             <td style="width: 10%; padding: 3;"><strong>To: </strong></td>
             <td colspan="3" style="width: 40%; padding: 3;">{{ $formData['supplier'] }}</td>
             <td style="width: 10%; padding: 3;"><strong>From: </strong></td>
-            <td style="width: 40%; padding: 3;">Mega Auto Prima</td>
+            <td style="width: 40%; padding: 3;">PT. Mega Auto Prima</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
             <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
@@ -231,7 +231,7 @@
                 <td style="width: 10%; padding: 3;"><strong>To: </strong></td>
                 <td colspan="3" style="width: 40%; padding: 3;">{{ $formData['supplier'] }}</td>
                 <td style="width: 10%; padding: 3;"><strong>From: </strong></td>
-                <td style="width: 40%; padding: 3;">Mega Auto Prima</td>
+                <td style="width: 40%; padding: 3;">PT. Mega Auto Prima</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
                 <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
