@@ -87,9 +87,9 @@
 <body>
     <div class="container">
         <!-- Header dengan logo -->
-        <div class="header">
+        {{-- <div class="header">
             <img src="{{ $message->embed(public_path('assets/images/logo-milenia-2.png')) }}" alt="Logo Milenia">
-        </div>
+        </div> --}}
 
         <h2>Detail Purchase Order</h2>
         <p>Purchase Order baru telah dibuat dengan detail sebagai berikut:</p>
