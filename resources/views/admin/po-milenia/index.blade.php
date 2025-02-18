@@ -840,15 +840,15 @@
             document.getElementById('no_po').value = newPo; // Set input dengan no PO baru
         });
 
-        // Fungsi untuk increment nomor PO (misalnya PLO000001 menjadi PLO000002)
+        // Fungsi untuk increment nomor PO (misalnya PL000001 menjadi PL000002)
         function incrementPo(po) {
-            let poNumber = po.replace('PLO', ''); // Ambil nomor setelah 'PLO'
+            let poNumber = po.replace('PL', ''); // Ambil nomor setelah 'PLO'
             let newPoNumber = parseInt(poNumber) + 1; // Tambah 1
 
             // Pastikan nomor PO baru memiliki 6 digit
             let newPoNumberFormatted = newPoNumber.toString().padStart(6, '0');
 
-            return 'PLO' + newPoNumberFormatted; // Kembalikan dengan format 'PLO' di depan
+            return 'PL' + newPoNumberFormatted; // Kembalikan dengan format 'PLO' di depan
         }
     </script>
 

@@ -421,34 +421,116 @@
 
     {{-- POST Data Purchase Request --}}
     <script>
+        // Fungsi untuk mengecek apakah canvas tanda tangan kosong
+        function isCanvasBlank(canvas) {
+            const blank = document.createElement("canvas");
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+            return canvas.toDataURL() === blank.toDataURL();
+        }
+        
         document.querySelector(".btnAjukan").addEventListener("click", function() {
+            let missingFields = [];
+
+            // Validasi tanggal request
+            const dateRequest = document.getElementById("dateInput").value.trim();
+            if (!dateRequest) {
+                missingFields.push("Date");
+            }
+
+            // Validasi divisi (pastikan tidak default)
+            const divisi = document.getElementById("divisi").value.trim();
+            if (!divisi || divisi === "Pilih Divisi...") {
+                missingFields.push("Divisi");
+            }
+
+            // Validasi PT (pastikan tidak default)
+            const pt = document.getElementById("ForminputState").value.trim();
+            if (!pt || pt === "Pilih PT...") {
+                missingFields.push("PT");
+            }
+
+            // Validasi remarks
+            const remarks = document.getElementById("remarks").value.trim();
+            if (!remarks) {
+                missingFields.push("Remarks");
+            }
+
+            // Validasi checkbox (jenis permintaan)
+            const importantCheckboxes = document.querySelectorAll('input[name="exclusive-checkbox"]');
+            let checkboxSelected = false;
+            importantCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    checkboxSelected = true;
+                }
+            });
+            if (!checkboxSelected) {
+                missingFields.push("Jenis Permintaan (checkbox)");
+            }
+
+            // Validasi data barang dari tabel
+            const rows = document.querySelectorAll("#barangTable tbody tr");
+            if (rows.length === 0) {
+                missingFields.push("Data Barang (tidak ada baris yang diisi)");
+            } else {
+                rows.forEach((row, index) => {
+                    const rowNumber = index + 1;
+                    const namaBarang = row.querySelector("input[name='barang[]']").value.trim();
+                    const qty = row.querySelector("input[name='qty[]']").value.trim();
+                    const satuan = row.querySelector("select[name='satuan[]']").value.trim();
+
+                    if (!namaBarang) {
+                        missingFields.push("Baris " + rowNumber + " - Nama Barang");
+                    }
+                    if (!qty) {
+                        missingFields.push("Baris " + rowNumber + " - Quantity");
+                    }
+                    // Pastikan dropdown satuan tidak dalam keadaan default
+                    if (!satuan || satuan === "Pilih...") {
+                        missingFields.push("Baris " + rowNumber + " - Satuan");
+                    }
+                });
+            }
+
+            // Validasi tanda tangan (signature) dari canvas
             const signatureCanvas = document.getElementById("signatureCanvas");
+            if (isCanvasBlank(signatureCanvas)) {
+                missingFields.push("Tanda Tangan (Signpad)");
+            }
+
+            // Jika ada data yang belum lengkap, tampilkan peringatan dan hentikan submit
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Belum Lengkap!',
+                    html: 'Harap lengkapi data berikut:<br><ul style="text-align: left;">' +
+                        missingFields.map(field => `<li>${field}</li>`).join('') +
+                        '</ul>',
+                    showConfirmButton: true
+                });
+                return; // Hentikan eksekusi jika ada data yang belum diisi
+            }
+
+            // Jika semua data lengkap, lanjutkan pengambilan data lainnya
+
+            // Ambil signature dari canvas dan konversi ke data URL
             const signatureData = signatureCanvas.toDataURL("image/png");
 
-            // Ambil data dari form
-            const dateRequest = document.getElementById("dateInput").value;
-            const divisi = document.getElementById("divisi").value;
-            const noPr = document.getElementById("nopr").value;
-            const pt = document.getElementById("ForminputState").value;
-            const remarks = document.getElementById("remarks").value;
-
-            // Mengambil important berdasarkan checkbox yang terpilih
-            const importantCheckboxes = document.querySelectorAll(".form-check-input");
-            let important = [];
+            // Ambil nilai important dari checkbox
+            const important = [];
             importantCheckboxes.forEach(checkbox => {
                 if (checkbox.checked) {
                     important.push(checkbox.value);
                 }
             });
 
-            // Ambil data barang
-            const rows = document.querySelectorAll("#barangTable tbody tr");
+            // Ambil data barang dari tabel
             const barangData = [];
             rows.forEach(row => {
-                const namaBarang = row.querySelector("input[name='barang[]']").value;
-                const qty = row.querySelector("input[name='qty[]']").value;
-                const satuan = row.querySelector("select[name='satuan[]']").value;
-                const keterangan = row.querySelector("textarea[name='keterangan[]']").value;
+                const namaBarang = row.querySelector("input[name='barang[]']").value.trim();
+                const qty = row.querySelector("input[name='qty[]']").value.trim();
+                const satuan = row.querySelector("select[name='satuan[]']").value.trim();
+                const keterangan = row.querySelector("textarea[name='keterangan[]']").value.trim();
 
                 barangData.push({
                     nama_barang: namaBarang,
@@ -457,6 +539,9 @@
                     keterangan: keterangan
                 });
             });
+
+            // Ambil data noPr (jika diperlukan)
+            const noPr = document.getElementById("nopr").value.trim();
 
             const userId = @json(auth()->user()->ID);
 
