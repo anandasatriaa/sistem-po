@@ -35,7 +35,7 @@
         .details-table th,
         .details-table td {
             border: 1px solid #000;
-            padding: 2px;
+            padding: 3px;
         }
 
         .details-table th {
@@ -47,12 +47,12 @@
             border-collapse: collapse;
             margin: 2px 0;
             page-break-inside: avoid;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .ttd-table td {
             border: 1px solid #000;
-            padding: 1px;
+            padding: 3px;
         }
 
         .page-break {
@@ -64,7 +64,7 @@
 <body>
     @php
         // Batas maksimal baris yang ditampilkan di halaman pertama
-        $maxItemsOnFirstPage = 23;
+        $maxItemsOnFirstPage = 14;
         $items = $purchaseOrder->barang;
         $itemsCount = $items->count();
     @endphp
@@ -82,56 +82,56 @@
         </tr>
     </table>
 
-    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 12px;">
+    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 13px;">
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>To: </strong></td>
-            <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->supplier }}</td>
-            <td style="width: 10%; padding: 1;"><strong>From: </strong></td>
-            <td style="width: 40%; padding: 1;">Milenia Mega Mandiri</td>
+            <td style="width: 10%; padding: 3;"><strong>To: </strong></td>
+            <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->supplier }}</td>
+            <td style="width: 10%; padding: 3;"><strong>From: </strong></td>
+            <td style="width: 40%; padding: 3;">Milenia Mega Mandiri</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>Address: </strong></td>
-            <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->address }}</td>
-            <td style="width: 10%; padding: 1;"><strong>Address: </strong></td>
-            <td style="width: 40%; padding: 1;">{{ $cabangData ? $cabangData->alamat : '-' }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
+            <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->address }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
+            <td style="width: 40%; padding: 3;">{{ $cabangData ? $cabangData->alamat : '-' }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>Phone: </strong></td>
-            <td style="width: 17%; padding: 1;">{{ $purchaseOrder->phone }}</td>
-            <td style="width: 10%; text-align: right; padding: 1;"><strong>Fax: </strong></td>
-            <td style="width: 15%; padding: 1;">{{ $purchaseOrder->fax }}</td>
-            <td style="width: 10%; padding: 1;"><strong>Phone: </strong></td>
-            <td style="width: 35%; padding: 1;">{{ $cabangData ? $cabangData->telepon : '-' }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Phone: </strong></td>
+            <td style="width: 17%; padding: 3;">{{ $purchaseOrder->phone }}</td>
+            <td style="width: 10%; text-align: right; padding: 3;"><strong>Fax: </strong></td>
+            <td style="width: 15%; padding: 3;">{{ $purchaseOrder->fax }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Phone: </strong></td>
+            <td style="width: 35%; padding: 3;">{{ $cabangData ? $cabangData->telepon : '-' }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>UP: </strong></td>
-            <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->up }}</td>
-            <td style="width: 10%; padding: 1;"><strong>NO: </strong></td>
-            <td style="width: 40%; padding: 1;">{{ $purchaseOrder->no_po }}</td>
+            <td style="width: 10%; padding: 3;"><strong>UP: </strong></td>
+            <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->up }}</td>
+            <td style="width: 10%; padding: 3;"><strong>NO: </strong></td>
+            <td style="width: 40%; padding: 3;">{{ $purchaseOrder->no_po }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>Cabang: </strong></td>
-            <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->cabang }}</td>
-            <td style="width: 10%; padding: 1;"><strong>Kategori: </strong></td>
-            <td style="width: 40%; padding: 1;">{{ $category }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Cabang: </strong></td>
+            <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->cabang }}</td>
+            <td style="width: 10%; padding: 3;"><strong>Kategori: </strong></td>
+            <td style="width: 40%; padding: 3;">{{ $category }}</td>
         </tr>
         <tr style="border-bottom: 1px solid #000;">
-            <td style="width: 10%; padding: 1;"><strong>Date: </strong></td>
-            <td colspan="3" style="width: 40%; padding: 1;">
+            <td style="width: 10%; padding: 3;"><strong>Date: </strong></td>
+            <td colspan="3" style="width: 40%; padding: 3;">
                 {{ \Carbon\Carbon::parse($purchaseOrder->date)->format('F d, Y') }}</td>
-            <td style="width: 10%; padding: 1;"><strong>Page: </strong></td>
-            <td style="width: 40%; padding: 1;">1</td>
+            <td style="width: 10%; padding: 3;"><strong>Page: </strong></td>
+            <td style="width: 40%; padding: 3;">1</td>
         </tr>
     </table>
 
-    <p style="margin-top: 15px; margin-bottom: 10px; font-size: 12px;">
+    <p style="margin-top: 15px; margin-bottom: 15px; font-size: 13px;">
         Bersama dengan surat ini kami memesan :
     </p>
 
     {{-- TABEL BARANG HALAMAN 1 --}}
     @if ($itemsCount > 0)
         <table class="details-table">
-            <thead style="font-size: 12px;">
+            <thead style="font-size: 13px;">
                 <tr>
                     <th style="width: 5%; text-align: center;">No</th>
                     <th style="width: 30%; text-align: center;">Barang</th>
@@ -141,7 +141,7 @@
                     <th style="width: 25%; text-align: center;">Keterangan</th>
                 </tr>
             </thead>
-            <tbody style="font-size: 12px;">
+            <tbody style="font-size: 13px;">
                 @foreach ($items->take($maxItemsOnFirstPage) as $index => $item)
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -205,55 +205,55 @@
             </tr>
         </table>
 
-        <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 12px;">
+        <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-size: 13px;">
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>To: </strong></td>
-                <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->supplier }}</td>
-                <td style="width: 10%; padding: 1;"><strong>From: </strong></td>
-                <td style="width: 40%; padding: 1;">Milenia Mega Mandiri</td>
+                <td style="width: 10%; padding: 3;"><strong>To: </strong></td>
+                <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->supplier }}</td>
+                <td style="width: 10%; padding: 3;"><strong>From: </strong></td>
+                <td style="width: 40%; padding: 3;">Milenia Mega Mandiri</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>Address: </strong></td>
-                <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->address }}</td>
-                <td style="width: 10%; padding: 1;"><strong>Address: </strong></td>
-                <td style="width: 40%; padding: 1;">{{ $cabangData ? $cabangData->alamat : '-' }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
+                <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->address }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Address: </strong></td>
+                <td style="width: 40%; padding: 3;">{{ $cabangData ? $cabangData->alamat : '-' }}</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>Phone: </strong></td>
-                <td style="width: 17%; padding: 1;">{{ $purchaseOrder->phone }}</td>
-                <td style="width: 10%; text-align: right; padding: 1;"><strong>Fax: </strong></td>
-                <td style="width: 15%; padding: 1;">{{ $purchaseOrder->fax }}</td>
-                <td style="width: 10%; padding: 1;"><strong>Phone: </strong></td>
-                <td style="width: 35%; padding: 1;">{{ $cabangData ? $cabangData->telepon : '-' }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Phone: </strong></td>
+                <td style="width: 17%; padding: 3;">{{ $purchaseOrder->phone }}</td>
+                <td style="width: 10%; text-align: right; padding: 3;"><strong>Fax: </strong></td>
+                <td style="width: 15%; padding: 3;">{{ $purchaseOrder->fax }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Phone: </strong></td>
+                <td style="width: 35%; padding: 3;">{{ $cabangData ? $cabangData->telepon : '-' }}</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>UP: </strong></td>
-                <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->up }}</td>
-                <td style="width: 10%; padding: 1;"><strong>NO: </strong></td>
-                <td style="width: 40%; padding: 1;">{{ $purchaseOrder->no_po }}</td>
+                <td style="width: 10%; padding: 3;"><strong>UP: </strong></td>
+                <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->up }}</td>
+                <td style="width: 10%; padding: 3;"><strong>NO: </strong></td>
+                <td style="width: 40%; padding: 3;">{{ $purchaseOrder->no_po }}</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>Cabang: </strong></td>
-                <td colspan="3" style="width: 40%; padding: 1;">{{ $purchaseOrder->cabang }}</td>
-                <td style="width: 10%; padding: 1;"><strong>Kategori: </strong></td>
-                <td style="width: 40%; padding: 1;">{{ $category }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Cabang: </strong></td>
+                <td colspan="3" style="width: 40%; padding: 3;">{{ $purchaseOrder->cabang }}</td>
+                <td style="width: 10%; padding: 3;"><strong>Kategori: </strong></td>
+                <td style="width: 40%; padding: 3;">{{ $category }}</td>
             </tr>
             <tr style="border-bottom: 1px solid #000;">
-                <td style="width: 10%; padding: 1;"><strong>Date: </strong></td>
-                <td colspan="3" style="width: 40%; padding: 1;">
+                <td style="width: 10%; padding: 3;"><strong>Date: </strong></td>
+                <td colspan="3" style="width: 40%; padding: 3;">
                     {{ \Carbon\Carbon::parse($purchaseOrder->date)->format('F d, Y') }}</td>
-                <td style="width: 10%; padding: 1;"><strong>Page: </strong></td>
-                <td style="width: 40%; padding: 1;">2</td>
+                <td style="width: 10%; padding: 3;"><strong>Page: </strong></td>
+                <td style="width: 40%; padding: 3;">2</td>
             </tr>
         </table>
 
-        <p style="margin-top: 15px; margin-bottom: 10px; font-size: 12px;">
+        <p style="margin-top: 15px; margin-bottom: 15px; font-size: 13px;">
             Bersama dengan surat ini kami memesan :
         </p>
 
         {{-- TABEL BARANG HALAMAN 2 (Sisa Barang) --}}
         <table class="details-table">
-            <thead style="font-size: 12px;">
+            <thead style="font-size: 13px;">
                 <tr>
                     <th style="width: 5%; text-align: center;">No</th>
                     <th style="width: 30%; text-align: center;">Barang</th>
@@ -263,7 +263,7 @@
                     <th style="width: 25%; text-align: center;">Keterangan</th>
                 </tr>
             </thead>
-            <tbody style="font-size: 12px;">
+            <tbody style="font-size: 13px;">
                 @foreach ($items->slice($maxItemsOnFirstPage)->values() as $index => $item)
                     <tr>
                         <td>{{ $maxItemsOnFirstPage + $index + 1 }}</td>
@@ -307,17 +307,17 @@
     @endif
 
     {{-- KONTEN LAINNYA --}}
-        <div style="border: 1px solid #000; padding: 2px; margin: 2px 0; font-size: 12px;">
+        <div style="border: 1px solid #000; padding: 3px; margin-top: 10px; margin-bottom: 10px; font-size: 13px;">
             <strong>Terbilang:</strong> {{ strtoupper($grandtotalWords) }} RUPIAH
         </div>
-        <div style="margin-bottom: 10px; font-size: 12px;">
+        <div style="margin-bottom: 10px; font-size: 13px;">
             <strong>Tanggal Pengiriman:
                 {{ \Carbon\Carbon::parse($purchaseOrder->estimate_date)->format('F d, Y') }}</strong>
         </div>
-        <div style="font-size: 12px;">
+        <div style="font-size: 13px;">
             <u><strong>REMARKS:</strong> {{ $purchaseOrder->remarks }}</u>
         </div>
-        <div style="font-size: 12px;">
+        <div style="font-size: 13px;">
             <p style="margin-top: 10px; margin-bottom: 10px;">
                 Demikianlah pesanan dari kami, kiranya dapat diproses dengan segera.<br>
                 Atas bantuan dan kerjasamanya, kami ucapkan terima kasih.
