@@ -17,7 +17,8 @@
 
     <!-- Filepond css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/filepond/filepond.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
 
     <!-- Sweet Alert css-->
     <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -153,8 +154,21 @@
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
                                     @php
+                                        use Illuminate\Support\Str;
+
                                         $formattedFoto = str_pad(Auth::user()->ID, 5, '0', STR_PAD_LEFT);
-                                        $fotoUrl = "http://192.168.0.8/hrd-milenia/foto/{$formattedFoto}.JPG";
+
+                                        // Mendapatkan IP client
+                                        $clientIp = request()->ip();
+
+                                        // Jika IP client adalah localhost (127.0.0.1) atau berada dalam jaringan 192.168.0.x
+                                        if ($clientIp === '127.0.0.1' || Str::startsWith($clientIp, '192.168.0.')) {
+                                            $baseUrl = 'http://192.168.0.8/hrd-milenia/foto/';
+                                        } else {
+                                            $baseUrl = 'http://pc.dyndns-office.com:8001/hrd-milenia/foto/';
+                                        }
+
+                                        $fotoUrl = $baseUrl . "{$formattedFoto}.JPG";
                                     @endphp
                                     <img class="rounded-circle header-profile-user" src="{{ $fotoUrl }}"
                                         alt="">
@@ -386,8 +400,11 @@
     <!-- filepond js -->
     <script src="{{ asset('assets/libs/filepond/filepond.min.js') }}"></script>
     <script src="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}">
+    </script>
+    <script
+        src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}">
+    </script>
     <script src="{{ asset('assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
 
     <!-- App js -->

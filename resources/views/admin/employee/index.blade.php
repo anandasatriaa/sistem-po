@@ -55,7 +55,21 @@
                                     <td class="text-center">
                                         @php
                                             $formattedFoto = str_pad($employee->ID, 5, '0', STR_PAD_LEFT);
-                                            $fotoUrl = "http://192.168.0.8/hrd-milenia/foto/{$formattedFoto}.JPG";
+
+                                            // Mendapatkan IP client
+                                            $clientIp = request()->ip();
+
+                                            // Jika IP client adalah localhost (127.0.0.1) atau berada dalam jaringan 192.168.0.x
+                                            if (
+                                                $clientIp === '127.0.0.1' ||
+                                                \Illuminate\Support\Str::startsWith($clientIp, '192.168.0.')
+                                            ) {
+                                                $baseUrl = 'http://192.168.0.8/hrd-milenia/foto/';
+                                            } else {
+                                                $baseUrl = 'http://pc.dyndns-office.com:8001/hrd-milenia/foto/';
+                                            }
+
+                                            $fotoUrl = $baseUrl . "{$formattedFoto}.JPG";
                                         @endphp
                                         <div class="avatar">
                                             <img src="{{ $fotoUrl }}" class="avatar-img rounded"
