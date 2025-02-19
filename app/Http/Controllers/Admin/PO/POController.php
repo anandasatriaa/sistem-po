@@ -42,7 +42,7 @@ class POController extends Controller
         ->first();
 
         // Jika ada nomor PO, tampilkan nomor PO terbesar, jika tidak, set dengan 'PO1'
-        $noPoTerakhir = $lastPo ? $lastPo->no_po : 'PLO000000';
+        $noPoTerakhir = $lastPo ? $lastPo->no_po : 'PL000000';
 
         return view('admin.po-milenia.index', compact('cabang', 'supplier', 'category', 'unit', 'barang', 'nopomilenia', 'noPoTerakhir'));
     }
@@ -101,27 +101,59 @@ class POController extends Controller
             }
 
             // Simpan data ke tabel purchase_order_milenia
-            $purchaseOrder = PurchaseOrderMilenia::create([
-                'no_po' => $data['no_po'] ?? null,
-                'cabang' => $data['cabang_po'] ?? null,
-                'cabang_id' => $data['cabang_id'] ?? null,
-                'supplier' => $data['supplier_po'] ?? null,
-                'supplier_id' => $data['supplier_id'] ?? null,
-                'address' => $data['address_po'] ?? null,
-                'phone' => $data['phone_po'] ?? null,
-                'fax' => $data['fax_po'] ?? null,
-                'up' => $data['up_po'] ?? null,
-                'date' => $data['date_po'] ?? null,
-                'estimate_date' => $data['estimatedate_po'] ?? null,
-                'remarks' => $data['remarks_po'] ?? null,
-                'sub_total' => $data['sub_total'] ?? 0,
-                'pajak' => $data['tax_amount'] ?? 0,
-                'discount' => $data['discount'] ?? 0,
-                'total' => $data['total'] ?? 0,
-                'ttd_2' => $signaturePath,
-                'nama_2' => $data['namapembuat_po'] ?? null,
-                'status' => 1,
-            ]);
+            // Jika terdapat po_id maka lakukan update
+            if (!empty($request->po_id)) {
+                $purchaseOrder = PurchaseOrderMilenia::find($request->po_id);
+                if (!$purchaseOrder) {
+                    return response()->json(['success' => false, 'message' => 'PO tidak ditemukan.'], 404);
+                }
+                $purchaseOrder->update([
+                    'no_po'       => $request->no_po,
+                    'cabang'      => $request->cabang_po,
+                    'cabang_id'   => $request->cabang_id,
+                    'supplier'    => $request->supplier_po,
+                    'supplier_id' => $request->supplier_id,
+                    'address'     => $request->address_po,
+                    'phone'       => $request->phone_po,
+                    'fax'         => $request->fax_po,
+                    'up'          => $request->up_po,
+                    'date'        => $request->date_po,
+                    'estimate_date' => $request->estimatedate_po,
+                    'remarks'     => $request->remarks_po,
+                    'sub_total'   => $request->sub_total,
+                    'pajak'       => $request->tax_amount,
+                    'discount'    => $request->discount,
+                    'total'       => $request->total,
+                    'ttd_2'       => $signaturePath,
+                    'nama_2'      => $request->namapembuat_po,
+                ]);
+
+                // Untuk data barang, misalnya kita hapus yang lama dan masukkan data baru:
+                PurchaseOrderBarangMilenia::where('purchase_order_id', $purchaseOrder->id)->delete();
+            } else {
+                // Jika tidak ada po_id, buat data baru
+                $purchaseOrder = PurchaseOrderMilenia::create([
+                    'no_po'       => $request->no_po,
+                    'cabang'      => $request->cabang_po,
+                    'cabang_id'   => $request->cabang_id,
+                    'supplier'    => $request->supplier_po,
+                    'supplier_id' => $request->supplier_id,
+                    'address'     => $request->address_po,
+                    'phone'       => $request->phone_po,
+                    'fax'         => $request->fax_po,
+                    'up'          => $request->up_po,
+                    'date'        => $request->date_po,
+                    'estimate_date' => $request->estimatedate_po,
+                    'remarks'     => $request->remarks_po,
+                    'sub_total'   => $request->sub_total,
+                    'pajak'       => $request->tax_amount,
+                    'discount'    => $request->discount,
+                    'total'       => $request->total,
+                    'ttd_2'       => $signaturePath,
+                    'nama_2'      => $request->namapembuat_po,
+                    'status'      => 1,
+                ]);
+            }
 
             Log::info('Data purchase order berhasil disimpan dengan ID:', ['id' => $purchaseOrder->id]);
 
@@ -206,7 +238,7 @@ class POController extends Controller
             Log::info('Data berhasil disimpan ke database.');
 
             // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
-            Mail::to('anandasatriaf6@gmail.com')
+            Mail::to('ari.darma@ccas.co.id')
             ->cc('it.web2@ccas.co.id')
             ->send(new PoCreatedMail($purchaseOrder));
 
@@ -254,6 +286,25 @@ class POController extends Controller
         return $pdf->stream($fileName);
     }
 
+    public function getPoDataMilenia(Request $request)
+    {
+        $noPo = $request->query('no_po');
+        // Cari PO berdasarkan no_po
+        $po = PurchaseOrderMilenia::with('barang')->where('no_po', $noPo)->first();
+
+        if ($po) {
+            return response()->json([
+                'success' => true,
+                'po' => $po
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'PO tidak ditemukan'
+            ]);
+        }
+    }
+
     public function poMap()
     {
         $cabang = DB::table('cabang')->where('aktif', 1)->get();
@@ -269,7 +320,7 @@ class POController extends Controller
         ->first();
 
         // Jika ada nomor PO, tampilkan nomor PO terbesar, jika tidak, set dengan 'PO1'
-        $noPoTerakhir = $lastPo ? $lastPo->no_po : 'PLO000000';
+        $noPoTerakhir = $lastPo ? $lastPo->no_po : 'PL000000';
 
         return view('admin.po-map.index', compact('cabang', 'supplier', 'category', 'unit', 'barang', 'nopomap', 'noPoTerakhir'));
     }
@@ -328,27 +379,59 @@ class POController extends Controller
             }
 
             // Simpan data ke tabel purchase_order_map
-            $purchaseOrder = PurchaseOrderMAP::create([
-                'no_po' => $data['no_po'] ?? null,
-                'cabang' => $data['cabang_po'] ?? null,
-                'cabang_id' => $data['cabang_id'] ?? null,
-                'supplier' => $data['supplier_po'] ?? null,
-                'supplier_id' => $data['supplier_id'] ?? null,
-                'address' => $data['address_po'] ?? null,
-                'phone' => $data['phone_po'] ?? null,
-                'fax' => $data['fax_po'] ?? null,
-                'up' => $data['up_po'] ?? null,
-                'date' => $data['date_po'] ?? null,
-                'estimate_date' => $data['estimatedate_po'] ?? null,
-                'remarks' => $data['remarks_po'] ?? null,
-                'sub_total' => $data['sub_total'] ?? 0,
-                'pajak' => $data['tax_amount'] ?? 0,
-                'discount' => $data['discount'] ?? 0,
-                'total' => $data['total'] ?? 0,
-                'ttd_2' => $signaturePath,
-                'nama_2' => $data['namapembuat_po'] ?? null,
-                'status' => 1,
-            ]);
+            // Jika terdapat po_id maka lakukan update
+            if (!empty($request->po_id)) {
+                $purchaseOrder = PurchaseOrderMAP::find($request->po_id);
+                if (!$purchaseOrder) {
+                    return response()->json(['success' => false, 'message' => 'PO tidak ditemukan.'], 404);
+                }
+                $purchaseOrder->update([
+                    'no_po'       => $request->no_po,
+                    'cabang'      => $request->cabang_po,
+                    'cabang_id'   => $request->cabang_id,
+                    'supplier'    => $request->supplier_po,
+                    'supplier_id' => $request->supplier_id,
+                    'address'     => $request->address_po,
+                    'phone'       => $request->phone_po,
+                    'fax'         => $request->fax_po,
+                    'up'          => $request->up_po,
+                    'date'        => $request->date_po,
+                    'estimate_date' => $request->estimatedate_po,
+                    'remarks'     => $request->remarks_po,
+                    'sub_total'   => $request->sub_total,
+                    'pajak'       => $request->tax_amount,
+                    'discount'    => $request->discount,
+                    'total'       => $request->total,
+                    'ttd_2'       => $signaturePath,
+                    'nama_2'      => $request->namapembuat_po,
+                ]);
+
+                // Untuk data barang, misalnya kita hapus yang lama dan masukkan data baru:
+                PurchaseOrderBarangMAP::where('purchase_order_id', $purchaseOrder->id)->delete();
+            } else {
+                // Jika tidak ada po_id, buat data baru
+                $purchaseOrder = PurchaseOrderMAP::create([
+                    'no_po'       => $request->no_po,
+                    'cabang'      => $request->cabang_po,
+                    'cabang_id'   => $request->cabang_id,
+                    'supplier'    => $request->supplier_po,
+                    'supplier_id' => $request->supplier_id,
+                    'address'     => $request->address_po,
+                    'phone'       => $request->phone_po,
+                    'fax'         => $request->fax_po,
+                    'up'          => $request->up_po,
+                    'date'        => $request->date_po,
+                    'estimate_date' => $request->estimatedate_po,
+                    'remarks'     => $request->remarks_po,
+                    'sub_total'   => $request->sub_total,
+                    'pajak'       => $request->tax_amount,
+                    'discount'    => $request->discount,
+                    'total'       => $request->total,
+                    'ttd_2'       => $signaturePath,
+                    'nama_2'      => $request->namapembuat_po,
+                    'status'      => 1,
+                ]);
+            }
 
             Log::info('Data purchase order berhasil disimpan dengan ID:', ['id' => $purchaseOrder->id]);
 
@@ -433,7 +516,7 @@ class POController extends Controller
             Log::info('Data berhasil disimpan ke database.');
 
             // Kirim email ke SPV GA (saat ini ari.darma@ccas.co.id)
-            Mail::to('anandasatriaf6@gmail.com')
+            Mail::to('ari.darma@ccas.co.id')
             ->cc('it.web2@ccas.co.id')
             ->send(new PoCreatedMailMAP($purchaseOrder));
 
@@ -479,6 +562,25 @@ class POController extends Controller
 
         // Return file PDF
         return $pdf->stream($fileName);
+    }
+
+    public function getPoDataMap(Request $request)
+    {
+        $noPo = $request->query('no_po');
+        // Cari PO berdasarkan no_po
+        $po = PurchaseOrderMAP::with('barang')->where('no_po', $noPo)->first();
+
+        if ($po) {
+            return response()->json([
+                'success' => true,
+                'po' => $po
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'PO tidak ditemukan'
+            ]);
+        }
     }
 
     private function terbilang($angka)

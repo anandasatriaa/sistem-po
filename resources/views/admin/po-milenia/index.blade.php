@@ -82,6 +82,7 @@
         </div>
         <div class="card-body bg-light">
             <form id="po-form" action="" class="row g-3">
+                <input type="hidden" id="po_id" name="po_id" value="">
                 <div class="col-md-12">
                     <label for="no_po" class="form-label"><span class="text-danger">*</span>No. PO <br> <small
                             class="text-muted">Last PO:
@@ -98,8 +99,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="cabang_po" class="form-label"><span class="text-danger">*</span>Cabang</label>
-                    <select id="cabang_po" name="cabang_po" class="form-select"
-                        required>
+                    <select id="cabang_po" name="cabang_po" class="form-select" required>
                         <option selected disabled>Choose...</option>
                         @foreach ($cabang as $c)
                             <option value="{{ $c->nama }}" data-id="{{ $c->id_cabang }}"
@@ -180,8 +180,7 @@
 
                 <div class="col-md-12">
                     <label for="category_po" class="form-label"><span class="text-danger">*</span>Category</label>
-                    <select id="category_po" name="category_po" class="form-select" data-choices
-                        data-choices-sorting="true" required>
+                    <select id="category_po" name="category_po" class="form-select" required>
                         <option selected disabled>Choose...</option>
                         @foreach ($category as $cat)
                             <option value="{{ $cat->nama }}" data-id="{{ $cat->id }}">{{ $cat->nama }}
@@ -255,8 +254,8 @@
                             </button>
                         </div>
                         <div class="col-md-4 mt-2">
-                            <input type="text" name="namapembuat_po" class="form-control" id="namapembuat_po" value="Windy Wulandari"
-                                placeholder="Nama Pembuat PO" required>
+                            <input type="text" name="namapembuat_po" class="form-control" id="namapembuat_po"
+                                value="Windy Wulandari" placeholder="Nama Pembuat PO" required>
                         </div>
                     </div>
 
@@ -387,7 +386,7 @@
             const grandTotalEl = document.getElementById('grand-total');
 
             // Fungsi untuk menghitung amount price
-            function calculateAmount(row) {
+            window.calculateAmount = function(row) {
                 const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
                 const price = parseFloat(row.querySelector('.price-input').value.replace(/\./g, '')) || 0;
                 const amount = qty * price;
@@ -395,7 +394,7 @@
                 calculateTotals();
             }
 
-            function calculateTotals() {
+            window.calculateTotals = function() {
                 let subtotal = 0;
                 document.querySelectorAll('.amount-price').forEach(amountField => {
                     subtotal += parseFloat(amountField.value.replace(/\./g, '')) || 0;
@@ -850,6 +849,123 @@
 
             return 'PL' + newPoNumberFormatted; // Kembalikan dengan format 'PLO' di depan
         }
+    </script>
+
+    {{-- Auto Fill PO yang sudah ada --}}
+    <script>
+        // Event listener untuk auto-fill ketika user memilih PO yang sudah ada
+        document.getElementById('no_po').addEventListener('change', function() {
+            const noPo = this.value.trim();
+            if (!noPo) return;
+
+            // Panggil endpoint untuk mendapatkan data PO berdasarkan no_po (sesuaikan route-nya)
+            fetch(`{{ route('admin.po-milenia-data') }}?no_po=${encodeURIComponent(noPo)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.po) {
+                        // Data PO ditemukan, simpan ID-nya dan isi field-field form
+                        const po = data.po;
+                        document.getElementById('po_id').value = po.id;
+                        document.getElementById('cabang_po').value = po.cabang;
+                        document.getElementById('supplier_po').value = po.supplier;
+                        document.getElementById('address_po').value = po.address || '';
+                        document.getElementById('phone_po').value = po.phone || '';
+                        document.getElementById('fax_po').value = po.fax || '';
+                        document.getElementById('up_po').value = po.up || '';
+                        document.getElementById('date_po').value = po.date || '';
+                        document.getElementById('estimatedate_po').value = po.estimate_date || '';
+                        document.getElementById('remarks_po').value = po.remarks || '';
+                        if (po.sub_total && po.sub_total > 0) {
+                            const taxPercentage = Math.round((po.pajak / po.sub_total) * 100);
+                            document.getElementById('tax-input').value = taxPercentage;
+                        } else {
+                            document.getElementById('tax-input').value = 0;
+                        }
+                        document.getElementById('discount-input').value = po.discount || 0;
+                        if (po.barang && po.barang.length > 0) {
+                            const categoryValue = po.barang[0].category || '';
+                            document.getElementById('category_po').value = categoryValue;
+                            console.log("Category PO:", categoryValue);
+                        } else {
+                            document.getElementById('category_po').value = '';
+                            console.log("Category PO: Not available");
+                        }
+
+                        // Update data barang (jika data barang dikirim dalam bentuk array)
+                        const inputRowsContainer = document.getElementById('input-rows');
+                        inputRowsContainer.innerHTML = ''; // Bersihkan baris yang ada
+
+                        if (po.barang && Array.isArray(po.barang)) {
+                            po.barang.forEach(item => {
+                                const rowDiv = document.createElement('div');
+                                rowDiv.classList.add('row', 'input-row', 'g-3', 'mb-3');
+                                rowDiv.innerHTML = `
+                        <div class="col-md-3">
+                            <label class="form-label"><span class="text-danger">*</span>Barang</label>
+                            <input list="barangList" name="barang[]" class="form-control barang-input" value="${item.barang}" required>
+                            <datalist id="barangList">
+                                @foreach ($barang as $b)
+                                    <option value="{{ $b->nama }}" data-id="{{ $b->id }}"></option>
+                                @endforeach
+                            </datalist>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label"><span class="text-danger">*</span>Qty</label>
+                            <input type="number" name="qty[]" class="form-control qty-input" value="${item.qty}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><span class="text-danger">*</span>Unit</label>
+                            <select name="unit[]" class="form-select unit-select" data-choices data-choices-sorting="true" required>
+                                <option selected disabled>Choose...</option>
+                                @foreach ($unit as $units)
+                                    <option value="{{ $units->satuan }}" data-id="{{ $units->id }}" ${item.unit === '{{ $units->satuan }}' ? 'selected' : ''}>
+                                        {{ $units->satuan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Keterangan</label>
+                            <input type="text" name="keterangan[]" class="form-control keterangan-input" value="${item.keterangan || ''}">
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label"><span class="text-danger">*</span>Unit Price</label>
+                            <input type="text" name="price[]" class="form-control price-input" value="${item.unit_price}">
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Amount Price</label>
+                            <input type="text" class="form-control amount-price" value="${item.amount_price}" disabled>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button class="btn btn-danger delete-row" type="button"><i class="ri-delete-bin-2-line"></i></button>
+                        </div>
+                      `;
+                                inputRowsContainer.appendChild(rowDiv);
+                            });
+
+                            document.querySelectorAll('.price-input').forEach(input => {
+                                input.addEventListener('input', function() {
+                                    const row = this.closest('.input-row');
+                                    window.calculateAmount(row);
+                                });
+                            });
+                        }
+                        // Ubah teks tombol submit menjadi "Update"
+                        document.getElementById('create-btn').innerHTML =
+                            '<i class="ri-save-3-line me-2"></i>Update';
+                    } else {
+                        // Jika PO tidak ditemukan, pastikan hidden field kosong dan tombol kembali jadi "Create"
+                        document.getElementById('po_id').value = '';
+                        document.getElementById('create-btn').innerHTML =
+                            '<i class="ri-save-3-line me-2"></i>Create';
+                    }
+
+                    calculateTotals();
+                })
+                .catch(error => {
+                    console.error('Error fetching PO data:', error);
+                });
+        });
     </script>
 
 @endsection

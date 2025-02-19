@@ -179,10 +179,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/input-po-milenia', [POController::class, 'poMilenia'])->name('admin.po-milenia');
     Route::post('/admin/input-po-milenia/preview', [POController::class, 'previewPDFMilenia']);
     Route::post('/admin/input-po-milenia/store', [POController::class, 'storeMilenia'])->name('admin.po-milenia-store');
+    Route::get('/admin/po-milenia-data', [POController::class, 'getPoDataMilenia'])->name('admin.po-milenia-data');
 
     Route::get('/admin/input-po-map', [POController::class, 'poMap'])->name('admin.po-map');
     Route::post('/admin/input-po-map/preview', [POController::class, 'previewPDFMap']);
     Route::post('/admin/input-po-map/store', [POController::class, 'storeMap'])->name('admin.po-map-store');
+    Route::get('/admin/po-map-data', [POController::class, 'getPoDataMap'])->name('admin.po-map-data');
 
     Route::get('/admin/status-po-milenia', [POController::class, 'statusPOMilenia'])->name('admin.statuspo-milenia');
     Route::get('/admin/status-po-milenia/pdf/{id}', [POController::class, 'generatePDFMilenia'])->name('admin.po-generatePDFMilenia');
