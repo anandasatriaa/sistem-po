@@ -5,8 +5,11 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 5px;
             position: relative;
+            border: 2px solid #000;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .paper {
@@ -49,14 +52,14 @@
 
         .signature {
             position: absolute;
-            bottom: 0px;
-            left: 0px;
+            bottom: 20px;
+            left: 10px;
         }
 
         .signature-spv {
             position: absolute;
-            bottom: 0px;
-            right: 0px;
+            bottom: 20px;
+            right: 10px;
         }
 
         .line {
@@ -107,13 +110,15 @@
             <tr>
                 <td style="border-bottom: 1px solid #000;"><strong>Divisi</strong></td>
                 <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->divisi }}</td>
-                <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Tidak Segera' ? 'x' : ' ' }}] Tidak Rutin, Tidak
+                <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Tidak Segera' ? 'x' : ' ' }}] Tidak Rutin,
+                    Tidak
                     Segera</td>
             </tr>
             <tr>
                 <td style="border-bottom: 1px solid #000;"><strong>No. PR</strong></td>
                 <td style="border-bottom: 1px solid #000;">: {{ $purchaseRequest->no_pr }}</td>
-                <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Segera' ? 'x' : ' ' }}] Tidak Rutin, Segera</td>
+                <td>[{{ $purchaseRequest->important == 'Tidak Rutin, Segera' ? 'x' : ' ' }}] Tidak Rutin, Segera
+                </td>
             </tr>
             <tr>
                 <td style="border-bottom: 1px solid #000;"><strong>PT</strong></td>
@@ -183,7 +188,6 @@
         </div>
         <div class="line"></div>
     </div>
-
 </body>
 
 </html>
