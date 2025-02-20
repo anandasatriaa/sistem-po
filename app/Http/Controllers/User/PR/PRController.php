@@ -114,10 +114,10 @@ class PRController extends Controller
             }
             $emailAtasan = $user->email_atasan;
             $ccAdmin = 'admin.ga@ccas.co.id';
-            $ccUser  = $user->email_karyawan;
+            // $ccUser  = $user->email_karyawan;
             $ccITWeb = 'it.web2@ccas.co.id';
 
-            Mail::to($emailAtasan)->cc([$ccAdmin, $ccUser, $ccITWeb])->send(new PurchaseRequestMail($purchaseRequest, $user));
+            Mail::to($emailAtasan)->cc([$ccAdmin, $ccITWeb])->send(new PurchaseRequestMail($purchaseRequest, $user));
 
             return response()->json(['success' => true, 'message' => 'Purchase Request berhasil diajukan'], 201);
         } catch (\Exception $e) {
