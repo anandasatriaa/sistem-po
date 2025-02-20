@@ -158,7 +158,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="remarks_po" class="form-label"><span class="text-danger">*</span>Remarks</label>
-                    <input type="text" name="remarks_po" class="form-control" id="remarks_po">
+                    <input type="text" name="remarks_po" class="form-control" id="remarks_po" required>
                 </div>
                 <div class="col-md-6">
                     <label for="tax-input" class="form-label">Pajak</label>
@@ -609,13 +609,75 @@
 
     {{-- Create Button --}}
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const signatureCanvas = document.getElementById('signatureCanvas');
+            window.blankSignatureDataURL = signatureCanvas.toDataURL('image/png');
+        });
+
         document.getElementById('po-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Mencegah form dikirim secara default
 
-            // Konversi tanda tangan menjadi gambar Base64
+            let missingFields = [];
+            // Validasi standar untuk elemen yang memiliki atribut required
+            const requiredFields = this.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value || field.value.trim() === '') {
+                    let labelText = '';
+                    const fieldId = field.getAttribute('id');
+                    if (fieldId) {
+                        const label = document.querySelector(`label[for="${fieldId}"]`);
+                        if (label) {
+                            // Hilangkan tanda '*' dan ambil teks label
+                            labelText = label.textContent.replace('*', '').trim();
+                        }
+                    }
+                    if (!labelText) {
+                        labelText = field.getAttribute('name');
+                    }
+                    missingFields.push(labelText);
+                }
+            });
+
+            // Validasi khusus: Cek apakah user telah memilih Cabang
+            const cabangSelect = document.getElementById('cabang_po');
+            // Jika value masih "Choose..." (default) atau tidak ada value
+            if (!cabangSelect.value || cabangSelect.value === "Choose...") {
+                missingFields.push("Cabang");
+            }
+
+            // Validasi khusus: Cek Category
+            const categorySelect = document.getElementById('category_po');
+            if (!categorySelect.value || categorySelect.value === "Choose...") {
+                missingFields.push("Category");
+            }
+
+            // Validasi khusus: Cek Unit di setiap baris input barang
+            document.querySelectorAll('.input-row').forEach((row, index) => {
+                const unitSelect = row.querySelector('.unit-select');
+                if (unitSelect && (!unitSelect.value || unitSelect.value === "Choose...")) {
+                    missingFields.push(`Unit di baris ${index + 1}`);
+                }
+            });
+
+            // Validasi khusus: Cek Sign Pad (jika tanda tangan belum digores)
             const signatureCanvas = document.getElementById('signatureCanvas');
-            const signatureDataURL = signatureCanvas.toDataURL('image/png'); // Ubah ke Base64 PNG
-            console.log("Signature Data URL:", signatureDataURL);
+            const signatureDataURL = signatureCanvas.toDataURL('image/png');
+            if (window.blankSignatureDataURL && signatureDataURL === window.blankSignatureDataURL) {
+                missingFields.push("Sign Pad");
+            }
+
+            // Jika ada field yang belum terisi, tampilkan peringatan dengan daftar field yang belum lengkap
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Belum Lengkap!',
+                    html: 'Harap lengkapi data berikut:<br><ul style="text-align: left;">' +
+                        missingFields.map(field => `<li>${field}</li>`).join('') +
+                        '</ul>',
+                    showConfirmButton: true
+                });
+                return; // Hentikan eksekusi jika ada data yang belum diisi
+            }
 
             // Kumpulkan data form menggunakan FormData
             const formData = new FormData(this);
@@ -655,13 +717,13 @@
             formData.append('supplier_id', supplier_id);
 
             // 2. Mapping Cabang: gunakan mapping object untuk mendapatkan id berdasarkan nama yang dipilih
-            const cabangSelect = document.getElementById('cabang_po');
+            // const cabangSelect = document.getElementById('cabang_po');
             const selectedCabangName = cabangSelect.value;
             let cabang_id = cabangMapping[selectedCabangName] || selectedCabangName;
             formData.append('cabang_id', cabang_id);
 
             // 3. Mapping Category: gunakan mapping object untuk mendapatkan id berdasarkan nama yang dipilih
-            const categorySelect = document.getElementById('category_po');
+            // const categorySelect = document.getElementById('category_po');
             const selectedCategoryName = categorySelect.value;
             let category_id = categoryMapping[selectedCategoryName] || selectedCategoryName;
             formData.append('category_id', category_id);
