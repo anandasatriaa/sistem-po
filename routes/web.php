@@ -188,9 +188,11 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     Route::get('/admin/status-po-milenia', [POController::class, 'statusPOMilenia'])->name('admin.statuspo-milenia');
     Route::get('/admin/status-po-milenia/pdf/{id}', [POController::class, 'generatePDFMilenia'])->name('admin.po-generatePDFMilenia');
+    Route::post('/admin/status-po-milenia/update', [POController::class, 'updateStatusPOMilenia'])->name('admin.updatestatuspo-milenia');
 
     Route::get('/admin/status-po-map', [POController::class, 'statusPOMap'])->name('admin.statuspo-map');
     Route::get('/admin/status-po-map/pdf/{id}', [POController::class, 'generatePDFMap'])->name('admin.po-generatePDFMap');
+    Route::post('/admin/status-po-map/update', [POController::class, 'updateStatusPOMap'])->name('admin.updatestatuspo-map');
 
     Route::get('/admin/laporan-po-milenia', [LaporanPOController::class, 'index'])->name('admin.laporanpo-milenia');
     Route::get('/admin/laporan-po-milenia/pdf-detail', [LaporanPOController::class, 'exportPDFDetail'])->name('admin.laporanpo-milenia.pdf-detail');

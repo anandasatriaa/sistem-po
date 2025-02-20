@@ -78,7 +78,8 @@
                                 <h6>Tahapan Status:</h6>
                                 <span class="badge bg-danger">Rejected</span>
                                 <span class="badge bg-info">Waiting Approved by GA / Director</span>
-                                <span class="badge bg-success">Accepted</span>
+                                <span class="badge bg-primary">Submission Cost / Purchase Stuff</span>
+                                <span class="badge bg-success">Done</span>
                             </div>
                         </div>
 
@@ -140,8 +141,17 @@
                                             class="badge 
                                             {{ $po->status == 0 ? 'bg-danger' : '' }}
                                             {{ $po->status == 1 ? 'bg-info' : '' }}
-                                            {{ $po->status == 2 ? 'bg-success' : '' }}">
-                                            {{ $po->status == 0 ? 'Rejected' : ($po->status == 1 ? 'Waiting Approved by GA / Director' : 'Accepted') }}
+                                            {{ $po->status == 2 ? 'bg-primary' : '' }}
+                                            {{ $po->status == 3 ? 'bg-success' : '' }}">
+                                            {{ $po->status == 0
+                                                ? 'Rejected'
+                                                : ($po->status == 1
+                                                    ? 'Waiting Approved by GA / Director'
+                                                    : ($po->status == 2
+                                                        ? 'Submission Cost / Purchase Stuff'
+                                                        : ($po->status == 3
+                                                            ? 'Done'
+                                                            : ''))) }}
                                         </span>
                                     </td>
                                     <td>
@@ -174,7 +184,8 @@
                                 <h6>Tahapan Status:</h6>
                                 <span class="badge bg-danger">Rejected</span>
                                 <span class="badge bg-info">Waiting Approved by GA / Director</span>
-                                <span class="badge bg-success">Accepted</span>
+                                <span class="badge bg-primary">Submission Cost / Purchase Stuff</span>
+                                <span class="badge bg-success">Done</span>
                             </div>
                         </div>
 
@@ -234,10 +245,19 @@
                                     <td>
                                         <span
                                             class="badge 
-                                            {{ $poMAP->status == 0 ? 'bg-danger' : '' }}
-                                            {{ $poMAP->status == 1 ? 'bg-info' : '' }}
-                                            {{ $poMAP->status == 2 ? 'bg-success' : '' }}">
-                                            {{ $poMAP->status == 0 ? 'Rejected' : ($poMAP->status == 1 ? 'Waiting Approved by GA / Director' : 'Accepted') }}
+                                            {{ $po->status == 0 ? 'bg-danger' : '' }}
+                                            {{ $po->status == 1 ? 'bg-info' : '' }}
+                                            {{ $po->status == 2 ? 'bg-primary' : '' }}
+                                            {{ $po->status == 3 ? 'bg-success' : '' }}">
+                                            {{ $po->status == 0
+                                                ? 'Rejected'
+                                                : ($po->status == 1
+                                                    ? 'Waiting Approved by GA / Director'
+                                                    : ($po->status == 2
+                                                        ? 'Submission Cost / Purchase Stuff'
+                                                        : ($po->status == 3
+                                                            ? 'Done'
+                                                            : ''))) }}
                                         </span>
                                     </td>
                                     <td>

@@ -305,6 +305,39 @@ class POController extends Controller
         }
     }
 
+    public function updateStatusPOMilenia(Request $request)
+    {
+        // Ambil parameter dari payload POST
+        $id = $request->input('id');
+        $status = $request->input('status');
+
+        // Validasi parameter minimal
+        if (!$id || !is_numeric($status)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Parameter tidak valid.'
+            ]);
+        }
+
+        // Cari Purchase Order berdasarkan id
+        $po = PurchaseOrderMilenia::find($id);
+        if (!$po) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Purchase Order tidak ditemukan.'
+            ]);
+        }
+
+        // Update status dan simpan
+        $po->status = $status;
+        $po->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui.'
+        ]);
+    }
+
     public function poMap()
     {
         $cabang = DB::table('cabang')->where('aktif', 1)->get();
@@ -581,6 +614,36 @@ class POController extends Controller
                 'message' => 'PO tidak ditemukan'
             ]);
         }
+    }
+
+    public function updateStatusPOMap(Request $request)
+    {
+        $id = $request->input('id');
+        $status = $request->input('status');
+
+        if (!$id || !is_numeric($status)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Parameter tidak valid.'
+            ]);
+        }
+
+        // Cari PO (sesuaikan model jika berbeda)
+        $po = PurchaseOrderMAP::find($id);
+        if (!$po) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Purchase Order tidak ditemukan.'
+            ]);
+        }
+
+        $po->status = $status;
+        $po->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui.'
+        ]);
     }
 
     private function terbilang($angka)

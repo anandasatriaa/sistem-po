@@ -48,7 +48,8 @@
                                 <h6>Tahapan Status:</h6>
                                 <span class="badge bg-danger">Rejected</span>
                                 <span class="badge bg-info">Waiting Approved by GA / Director</span>
-                                <span class="badge bg-success">Accepted</span>
+                                <span class="badge bg-primary">Submission Cost / Purchase Stuff</span>
+                                <span class="badge bg-success">Done</span>
                             </div>
                         </div>
 
@@ -66,6 +67,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Done</th>
                                 <th>No PO</th>
                                 <th>Cabang</th>
                                 <th>Supplier</th>
@@ -83,6 +85,13 @@
                             @foreach ($purchaseOrders as $key => $po)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>
+                                        <div class="form-check text-center">
+                                            <input type="checkbox" class="form-check-input done-checkbox"
+                                                data-id="{{ $po->id }}"
+                                                {{ $po->status == 3 ? 'checked' : ($po->status == 2 ? '' : 'disabled') }}>
+                                        </div>
+                                    </td>
                                     <td>{{ $po->no_po }}</td>
                                     <td>{{ $po->cabang }}</td>
                                     <td>{{ $po->supplier }}</td>
@@ -107,18 +116,28 @@
                                     <td>{{ 'Rp. ' . number_format($po->total, 0, ',', '.') . ',-' }}</td>
                                     <td>{{ $po->nama_2 }}</td>
                                     <td>
-                                        <span
+                                        <span id="badge-{{ $po->id }}"
                                             class="badge 
                                             {{ $po->status == 0 ? 'bg-danger' : '' }}
                                             {{ $po->status == 1 ? 'bg-info' : '' }}
-                                            {{ $po->status == 2 ? 'bg-success' : '' }}">
-                                            {{ $po->status == 0 ? 'Rejected' : ($po->status == 1 ? 'Waiting Approved by GA / Director' : 'Accepted') }}
+                                            {{ $po->status == 2 ? 'bg-primary' : '' }}
+                                            {{ $po->status == 3 ? 'bg-success' : '' }}">
+                                            {{ $po->status == 0
+                                                ? 'Rejected'
+                                                : ($po->status == 1
+                                                    ? 'Waiting Approved by GA / Director'
+                                                    : ($po->status == 2
+                                                        ? 'Submission Cost / Purchase Stuff'
+                                                        : ($po->status == 3
+                                                            ? 'Done'
+                                                            : ''))) }}
                                         </span>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center">
                                             <button type="button" class="btn btn-milenia me-2" data-bs-toggle="modal"
-                                                data-bs-target="#modalDetailPO" data-pdf-url="{{ route('admin.po-generatePDFMilenia', $po->id) }}">
+                                                data-bs-target="#modalDetailPO"
+                                                data-pdf-url="{{ route('admin.po-generatePDFMilenia', $po->id) }}">
                                                 <i class="ri-printer-line"></i>
                                             </button>
                                         </div>
@@ -161,7 +180,9 @@
                 paging: true,
                 searching: true,
                 info: true,
-                order: [[1, 'desc']],
+                order: [
+                    [1, 'desc']
+                ],
             });
         });
     </script>
@@ -181,6 +202,61 @@
                     const pdfFrame = document.getElementById('pdfFrame');
                     pdfFrame.src = pdfUrl;
                 });
+            });
+        });
+    </script>
+
+    <script>
+        function getStatusColor(status) {
+            const colors = {
+                0: 'danger',
+                1: 'info',
+                2: 'primary',
+                3: 'success'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                0: 'Rejected',
+                1: 'Waiting Approved by GA / Director',
+                2: 'Submission Cost / Purchase Stuff',
+                3: 'Done'
+            };
+            return labels[status] || 'Unknown';
+        }
+
+        // Tambahkan event listener untuk setiap checkbox dengan kelas .done-checkbox
+        document.querySelectorAll('.done-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const poId = this.getAttribute('data-id');
+                // Jika diceklis, newStatus = 3; jika tidak diceklis, newStatus = 2.
+                const newStatus = this.checked ? 3 : 2;
+
+                // Kirim request untuk mengupdate status PO
+                fetch("{{ route('admin.updatestatuspo-milenia') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id: poId,
+                            status: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update badge status menggunakan fungsi getStatusColor dan getStatusLabel
+                            const badge = document.getElementById(`badge-${poId}`);
+                            if (badge) {
+                                badge.className = `badge bg-${getStatusColor(newStatus)}`;
+                                badge.textContent = getStatusLabel(newStatus);
+                            }
+                        }
+                    })
             });
         });
     </script>
